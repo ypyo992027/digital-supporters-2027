@@ -4641,16 +4641,12 @@ export default function MainApp({
                                       <div className="flex items-center ml-1.5 sm:ml-2.5 gap-1 sm:gap-1.5 flex-nowrap shrink-0 overflow-x-auto scrollbar-none">
                                         {counts.map((c, cIdx) => {
                                           let sessionColorClass = "bg-slate-50 hover:bg-slate-100 text-slate-700 ring-1 ring-inset ring-slate-200 font-bold";
-                                          let sessionIconColor = "text-slate-600";
                                           if (c.count >= 15) {
                                             sessionColorClass = "bg-orange-50 hover:bg-orange-100 text-orange-700 ring-1 ring-inset ring-orange-300 font-extrabold";
-                                            sessionIconColor = "text-orange-600";
                                           } else if (c.count >= 10) {
                                             sessionColorClass = "bg-purple-50 hover:bg-purple-100 text-purple-700 ring-1 ring-inset ring-purple-300 font-extrabold";
-                                            sessionIconColor = "text-purple-600";
                                           } else if (c.count >= 7) {
                                             sessionColorClass = "bg-purple-50 hover:bg-purple-100 text-purple-600 ring-1 ring-inset ring-purple-200 font-bold";
-                                            sessionIconColor = "text-purple-500";
                                           }
 
                                           return (
@@ -4659,26 +4655,16 @@ export default function MainApp({
                                                 type="button"
                                                 onClick={() => setSelectedStudentDates(c)}
                                                 title={`${c.student ? `${c.student} 님의 ` : ''}수업 진행 날짜 목록 열기`}
-                                                className={`${sessionColorClass} h-[32px] sm:h-[36px] px-2 py-1 sm:px-2.5 sm:py-1 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap transition-all cursor-pointer active:scale-95 flex items-center gap-1 shadow-sm shrink-0`}
+                                                className={`${sessionColorClass} h-[32px] sm:h-[36px] px-2.5 py-1 sm:px-3 sm:py-1 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap transition-all cursor-pointer active:scale-95 flex items-center justify-center shadow-sm shrink-0`}
                                               >
-                                                <svg className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${sessionIconColor}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                                                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                                                  <line x1="16" y1="2" x2="16" y2="6" />
-                                                  <line x1="8" y1="2" x2="8" y2="6" />
-                                                  <line x1="3" y1="10" x2="21" y2="10" />
-                                                </svg>
                                                 <span>{c.count}회차</span>
                                               </button>
                                               <button
                                                 type="button"
                                                 onClick={() => setSelectedStudentHistory(c)}
                                                 title={`${c.student ? `${c.student} 님의 ` : ''}이전 교육 기록 보기`}
-                                                className="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 ring-1 ring-inset ring-emerald-200 h-[32px] sm:h-[36px] px-2 py-1 sm:px-2.5 sm:py-1 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap transition-all cursor-pointer active:scale-95 font-bold flex items-center gap-1 shadow-sm shrink-0"
+                                                className="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 ring-1 ring-inset ring-emerald-200 h-[32px] sm:h-[36px] px-2.5 py-1 sm:px-3 sm:py-1 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap transition-all cursor-pointer active:scale-95 font-bold flex items-center justify-center shadow-sm shrink-0"
                                               >
-                                                <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                                                  <circle cx="12" cy="12" r="10" />
-                                                  <polyline points="12 6 12 12 16 14" />
-                                                </svg>
                                                 <span>이전교육</span>
                                               </button>
                                             </div>
@@ -4695,12 +4681,8 @@ export default function MainApp({
                                         onClick={() => handleUndoCard(index)}
                                         disabled={isDataLoading}
                                         title="방금 지우거나 수정한 내용을 이전 상태로 되돌리기"
-                                        className="bg-amber-50 hover:bg-amber-100 text-amber-800 ring-1 ring-inset ring-amber-300 h-[32px] sm:h-[36px] px-2 py-1 sm:px-2.5 sm:py-1 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap shrink-0 transition-colors cursor-pointer active:scale-95 font-bold shadow-sm flex items-center gap-1"
+                                        className="bg-amber-50 hover:bg-amber-100 text-amber-800 ring-1 ring-inset ring-amber-300 h-[32px] sm:h-[36px] px-2.5 py-1 sm:px-3 sm:py-1 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap shrink-0 transition-colors cursor-pointer active:scale-95 font-bold shadow-sm flex items-center justify-center"
                                       >
-                                        <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round">
-                                          <path d="M3 7v6h6" />
-                                          <path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13" />
-                                        </svg>
                                         <span>되돌리기</span>
                                       </button>
                                     )}
@@ -4754,14 +4736,8 @@ export default function MainApp({
                                                   className={`${isAppSubmitted
                                                     ? 'bg-blue-600 hover:bg-blue-700 text-white ring-1 ring-inset ring-blue-700'
                                                     : 'bg-blue-50 hover:bg-blue-100 text-blue-700 ring-1 ring-inset ring-blue-200'
-                                                    } h-[32px] sm:h-[36px] px-2.5 sm:px-3 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap transition-all cursor-pointer active:scale-95 font-bold flex items-center gap-1.5 shadow-sm`}
+                                                    } h-[32px] sm:h-[36px] px-2.5 sm:px-3 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap transition-all cursor-pointer active:scale-95 font-bold flex items-center justify-center shadow-sm`}
                                                 >
-                                                  <svg className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${isAppSubmitted ? 'text-white' : 'text-blue-600'}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                                                    <polyline points="14 2 14 8 20 8" />
-                                                    <line x1="16" y1="13" x2="8" y2="13" />
-                                                    <line x1="16" y1="17" x2="8" y2="17" />
-                                                  </svg>
                                                   <span>신청서 ({sName})</span>
                                                 </button>
                                                 <button
@@ -4775,13 +4751,8 @@ export default function MainApp({
                                                   className={`${isPreSubmitted
                                                     ? 'bg-indigo-600 hover:bg-indigo-700 text-white ring-1 ring-inset ring-indigo-700'
                                                     : 'bg-indigo-50 hover:bg-indigo-100 text-indigo-700 ring-1 ring-inset ring-indigo-200'
-                                                    } h-[32px] sm:h-[36px] px-2.5 sm:px-3 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap transition-all cursor-pointer active:scale-95 font-bold flex items-center gap-1.5 shadow-sm`}
+                                                    } h-[32px] sm:h-[36px] px-2.5 sm:px-3 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap transition-all cursor-pointer active:scale-95 font-bold flex items-center justify-center shadow-sm`}
                                                 >
-                                                  <svg className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${isPreSubmitted ? 'text-white' : 'text-indigo-600'}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                                                    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
-                                                    <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
-                                                    <path d="m9 14 2 2 4-4" />
-                                                  </svg>
                                                   <span>사전설문지 ({sName})</span>
                                                 </button>
                                                 <button
@@ -4795,13 +4766,8 @@ export default function MainApp({
                                                   className={`${isPostSubmitted
                                                     ? 'bg-purple-700 hover:bg-purple-800 text-white ring-1 ring-inset ring-purple-800'
                                                     : 'bg-purple-50 hover:bg-purple-100 text-purple-700 ring-1 ring-inset ring-purple-200'
-                                                    } h-[32px] sm:h-[36px] px-2.5 sm:px-3 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap transition-all cursor-pointer active:scale-95 font-bold flex items-center gap-1.5 shadow-sm`}
+                                                    } h-[32px] sm:h-[36px] px-2.5 sm:px-3 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap transition-all cursor-pointer active:scale-95 font-bold flex items-center justify-center shadow-sm`}
                                                 >
-                                                  <svg className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${isPostSubmitted ? 'text-white' : 'text-purple-600'}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                                                    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
-                                                    <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
-                                                    <path d="m9 14 2 2 4-4" />
-                                                  </svg>
                                                   <span>사후설문지 ({sName})</span>
                                                 </button>
                                               </React.Fragment>
