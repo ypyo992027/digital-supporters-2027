@@ -3629,7 +3629,7 @@ export default function MainApp({
                 <path d="M104 8 C105.6 18 108 20.4 118 22 C108 23.6 105.6 26 104 36 C102.4 26 100 23.6 90 22 C100 20.4 102.4 18 104 8 Z" fill="#F59E0B" />
               </svg>
               <span className="inline-flex items-center gap-1 sm:gap-1.5">
-                <span className="px-1.5 py-0.5 rounded-md bg-blue-50 text-blue-700 ring-1 ring-inset ring-blue-200/80 font-extrabold text-[0.84em] leading-none">2027</span>
+                <span className="text-blue-700 font-extrabold">2027</span>
                 <span>디지털교육 서포터즈</span>
                 <span className="text-slate-300 font-normal">·</span>
                 <span className="text-blue-700 font-extrabold">업무일지</span>
