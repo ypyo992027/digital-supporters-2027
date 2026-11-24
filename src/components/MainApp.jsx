@@ -2278,7 +2278,7 @@ export default function MainApp({
         student: log.student || "미입력",
         isDoubleHeight: sNames.length >= 2,
         location: effectiveLocation,
-        attendance: currentStatusStr || "입력 없음",
+        attendance: mergeAttendanceAndStatus(currentAttendanceStr, normCurrent) || "입력 없음",
         isChanged: isChanged,
         status: isChanged ? '대기 중' : '변경 없음'
       };
