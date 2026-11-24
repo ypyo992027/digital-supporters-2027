@@ -4,6 +4,9 @@
 
 [build.environment]
   NODE_VERSION = "20"
+  # The Supabase URL and anon key are public by design (bundled into the
+  # client and protected by RLS), so exclude them from secrets scanning.
+  SECRETS_SCAN_OMIT_KEYS = "VITE_SUPABASE_URL,VITE_SUPABASE_ANON_KEY"
 
 [[headers]]
   for = "/*"
