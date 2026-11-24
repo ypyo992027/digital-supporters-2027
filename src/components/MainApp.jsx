@@ -4828,13 +4828,8 @@ export default function MainApp({
                                           className={`${isPostSubmitted
                                             ? 'bg-purple-700 hover:bg-purple-800 text-white ring-1 ring-inset ring-purple-800'
                                             : 'bg-purple-50 hover:bg-purple-100 text-purple-700 ring-1 ring-inset ring-purple-200'
-                                            } h-[32px] sm:h-[36px] px-2.5 sm:px-3 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap transition-all cursor-pointer active:scale-95 font-bold flex items-center gap-1.5 shadow-sm`}
+                                            } h-[32px] sm:h-[36px] px-2.5 sm:px-3 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap transition-all cursor-pointer active:scale-95 font-bold flex items-center justify-center shadow-sm`}
                                         >
-                                          <svg className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${isPostSubmitted ? 'text-white' : 'text-purple-600'}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                                            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1 2-2h2" />
-                                            <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
-                                            <path d="m9 14 2 2 4-4" />
-                                          </svg>
                                           <span>사후설문지</span>
                                         </button>
                                       </div>
