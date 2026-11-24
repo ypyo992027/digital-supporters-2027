@@ -4798,14 +4798,8 @@ export default function MainApp({
                                           className={`${isAppSubmitted
                                             ? 'bg-blue-600 hover:bg-blue-700 text-white ring-1 ring-inset ring-blue-700'
                                             : 'bg-blue-50 hover:bg-blue-100 text-blue-700 ring-1 ring-inset ring-blue-200'
-                                            } h-[32px] sm:h-[36px] px-2.5 sm:px-3 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap transition-all cursor-pointer active:scale-95 font-bold flex items-center gap-1.5 shadow-sm`}
+                                            } h-[32px] sm:h-[36px] px-2.5 sm:px-3 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap transition-all cursor-pointer active:scale-95 font-bold flex items-center justify-center shadow-sm`}
                                         >
-                                          <svg className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${isAppSubmitted ? 'text-white' : 'text-blue-600'}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                                            <polyline points="14 2 14 8 20 8" />
-                                            <line x1="16" y1="13" x2="8" y2="13" />
-                                            <line x1="16" y1="17" x2="8" y2="17" />
-                                          </svg>
                                           <span>신청서</span>
                                         </button>
                                         <button
@@ -4819,13 +4813,8 @@ export default function MainApp({
                                           className={`${isPreSubmitted
                                             ? 'bg-indigo-600 hover:bg-indigo-700 text-white ring-1 ring-inset ring-indigo-700'
                                             : 'bg-indigo-50 hover:bg-indigo-100 text-indigo-700 ring-1 ring-inset ring-indigo-200'
-                                            } h-[32px] sm:h-[36px] px-2.5 sm:px-3 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap transition-all cursor-pointer active:scale-95 font-bold flex items-center gap-1.5 shadow-sm`}
+                                            } h-[32px] sm:h-[36px] px-2.5 sm:px-3 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap transition-all cursor-pointer active:scale-95 font-bold flex items-center justify-center shadow-sm`}
                                         >
-                                          <svg className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${isPreSubmitted ? 'text-white' : 'text-indigo-600'}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                                            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
-                                            <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
-                                            <path d="m9 14 2 2 4-4" />
-                                          </svg>
                                           <span>사전설문지</span>
                                         </button>
                                         <button
