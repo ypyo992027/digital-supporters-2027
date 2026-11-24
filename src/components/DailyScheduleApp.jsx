@@ -615,12 +615,47 @@ export default function DailyScheduleApp({ initialTeam, onNavigateBack, onTeamCh
         const names = row.student.split(/[/,]/).map(s => s.trim().split('(')[0].trim()).filter(Boolean);
         const countsForThisRow = [];
 
-        names.forEach(name => {
+        names.forEach((name, nameIdx) => {
           if (excludeKeywords.some(keyword => name.includes(keyword))) return;
           const dates = studentDatesMap[name] || [];
           const extraDates = studentExtraDatesMap[name] || [];
+
+          let todayPersonalStatus = row.status || "";
+          if (names.length > 1 && todayPersonalStatus.includes('/')) {
+            const segments = todayPersonalStatus.split('/');
+            if (segments.length > nameIdx) {
+              todayPersonalStatus = segments[nameIdx].trim();
+            }
+          }
+          const todayHasEndOrCancel = checkIsCanceled(todayPersonalStatus);
+          const todayHasAttendance = hasIndependentKeyword(todayPersonalStatus, ["1", "출석"]);
+          const todayIsVacation = (todayPersonalStatus.includes("선생님휴가") || todayPersonalStatus.includes("휴가")) && !todayHasAttendance;
+          const todayIsOnlyAbsent = (todayPersonalStatus.includes("결석") && !todayHasAttendance) && !todayIsVacation && !(todayHasEndOrCancel && !todayHasAttendance);
+          const todayIsEnd = todayPersonalStatus.split(/[,/]+/).map(t => t.trim()).some(t => t === '종료');
+          const todayIsNonCounted = (todayIsVacation || todayIsOnlyAbsent) && !(teamName === '취업팀' && todayIsOnlyAbsent);
+
           const currentCount = dates.length > 0 ? (dates[dates.length - 1].sessionNum || dates.length) + 1 : 1;
-          const combinedDates = [...dates, ...extraDates].sort((a, b) => a.date.getTime() - b.date.getTime());
+          const todayEntry = todayIsNonCounted
+            ? {
+                date: todayDateObj,
+                shift: row.time,
+                group: row.group,
+                teacher: row.teacher,
+                isAbsent: todayIsOnlyAbsent,
+                isVacation: todayIsVacation,
+                excludeFromCount: true
+              }
+            : {
+                date: todayDateObj,
+                shift: row.time,
+                group: row.group,
+                teacher: row.teacher,
+                sessionNum: currentCount,
+                isAbsent: teamName === '취업팀' && todayIsOnlyAbsent,
+                isEnd: todayIsEnd
+              };
+
+          const combinedDates = [...dates, ...extraDates, todayEntry].sort((a, b) => a.date.getTime() - b.date.getTime());
           countsForThisRow.push({
             name: name,
             count: currentCount,
