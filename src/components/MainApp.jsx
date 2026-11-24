@@ -3598,7 +3598,7 @@ export default function MainApp({
                 성동노인종합복지관
               </h1>
             </div>
-            <h2 className="inline-flex items-center justify-center gap-1.5 sm:gap-2 rounded-full bg-white/95 ring-1 ring-slate-200/90 shadow-[0_2px_10px_-2px_rgba(37,99,235,0.08)] pl-2.5 pr-3.5 sm:pl-3 sm:pr-4 py-1 sm:py-1.5 text-[clamp(12.5px,3.7vw,15.5px)] sm:text-[17.5px] md:text-[18.5px] font-bold text-slate-700 whitespace-nowrap tracking-tight">
+            <h2 className="inline-flex items-center justify-center gap-1.5 sm:gap-2 px-1 py-0.5 text-[clamp(13px,3.8vw,16px)] sm:text-[18px] md:text-[19px] font-bold text-slate-700 whitespace-nowrap tracking-tight">
               <svg
                 className="w-5 h-5 sm:w-6 sm:h-6 shrink-0 transition-transform duration-300 hover:scale-110"
                 viewBox="0 0 128 128"
