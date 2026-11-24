@@ -294,6 +294,8 @@ export default function MainApp({
   const [repeatTargetDates, setRepeatTargetDates] = useState([]);
   const [repeatMode, setRepeatMode] = useState('all');
   const [repeatShiftIndex, setRepeatShiftIndex] = useState(null);
+  const [undoLogs, setUndoLogs] = useState({});
+  const [clearConfirmIndex, setClearConfirmIndex] = useState(null);
 
 
   const handleAssistantConflictProceed = () => {
@@ -1648,6 +1650,8 @@ export default function MainApp({
     });
 
     setLogsDate(date);
+    setUndoLogs({});
+    setClearConfirmIndex(null);
   }, [date, allScheduleData, selectedTeam, currentUser, dbTeachers, shifts]);
 
 
@@ -3278,24 +3282,59 @@ export default function MainApp({
   };
 
 
-  const handleLogChange = (index, field, value) => {
-    if (field === 'student' && (!value || value.trim() === "")) {
-      setLogs(prev => ({
-        ...prev,
-        [index]: {
-          ...prev[index],
-          student: "",
-          selectedTags: [[]],
-          memo: "",
-          headcount: "",
-          location: ""
-        }
-      }));
-      const backupKey = `log_backup_${selectedTeam}_${currentUser}_${date}_${index}`;
-      removeSavedItem(backupKey);
+  const snapshotCardForUndo = (index) => {
+    const currentCard = logs[index];
+    if (!currentCard) return;
+    setUndoLogs(prev => (
+      prev[index]
+        ? prev
+        : { ...prev, [index]: JSON.parse(JSON.stringify(currentCard)) }
+    ));
+  };
+
+  const handleConfirmClearCard = () => {
+    if (clearConfirmIndex === null) return;
+    const idx = clearConfirmIndex;
+    const currentCard = logs[idx] || { student: "", location: "", selectedTags: [[]], memo: "" };
+    setUndoLogs(prev => ({ ...prev, [idx]: JSON.parse(JSON.stringify(currentCard)) }));
+    setLogs(prev => ({
+      ...prev,
+      [idx]: {
+        ...prev[idx],
+        student: "",
+        location: "",
+        selectedTags: [[]],
+        memo: "",
+        ...(prev[idx]?.headcount !== undefined ? { headcount: "" } : {})
+      }
+    }));
+    const backupKey = `log_backup_${selectedTeam}_${currentUser}_${date}_${idx}`;
+    removeSavedItem(backupKey);
+    if (validationErrorIndex === idx) setValidationErrorIndex(null);
+    setClearConfirmIndex(null);
+  };
+
+  const handleUndoCard = (index) => {
+    const savedSnapshot = undoLogs[index];
+    if (!savedSnapshot) return;
+    setLogs(prev => ({ ...prev, [index]: JSON.parse(JSON.stringify(savedSnapshot)) }));
+    const backupKey = `log_backup_${selectedTeam}_${currentUser}_${date}_${index}`;
+    if (savedSnapshot.memo && savedSnapshot.memo.trim() !== "") {
+      setSavedItem(backupKey, savedSnapshot.memo);
     } else {
-      setLogs(prev => ({ ...prev, [index]: { ...prev[index], [field]: value } }));
+      removeSavedItem(backupKey);
     }
+    setUndoLogs(prev => {
+      const next = { ...prev };
+      delete next[index];
+      return next;
+    });
+    if (validationErrorIndex === index) setValidationErrorIndex(null);
+  };
+
+  const handleLogChange = (index, field, value) => {
+    snapshotCardForUndo(index);
+    setLogs(prev => ({ ...prev, [index]: { ...prev[index], [field]: value } }));
 
     if (validationErrorIndex === index) setValidationErrorIndex(null);
 
@@ -3371,6 +3410,7 @@ export default function MainApp({
     if (lastClick.index === index && lastClick.sIdx === sIdx && lastClick.tag === tag && now - lastClick.time < 400) return;
 
     lastTagClickRef.current = { time: now, index, sIdx, tag };
+    snapshotCardForUndo(index);
 
     setLogs(prev => {
       const newLogs = { ...prev };
@@ -4648,15 +4688,45 @@ export default function MainApp({
                                     ) : null}
                                   </div>
 
-                                  {shouldRepeatPerShift[index] && !noNewScheduleToRepeat && logsDate === date && isFutureOrToday && (!currentSelectedHoliday || currentSelectedHoliday.vacation_available) && !logs[index].student?.includes("안전교육") && !logs[index].student?.includes("직무교육") && !logs[index].student?.includes("간담회") && (
-                                    <button
-                                      type="button"
-                                      onClick={() => handleRepeatScheduleForShift(index)}
-                                      className="ml-auto bg-orange-50 hover:bg-orange-100 text-orange-700 ring-1 ring-inset ring-orange-200 h-[32px] sm:h-[36px] px-2.5 py-1 sm:px-3 sm:py-1 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap shrink-0 transition-colors cursor-pointer active:scale-95 font-bold shadow-sm flex items-center justify-center"
-                                    >
-                                      복제
-                                    </button>
-                                  )}
+                                  <div className="flex items-center gap-1.5 ml-auto shrink-0">
+                                    {undoLogs[index] && JSON.stringify(undoLogs[index]) !== JSON.stringify(logs[index]) && (
+                                      <button
+                                        type="button"
+                                        onClick={() => handleUndoCard(index)}
+                                        disabled={isDataLoading}
+                                        title="방금 지우거나 수정한 내용을 이전 상태로 되돌리기"
+                                        className="bg-amber-50 hover:bg-amber-100 text-amber-800 ring-1 ring-inset ring-amber-300 h-[32px] sm:h-[36px] px-2 py-1 sm:px-2.5 sm:py-1 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap shrink-0 transition-colors cursor-pointer active:scale-95 font-bold shadow-sm flex items-center gap-1"
+                                      >
+                                        <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round">
+                                          <path d="M3 7v6h6" />
+                                          <path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13" />
+                                        </svg>
+                                        <span>되돌리기</span>
+                                      </button>
+                                    )}
+
+                                    {(logs[index]?.student?.trim() || logs[index]?.location?.trim() || logs[index]?.memo?.trim() || logs[index]?.headcount?.trim() || logs[index]?.selectedTags?.some(t => t?.length > 0)) && (
+                                      <button
+                                        type="button"
+                                        onClick={() => setClearConfirmIndex(index)}
+                                        disabled={isDataLoading}
+                                        title="이 시간대 수업 내용(이름·장소·출결·메모) 모두 비우기"
+                                        className="bg-rose-50 hover:bg-rose-100 text-rose-700 ring-1 ring-inset ring-rose-200 h-[32px] sm:h-[36px] px-2 py-1 sm:px-2.5 sm:py-1 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap shrink-0 transition-colors cursor-pointer active:scale-95 font-bold shadow-sm flex items-center justify-center"
+                                      >
+                                        초기화
+                                      </button>
+                                    )}
+
+                                    {shouldRepeatPerShift[index] && !noNewScheduleToRepeat && logsDate === date && isFutureOrToday && (!currentSelectedHoliday || currentSelectedHoliday.vacation_available) && !logs[index].student?.includes("안전교육") && !logs[index].student?.includes("직무교육") && !logs[index].student?.includes("간담회") && (
+                                      <button
+                                        type="button"
+                                        onClick={() => handleRepeatScheduleForShift(index)}
+                                        className="bg-orange-50 hover:bg-orange-100 text-orange-700 ring-1 ring-inset ring-orange-200 h-[32px] sm:h-[36px] px-2.5 py-1 sm:px-3 sm:py-1 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap shrink-0 transition-colors cursor-pointer active:scale-95 font-bold shadow-sm flex items-center justify-center"
+                                      >
+                                        복제
+                                      </button>
+                                    )}
+                                  </div>
                                 </div>
 
                                 <div className="space-y-2 sm:space-y-2.5">
@@ -5104,6 +5174,45 @@ export default function MainApp({
                   className="flex-1 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-xl font-bold text-[18px] sm:text-[20px] shadow-sm active:scale-95 touch-manipulation transition-colors"
                 >
                   아니오
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {clearConfirmIndex !== null && (
+        <div className="fixed inset-0 bg-slate-900/45 backdrop-blur-[3px] flex items-center justify-center z-50 px-4" onClick={() => setClearConfirmIndex(null)}>
+          <div className="bg-white rounded-2xl shadow-2xl flex flex-col max-w-sm w-full animate-fadeIn overflow-hidden" onClick={e => e.stopPropagation()}>
+            <div className="bg-rose-600 py-4 px-6 text-center">
+              <h3 className="text-xl font-bold text-white tracking-wide">수업 내용 초기화</h3>
+            </div>
+            <div className="p-6">
+              <p className="text-gray-800 font-bold text-[17px] sm:text-[19px] mb-2 text-center leading-relaxed">
+                <span className="text-rose-600">
+                  {shifts[clearConfirmIndex] ? shifts[clearConfirmIndex].split('~')[0].trim() : ''}
+                </span>{' '}
+                시간대의<br />
+                대상자 이름, 장소, 출결, 메모를<br />
+                모두 비울까요?
+              </p>
+              <p className="text-slate-500 text-sm font-medium mb-6 text-center">
+                (초기화 후에도 &apos;되돌리기&apos; 버튼으로 복구할 수 있습니다.)
+              </p>
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => setClearConfirmIndex(null)}
+                  className="flex-1 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-xl font-bold text-[17px] sm:text-[18px] shadow-sm active:scale-95 touch-manipulation transition-colors cursor-pointer"
+                >
+                  취소
+                </button>
+                <button
+                  type="button"
+                  onClick={handleConfirmClearCard}
+                  className="flex-1 py-3 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-[17px] sm:text-[18px] shadow-md active:scale-95 touch-manipulation transition-colors cursor-pointer"
+                >
+                  초기화
                 </button>
               </div>
             </div>
