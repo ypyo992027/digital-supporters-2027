@@ -2133,26 +2133,27 @@ export default function MainApp({
       tagsStrings.push(sorted.length > 0 ? sorted.join(', ') : '');
     }
 
+    let orderedTagsStr = "";
     if (tagsStrings.some(s => s.length > 0)) {
-      return maxRows > 1 ? tagsStrings.join('/') : (tagsStrings[0] || "");
+      orderedTagsStr = maxRows > 1 ? tagsStrings.join('/') : (tagsStrings[0] || "");
     }
-    return "";
+
+    const isKyungrodang = (log.student || "").includes("경로당") || (log.location || "").includes("경로당");
+    const isShowHeadcount = (log.student || "").includes("보조강사") || isKyungrodang;
+
+    const result = [];
+    if (isShowHeadcount && log.headcount) {
+      result.push(log.headcount);
+    }
+    if (orderedTagsStr) {
+      result.push(orderedTagsStr);
+    }
+    return result.join(', ');
   };
 
   const buildStatusString = (log) => {
     if (!log) return "";
-    const isKyungrodang = (log.student || "").includes("경로당") || (log.location || "").includes("경로당");
-    const isShowHeadcount = (log.student || "").includes("보조강사") || isKyungrodang;
-
-    let result = [];
-    if (isShowHeadcount && log.headcount) {
-      result.push(log.headcount);
-    }
-    if (log.memo) {
-      result.push(log.memo);
-    }
-
-    const finalStr = result.join(', ');
+    const finalStr = (log.memo || "").trim();
     if (finalStr === "" && buildAttendanceString(log) === "") {
       const hasStudentOrLocation = (log.student || "").trim() !== "" || (log.location || "").trim() !== "";
       return hasStudentOrLocation ? "\u200B" : "";

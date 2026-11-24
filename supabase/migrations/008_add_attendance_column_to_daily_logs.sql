@@ -42,9 +42,9 @@ BEGIN
         CONTINUE;
       END IF;
 
-      -- 인원수(앞자리 1~2자리 숫자)는 메모 쪽으로 남기되 출결 태그 파싱을 중단하지 않음
+      -- 인원수(앞자리 1~2자리 숫자)도 attendance 컬럼으로 이동
       IF i = 1 AND is_headcount_row AND part ~ '^\d{1,2}$' THEN
-        memo_parts := array_append(memo_parts, part);
+        tag_parts := array_append(tag_parts, part);
         CONTINUE;
       END IF;
 
