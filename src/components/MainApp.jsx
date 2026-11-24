@@ -3631,7 +3631,7 @@ export default function MainApp({
               <span className="inline-flex items-center gap-1 sm:gap-1.5">
                 <span className="text-blue-700 font-extrabold">2027</span>
                 <span>디지털교육 서포터즈</span>
-                <span className="text-slate-300 font-normal">·</span>
+                <span className="text-slate-600 font-bold">·</span>
                 <span className="text-blue-700 font-extrabold">업무일지</span>
               </span>
             </h2>
