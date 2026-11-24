@@ -10,7 +10,8 @@ import {
   getTeacherGroup,
   getSavedItem,
   setSavedItem,
-  normalizeTeacherName
+  normalizeTeacherName,
+  mergeAttendanceAndStatus
 } from '../utils/helpers';
 import { User, Home, Clock, CalendarDaysIcon } from './Icons';
 
@@ -275,6 +276,7 @@ export default function MyWeeklyScheduleApp({
         
         const mappedData = (data || []).map(r => ({
           ...r,
+          status: mergeAttendanceAndStatus(r.attendance, r.status),
           shift: mapShiftToOfficial(r.team, r.teacher, r.shift)
         }));
         setSupabaseRecords(mappedData);
@@ -288,7 +290,7 @@ export default function MyWeeklyScheduleApp({
           const histTo = histFrom + histStep - 1;
           const { data: histData, error: histError } = await supabaseClient
             .from('daily_logs')
-            .select('log_date, student, status, teacher, shift')
+            .select('log_date, student, status, attendance, teacher, shift')
             .eq('team', team)
             .neq('student', '')
             .not('student', 'is', null)
@@ -299,7 +301,11 @@ export default function MyWeeklyScheduleApp({
 
           if (histError) throw histError;
           if (histData && histData.length > 0) {
-            allHistRecords = allHistRecords.concat(histData);
+            const mappedHist = histData.map(r => ({
+              ...r,
+              status: mergeAttendanceAndStatus(r.attendance, r.status)
+            }));
+            allHistRecords = allHistRecords.concat(mappedHist);
             if (histData.length < histStep) histHasMore = false;
             else histFrom += histStep;
           } else {

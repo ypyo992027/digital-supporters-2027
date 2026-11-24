@@ -684,14 +684,16 @@ export default function HolidayManagementApp({ onNavigateBack }) {
                   ...existingLog,
                   student: holiday.name,
                   location: holiday.content1,
-                  status: holiday.content2
+                  status: holiday.content2,
+                  attendance: ""
                 });
               } else {
                 updatedLogs.push({
                   ...existingLog,
                   student: "",
                   location: "",
-                  status: ""
+                  status: "",
+                  attendance: ""
                 });
               }
             } else if (shift === firstShift) {
@@ -703,7 +705,8 @@ export default function HolidayManagementApp({ onNavigateBack }) {
                 shift: shift,
                 student: holiday.name,
                 location: holiday.content1,
-                status: holiday.content2
+                status: holiday.content2,
+                attendance: ""
               });
             }
           });

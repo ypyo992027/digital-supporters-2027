@@ -11,7 +11,8 @@ import {
   getSavedItem,
   setSavedItem,
   removeSavedItem,
-  safeJsonSetItem
+  safeJsonSetItem,
+  mergeAttendanceAndStatus
 } from '../utils/helpers';
 import { Home, Clock, User, IconSearchUser } from './Icons';
 
@@ -169,7 +170,7 @@ export default function StudentSearchApp({ onNavigateBack }) {
               if (excludeKeywords.some(keyword => name.includes(keyword))) return;
 
               // 출결 태그 분리 및 매핑 (학생이 여러 명일 때만 '/'로 분리)
-              let personalStatus = row.status || "";
+              let personalStatus = mergeAttendanceAndStatus(row.attendance, row.status);
               if (names.length > 1 && personalStatus.includes('/')) {
                 const segments = personalStatus.split('/');
                 if (segments.length > nameIdx) {

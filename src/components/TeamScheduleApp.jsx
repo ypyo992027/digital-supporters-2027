@@ -16,7 +16,8 @@ import {
   getGroupWeight,
   getShiftWeight,
   getDayName,
-  getTeacherShifts
+  getTeacherShifts,
+  mergeAttendanceAndStatus
 } from '../utils/helpers';
 import {
   Home,
@@ -103,6 +104,7 @@ export default function TeamScheduleApp({ team, onNavigateBack }) {
       if (records) {
         const mappedRecords = records.map(r => ({
           ...r,
+          status: mergeAttendanceAndStatus(r.attendance, r.status),
           shift: mapShiftToOfficial(r.team, r.teacher, r.shift)
         }));
         setData(mappedRecords);
@@ -281,6 +283,7 @@ export default function TeamScheduleApp({ team, onNavigateBack }) {
           if (chunk && chunk.length > 0) {
             const mappedChunk = chunk.map(r => ({
               ...r,
+              status: mergeAttendanceAndStatus(r.attendance, r.status),
               shift: mapShiftToOfficial(r.team, r.teacher, r.shift)
             }));
             teamData = teamData.concat(mappedChunk);

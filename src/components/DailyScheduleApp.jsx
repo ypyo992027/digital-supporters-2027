@@ -16,7 +16,8 @@ import {
   findTeacherRecord,
   attachWaGwa,
   attachYiYe,
-  joinKoreanWithWaGwa
+  joinKoreanWithWaGwa,
+  mergeAttendanceAndStatus
 } from '../utils/helpers';
 import { Home, LucideCalendar, Clock, BookOpen, Sparkles, User, CalendarClockIcon } from './Icons';
 
@@ -314,7 +315,10 @@ export default function DailyScheduleApp({ initialTeam, onNavigateBack, onTeamCh
 
       if (supabaseError) throw supabaseError;
 
-      const records = supabaseRecords || [];
+      const records = (supabaseRecords || []).map(r => ({
+        ...r,
+        status: mergeAttendanceAndStatus(r.attendance, r.status)
+      }));
 
       if (records.length === 0) {
         if (latestFetchRef.current !== fetchId) return;
@@ -398,7 +402,7 @@ export default function DailyScheduleApp({ initialTeam, onNavigateBack, onTeamCh
         const orConditions = allStudents.map(name => `student.ilike.%${name}%`).join(',');
         const { data: histData, error: histError } = await supabaseClient
           .from('daily_logs')
-          .select('log_date, student, status, teacher, shift')
+          .select('log_date, student, status, attendance, teacher, shift')
           .neq('student', '')
           .not('student', 'is', null)
           .lte('log_date', dateStr)
@@ -412,7 +416,10 @@ export default function DailyScheduleApp({ initialTeam, onNavigateBack, onTeamCh
             const m = s.match(/(\d+):(\d+)/);
             return m ? parseInt(m[1]) * 60 + (m[2] ? parseInt(m[2]) : 0) : 9999;
           };
-          allTeamRecords = histData.sort((a, b) => {
+          allTeamRecords = histData.map(r => ({
+            ...r,
+            status: mergeAttendanceAndStatus(r.attendance, r.status)
+          })).sort((a, b) => {
             const dateA = new Date(a.log_date).getTime();
             const dateB = new Date(b.log_date).getTime();
             if (dateA !== dateB) return dateA - dateB;

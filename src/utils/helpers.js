@@ -543,6 +543,19 @@ export const attachRoEuro = (word) => {
  * ['카카오톡', '제미나이', '유튜브'] -> '카카오톡, 제미나이와 유튜브'
  * ['제미나이', '카카오톡', '유튜브'] -> '제미나이, 카카오톡과 유튜브'
  */
+export const ATTENDANCE_TAGS = ['1', '결석', '종료', '선생님휴가'];
+
+/**
+ * daily_logs 레코드의 독립 attendance 컬럼과 메모 status 컬럼을 조합.
+ * attendance가 비어 있고 status에 기존 출결 태그가 포함된 구버전 레코드도 그대로 호환됨.
+ */
+export const mergeAttendanceAndStatus = (attendanceStr, statusStr) => {
+  const att = (attendanceStr || '').trim();
+  const st = (statusStr || '').replace(/\u200B/g, '').trim();
+  if (att && st) return `${att}, ${st}`;
+  return att || st || '';
+};
+
 export const joinKoreanWithWaGwa = (list) => {
   if (!list || list.length === 0) return '';
   if (list.length === 1) return list[0];

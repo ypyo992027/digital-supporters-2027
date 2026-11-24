@@ -92,7 +92,8 @@ import {
   getTeacherGroup,
   getTeamDefaultShifts,
   getDayName,
-  attachRoEuro
+  attachRoEuro,
+  mergeAttendanceAndStatus
 } from '../utils/helpers';
 import {
   DEFAULT_BG_GRAY_LEVEL,
@@ -440,7 +441,7 @@ export default function MainApp({
         while (hasMore) {
           const { data: chunk, error: chunkErr } = await supabaseClient
             .from('daily_logs')
-            .select('log_date, student, status, teacher, shift, team')
+            .select('log_date, student, status, attendance, teacher, shift, team')
             .ilike('student', `%${studentName}%`)
             .range(start, start + limit - 1)
             .order('log_date', { ascending: false });
@@ -463,7 +464,10 @@ export default function MainApp({
           if (!row.student) return false;
           const parsedNames = row.student.split(/[/,]/).map(s => s.trim().split('(')[0].trim()).filter(Boolean);
           return parsedNames.includes(studentName);
-        });
+        }).map(row => ({
+          ...row,
+          status: mergeAttendanceAndStatus(row.attendance, row.status)
+        }));
 
         setStudentHistoryLogs(matchedLogs);
       } catch (err) {
@@ -1512,6 +1516,7 @@ export default function MainApp({
               student: row.student || "",
               location: row.location || "",
               status: row.status || "",
+              attendance: row.attendance || "",
               is_20days: row.is_20days
             });
           });
@@ -1547,7 +1552,7 @@ export default function MainApp({
 
         let loadedStudent = (myRecord.student === undefined || myRecord.student === null) ? "" : myRecord.student;
         let loadedLocation = (myRecord.location === undefined || myRecord.location === null) ? "" : myRecord.location;
-        let statusStr = formatStatusIfDate(myRecord.status) || "";
+        let statusStr = mergeAttendanceAndStatus(myRecord.attendance, formatStatusIfDate(myRecord.status));
 
         if (!statusStr.replace(/\u200B/g, '').trim() && loadedStudent.trim()) {
           const cleanMyStudent = loadedStudent.trim();
@@ -1559,12 +1564,12 @@ export default function MainApp({
             if (theirStudents !== myStudents) return false;
             const siblingGroup = getTeacherGroup(selectedTeam, r.teacher, dbTeachers);
             if (siblingGroup !== myGroup) return false;
-            const siblingStatus = formatStatusIfDate(r.status) || "";
+            const siblingStatus = mergeAttendanceAndStatus(r.attendance, formatStatusIfDate(r.status));
             if (siblingStatus.includes("선생님휴가")) return false;
             return siblingStatus.replace(/\u200B/g, '').trim() !== "";
           });
           if (siblingRecord) {
-            statusStr = formatStatusIfDate(siblingRecord.status) || "";
+            statusStr = mergeAttendanceAndStatus(siblingRecord.attendance, formatStatusIfDate(siblingRecord.status));
           }
         }
 
@@ -1707,7 +1712,7 @@ export default function MainApp({
 
         const { data: histData, error: histError } = await supabaseClient
           .from('daily_logs')
-          .select('log_date, student, status, teacher, shift')
+          .select('log_date, student, status, attendance, teacher, shift')
           .neq('student', '')
           .not('student', 'is', null)
           .lte('log_date', date)
@@ -1721,7 +1726,10 @@ export default function MainApp({
             const m = s.match(/(\d+):(\d+)/);
             return m ? parseInt(m[1]) * 60 + (m[2] ? parseInt(m[2]) : 0) : 9999;
           };
-          allTeamRecords = histData.sort((a, b) => {
+          allTeamRecords = histData.map(r => ({
+            ...r,
+            status: mergeAttendanceAndStatus(r.attendance, r.status)
+          })).sort((a, b) => {
             const dateA = new Date(a.log_date).getTime();
             const dateB = new Date(b.log_date).getTime();
             if (dateA !== dateB) return dateA - dateB;
@@ -2113,7 +2121,8 @@ export default function MainApp({
     return () => { isMounted = false; };
   }, [date, selectedTeam, isLoggedIn, logs, shifts]);
 
-  const buildStatusString = (log) => {
+  const buildAttendanceString = (log) => {
+    if (!log) return "";
     let tagsStrings = [];
     const studentNames = (log.student || "").split(/[/,]/).map(s => s.trim()).filter(s => s.length > 0);
     const maxRows = Math.max(1, studentNames.length);
@@ -2124,11 +2133,14 @@ export default function MainApp({
       tagsStrings.push(sorted.length > 0 ? sorted.join(', ') : '');
     }
 
-    let orderedTagsStr = "";
     if (tagsStrings.some(s => s.length > 0)) {
-      orderedTagsStr = maxRows > 1 ? tagsStrings.join('/') : (tagsStrings[0] || "");
+      return maxRows > 1 ? tagsStrings.join('/') : (tagsStrings[0] || "");
     }
+    return "";
+  };
 
+  const buildStatusString = (log) => {
+    if (!log) return "";
     const isKyungrodang = (log.student || "").includes("경로당") || (log.location || "").includes("경로당");
     const isShowHeadcount = (log.student || "").includes("보조강사") || isKyungrodang;
 
@@ -2136,15 +2148,12 @@ export default function MainApp({
     if (isShowHeadcount && log.headcount) {
       result.push(log.headcount);
     }
-    if (orderedTagsStr) {
-      result.push(orderedTagsStr);
-    }
     if (log.memo) {
       result.push(log.memo);
     }
 
     const finalStr = result.join(', ');
-    if (finalStr === "") {
+    if (finalStr === "" && buildAttendanceString(log) === "") {
       const hasStudentOrLocation = (log.student || "").trim() !== "" || (log.location || "").trim() !== "";
       return hasStudentOrLocation ? "\u200B" : "";
     }
@@ -2158,6 +2167,8 @@ export default function MainApp({
       const original = getMyOriginalRecord(date, shift);
       const originalStatus = formatStatusIfDate(original.status);
       const currentStatusStr = buildStatusString(log);
+      const originalAttendance = (original.attendance || "").trim();
+      const currentAttendanceStr = buildAttendanceString(log);
 
       const studentChanged = (log.student || "").trim() !== (original.student || "").trim();
       const locationChanged = (log.location || "").trim() !== (original.location || "").trim();
@@ -2166,7 +2177,7 @@ export default function MainApp({
 
       const normCurrent = currentStatusStr === "\u200B" ? "" : currentStatusStr;
       const normOriginal = originalStatus === "\u200B" ? "" : originalStatus;
-      const statusChanged = isEmptyRow ? false : normCurrent !== normOriginal;
+      const statusChanged = isEmptyRow ? false : (normCurrent !== normOriginal || currentAttendanceStr !== originalAttendance);
 
       return studentChanged || locationChanged || statusChanged;
     });
@@ -2241,6 +2252,8 @@ export default function MainApp({
       const original = getMyOriginalRecord(date, shiftTime);
       const originalStatus = formatStatusIfDate(original.status);
       const currentStatusStr = buildStatusString(log);
+      const originalAttendance = (original.attendance || "").trim();
+      const currentAttendanceStr = buildAttendanceString(log);
 
       const studentChanged = (log.student || "").trim() !== (original.student || "").trim();
       const locationChanged = (log.location || "").trim() !== (original.location || "").trim();
@@ -2249,7 +2262,7 @@ export default function MainApp({
 
       const normCurrent = currentStatusStr === "\u200B" ? "" : currentStatusStr;
       const normOriginal = originalStatus === "\u200B" ? "" : originalStatus;
-      const statusChanged = isEmptyRow ? false : normCurrent !== normOriginal;
+      const statusChanged = isEmptyRow ? false : (normCurrent !== normOriginal || currentAttendanceStr !== originalAttendance);
 
       const isChanged = (i === forceIndex) || studentChanged || locationChanged || statusChanged;
 
@@ -2364,13 +2377,15 @@ export default function MainApp({
       const shiftTime = shifts[i];
       const log = logs[i];
       const currentStatusStr = buildStatusString(log);
+      const currentAttendanceStr = buildAttendanceString(log);
 
       return {
         index: i,
         shift: shiftTime,
         student: log.student || "",
         location: log.location || "",
-        status: currentStatusStr
+        status: currentStatusStr,
+        attendance: currentAttendanceStr
       };
     });
 
@@ -2399,6 +2414,7 @@ export default function MainApp({
           item.student = "";
           item.location = "";
           item.status = "";
+          item.attendance = "";
         }
 
         upsertData.push({
@@ -2408,7 +2424,8 @@ export default function MainApp({
           shift: item.shift,
           student: item.student || "",
           location: item.location || "",
-          status: item.status || ""
+          status: item.status || "",
+          attendance: item.attendance || ""
         });
       }
 
@@ -2476,6 +2493,7 @@ export default function MainApp({
           student: item.student,
           location: finalUrl,
           status: item.status,
+          attendance: item.attendance,
           submittedAt: new Date().toLocaleTimeString()
         });
       });
@@ -2516,6 +2534,7 @@ export default function MainApp({
             student: isStudentBlank ? "" : (logs[record.index].student || ""),
             location: record.location,
             status: record.status === "\u200B" ? "" : record.status,
+            attendance: isStudentBlank ? "" : (record.attendance || ""),
             selectedTags: isStudentBlank ? [[]] : logs[record.index].selectedTags,
             memo: isStudentBlank ? "" : logs[record.index].memo,
             headcount: isStudentBlank ? "" : logs[record.index].headcount

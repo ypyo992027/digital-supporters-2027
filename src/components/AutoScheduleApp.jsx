@@ -498,7 +498,9 @@ export default function AutoScheduleApp({ onNavigateBack, onNavigateToAssistantS
           shift: r.shift,
           student: r.student,
           location: r.location,
-          status: r.status
+          status: r.status,
+          attendance: r.attendance || '',
+          attendance: r.attendance || ''
         }));
 
         const bChunkSize = 500;
@@ -611,7 +613,9 @@ export default function AutoScheduleApp({ onNavigateBack, onNavigateToAssistantS
           shift: r.shift,
           student: r.student,
           location: r.location,
-          status: r.status
+          status: r.status,
+          attendance: r.attendance || '',
+          attendance: r.attendance || ''
         }));
 
         const chunkSize = 500;
