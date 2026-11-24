@@ -403,8 +403,8 @@ export default function StudentSearchApp({ onNavigateBack }) {
               <span className="flex items-center"><IconSearchUser className="w-5 h-5 mr-2 text-blue-600" /> 대상자 검색</span>
             </h2>
           </div>
-          <div className="bg-white rounded-2xl shadow-lg ring-1 ring-gray-900/5 overflow-hidden">
-            <div className="bg-gradient-to-r from-blue-700 to-indigo-700 px-3 md:px-6 py-2.5">
+          <div className="bg-white rounded-2xl shadow-lg ring-1 ring-gray-900/5 overflow-x-clip">
+            <div className="bg-gradient-to-r from-blue-700 to-indigo-700 px-3 md:px-6 py-2.5 rounded-t-2xl">
               <div className="flex flex-col gap-1.5">
                 <div className="flex items-center gap-1.5 shrink-0">
                   <div className="flex border border-gray-300 rounded-lg overflow-hidden shadow-xs shrink-0">
@@ -553,7 +553,7 @@ export default function StudentSearchApp({ onNavigateBack }) {
             </div>
 
             {selectedName && stats && (
-              <div className="px-4 md:px-6 pb-3">
+              <div className="sticky top-0 z-20 bg-white/95 backdrop-blur-sm px-4 md:px-6 py-2.5 md:py-3 border-b border-gray-100">
                 <div className="grid grid-cols-4 gap-2 md:gap-3">
                   <div className="bg-sky-100 rounded-xl p-2.5 md:p-3 text-center border border-sky-200">
                     <div className="text-[13px] md:text-[15px] text-sky-800 font-bold">전체</div>
