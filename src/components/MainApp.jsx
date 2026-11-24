@@ -4673,50 +4673,60 @@ export default function MainApp({
                                     ) : null}
                                   </div>
 
-                                  <div className="flex items-center gap-1.5 ml-auto shrink-0">
-                                    {undoLogs[index] && JSON.stringify(undoLogs[index]) !== JSON.stringify(logs[index]) && (
+                                  {shouldRepeatPerShift[index] && !noNewScheduleToRepeat && logsDate === date && isFutureOrToday && (!currentSelectedHoliday || currentSelectedHoliday.vacation_available) && !logs[index].student?.includes("안전교육") && !logs[index].student?.includes("직무교육") && !logs[index].student?.includes("간담회") && (
+                                    <button
+                                      type="button"
+                                      onClick={() => handleRepeatScheduleForShift(index)}
+                                      className="ml-auto bg-orange-50 hover:bg-orange-100 text-orange-700 ring-1 ring-inset ring-orange-200 h-[32px] sm:h-[36px] px-2.5 py-1 sm:px-3 sm:py-1 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap shrink-0 transition-colors cursor-pointer active:scale-95 font-bold shadow-sm flex items-center justify-center"
+                                    >
+                                      복제
+                                    </button>
+                                  )}
+                                </div>
+
+                                <div className="space-y-2 sm:space-y-2.5">
+                                  {(() => {
+                                    const hasCardContent = Boolean(
+                                      logs[index]?.student?.trim() ||
+                                      logs[index]?.location?.trim() ||
+                                      logs[index]?.memo?.trim() ||
+                                      logs[index]?.headcount?.trim() ||
+                                      logs[index]?.selectedTags?.some(t => t?.length > 0)
+                                    );
+                                    const canUndoCard = Boolean(
+                                      undoLogs[index] && JSON.stringify(undoLogs[index]) !== JSON.stringify(logs[index])
+                                    );
+                                    const resetOrUndoButton = (!hasCardContent && canUndoCard) ? (
                                       <button
                                         type="button"
                                         onClick={() => handleUndoCard(index)}
                                         disabled={isDataLoading}
-                                        title="방금 지우거나 수정한 내용을 이전 상태로 되돌리기"
-                                        className="bg-amber-50 hover:bg-amber-100 text-amber-800 ring-1 ring-inset ring-amber-300 h-[32px] sm:h-[36px] px-2.5 py-1 sm:px-3 sm:py-1 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap shrink-0 transition-colors cursor-pointer active:scale-95 font-bold shadow-sm flex items-center justify-center"
+                                        title="방금 초기화한 내용을 이전 상태로 되돌리기"
+                                        className="ml-auto bg-amber-50 hover:bg-amber-100 text-amber-800 ring-1 ring-inset ring-amber-300 h-[32px] sm:h-[36px] px-2.5 sm:px-3 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap shrink-0 transition-all cursor-pointer active:scale-95 font-bold shadow-sm flex items-center justify-center"
                                       >
                                         <span>되돌리기</span>
                                       </button>
-                                    )}
-
-                                    {(logs[index]?.student?.trim() || logs[index]?.location?.trim() || logs[index]?.memo?.trim() || logs[index]?.headcount?.trim() || logs[index]?.selectedTags?.some(t => t?.length > 0)) && (
+                                    ) : hasCardContent ? (
                                       <button
                                         type="button"
                                         onClick={() => setClearConfirmIndex(index)}
                                         disabled={isDataLoading}
                                         title="이 시간대 수업 내용(이름·장소·출결·메모) 모두 비우기"
-                                        className="bg-rose-50 hover:bg-rose-100 text-rose-700 ring-1 ring-inset ring-rose-200 h-[32px] sm:h-[36px] px-2 py-1 sm:px-2.5 sm:py-1 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap shrink-0 transition-colors cursor-pointer active:scale-95 font-bold shadow-sm flex items-center justify-center"
+                                        className="ml-auto bg-rose-50 hover:bg-rose-100 text-rose-700 ring-1 ring-inset ring-rose-200 h-[32px] sm:h-[36px] px-2.5 sm:px-3 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap shrink-0 transition-all cursor-pointer active:scale-95 font-bold shadow-sm flex items-center justify-center"
                                       >
-                                        초기화
+                                        <span>초기화</span>
                                       </button>
-                                    )}
+                                    ) : null;
 
-                                    {shouldRepeatPerShift[index] && !noNewScheduleToRepeat && logsDate === date && isFutureOrToday && (!currentSelectedHoliday || currentSelectedHoliday.vacation_available) && !logs[index].student?.includes("안전교육") && !logs[index].student?.includes("직무교육") && !logs[index].student?.includes("간담회") && (
-                                      <button
-                                        type="button"
-                                        onClick={() => handleRepeatScheduleForShift(index)}
-                                        className="bg-orange-50 hover:bg-orange-100 text-orange-700 ring-1 ring-inset ring-orange-200 h-[32px] sm:h-[36px] px-2.5 py-1 sm:px-3 sm:py-1 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap shrink-0 transition-colors cursor-pointer active:scale-95 font-bold shadow-sm flex items-center justify-center"
-                                      >
-                                        복제
-                                      </button>
-                                    )}
-                                  </div>
-                                </div>
-
-                                <div className="space-y-2 sm:space-y-2.5">
-                                  {(() => {
                                     if (studentNames.length > 1) {
                                       const validStudents = studentNames.filter(s => s.trim() && !s.trim().includes("보조강사") && !s.trim().includes("도선복지관"));
-                                      if (validStudents.length === 0) return null;
+                                      if (validStudents.length === 0) {
+                                        return resetOrUndoButton ? (
+                                          <div className="flex items-center gap-1.5 w-full">{resetOrUndoButton}</div>
+                                        ) : null;
+                                      }
                                       return (
-                                        <div className="flex items-center gap-1.5 flex-wrap">
+                                        <div className="flex items-center gap-1.5 flex-wrap w-full">
                                           {validStudents.map((sName, sIdx) => {
                                             const clean = sName.trim();
                                             const isAppSubmitted = checkFormSubmitted(submittedForms.apps, clean);
@@ -4772,13 +4782,16 @@ export default function MainApp({
                                               </React.Fragment>
                                             );
                                           })}
+                                          {resetOrUndoButton}
                                         </div>
                                       );
                                     }
 
                                     const singleStudent = (studentNames[0] || logs[index]?.student || "").trim();
                                     if (!singleStudent || singleStudent.includes("보조강사") || singleStudent.includes("도선복지관")) {
-                                      return null;
+                                      return resetOrUndoButton ? (
+                                        <div className="flex items-center gap-1.5 w-full">{resetOrUndoButton}</div>
+                                      ) : null;
                                     }
 
                                     const isAppSubmitted = checkFormSubmitted(submittedForms.apps, singleStudent);
@@ -4786,7 +4799,7 @@ export default function MainApp({
                                     const isPostSubmitted = checkFormSubmitted(submittedForms.postSurveys, singleStudent);
 
                                     return (
-                                      <div className="flex items-center gap-1.5 flex-wrap">
+                                      <div className="flex items-center gap-1.5 flex-wrap w-full">
                                         <button
                                           type="button"
                                           onClick={() => {
@@ -4831,6 +4844,7 @@ export default function MainApp({
                                         >
                                           <span>사후설문지</span>
                                         </button>
+                                        {resetOrUndoButton}
                                       </div>
                                     );
                                   })()}
