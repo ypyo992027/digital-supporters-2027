@@ -3586,19 +3586,19 @@ export default function MainApp({
             <Settings className="w-5 h-5 sm:w-[22px] sm:h-[22px]" />
           </button>
 
-          <div className="text-center mb-4 sm:mb-6 shrink-0 mt-2 sm:mt-1 px-10 sm:px-14">
-            <div className="flex items-center justify-center gap-1.5 sm:gap-2.5 mb-2.5 sm:mb-3.5">
+          <div className="text-center mb-4 sm:mb-6 shrink-0 mt-2 sm:mt-1 px-9 sm:px-12">
+            <div className="flex items-center justify-center gap-2 sm:gap-3 mb-2.5 sm:mb-3.5">
               <img
                 src="/Logo_of_Seoul.jpg"
                 alt="서울시 로고"
-                className="h-[26px] min-[390px]:h-[28px] sm:h-[38px] md:h-[42px] object-contain mix-blend-multiply shrink-0"
+                className="h-[30px] min-[390px]:h-[33px] sm:h-[42px] md:h-[46px] object-contain mix-blend-multiply shrink-0 relative -top-[1px] sm:-top-[2px]"
                 onError={(e) => e.target.style.display = 'none'}
               />
               <h1 className="text-[23px] min-[390px]:text-[26px] sm:text-[38px] md:text-[42px] leading-tight font-extrabold tracking-[-0.035em] bg-gradient-to-br from-blue-700 via-blue-600 to-indigo-600 bg-clip-text text-transparent whitespace-nowrap">
                 성동노인종합복지관
               </h1>
             </div>
-            <h2 className="inline-flex items-center justify-center gap-1.5 sm:gap-2 rounded-full bg-white ring-1 ring-gray-200/80 shadow-sm pl-2 pr-3.5 sm:pl-2.5 sm:pr-4 py-1 sm:py-1.5 text-[clamp(13px,3.9vw,16px)] sm:text-[18px] md:text-[19px] font-bold text-gray-800 whitespace-nowrap tracking-tight">
+            <h2 className="inline-flex items-center justify-center gap-1.5 sm:gap-2 rounded-full bg-white/95 ring-1 ring-slate-200/90 shadow-[0_2px_10px_-2px_rgba(37,99,235,0.08)] pl-2.5 pr-3.5 sm:pl-3 sm:pr-4 py-1 sm:py-1.5 text-[clamp(12.5px,3.7vw,15.5px)] sm:text-[17.5px] md:text-[18.5px] font-bold text-slate-700 whitespace-nowrap tracking-tight">
               <svg
                 className="w-5 h-5 sm:w-6 sm:h-6 shrink-0 transition-transform duration-300 hover:scale-110"
                 viewBox="0 0 128 128"
@@ -3628,7 +3628,12 @@ export default function MainApp({
                 {/* 우측 상단 AI 별빛 */}
                 <path d="M104 8 C105.6 18 108 20.4 118 22 C108 23.6 105.6 26 104 36 C102.4 26 100 23.6 90 22 C100 20.4 102.4 18 104 8 Z" fill="#F59E0B" />
               </svg>
-              <span>2027 디지털교육 서포터즈 · 업무일지</span>
+              <span className="inline-flex items-center gap-1 sm:gap-1.5">
+                <span className="px-1.5 py-0.5 rounded-md bg-blue-50 text-blue-700 ring-1 ring-inset ring-blue-200/80 font-extrabold text-[0.84em] leading-none">2027</span>
+                <span>디지털교육 서포터즈</span>
+                <span className="text-slate-300 font-normal">·</span>
+                <span className="text-blue-700 font-extrabold">업무일지</span>
+              </span>
             </h2>
           </div>
 
