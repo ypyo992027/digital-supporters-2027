@@ -741,6 +741,26 @@ export default function DailyScheduleApp({ initialTeam, onNavigateBack, onTeamCh
     return 'unconfirmed';
   }, []);
 
+  // 메모 표시용 문자열 추출 (출결 버튼 텍스트는 제외하고, 참석 인원 숫자와 실제 메모만 유지)
+  const extractDisplayMemo = useCallback((rawStatus) => {
+    const s = (rawStatus || "").replace(/\u200B/g, '').trim();
+    if (!s || s === '-') return '';
+    const TAGS = ['1', '출석', '결석', '종료', '선생님휴가'];
+    const parts = s.split(',').map(p => p.trim()).filter(Boolean);
+    const kept = [];
+    for (const part of parts) {
+      const subParts = part.split('/').map(sp => sp.trim());
+      const isPureAttendanceTag = subParts.every(sp => {
+        if (sp === '') return true;
+        return sp.split(/\s+/).every(tok => TAGS.includes(tok));
+      });
+      if (!isPureAttendanceTag) {
+        kept.push(part);
+      }
+    }
+    return kept.join(', ');
+  }, []);
+
   // 현재 일정 중 수업 내용 메모가 있는 모든 행의 고유 키 목록
   const memoRowKeys = useMemo(() => {
     const keys = [];
@@ -749,14 +769,14 @@ export default function DailyScheduleApp({ initialTeam, onNavigateBack, onTeamCh
       const isUnassigned = !studentStr || studentStr === "-" || studentStr.includes("자체학습") || studentStr.includes("대상자발굴");
       const names = studentStr ? studentStr.split(/[/,]/).map(s => s.trim()).filter(Boolean) : [];
       const att = isUnassigned ? 'unassigned' : getRowAttendance(row, names[0]);
-      const rawStatus = (row.status || "").trim();
-      const hasMemo = rawStatus && rawStatus !== '-' && rawStatus !== '출석' && rawStatus !== '1' && rawStatus.length > 2;
+      const displayMemo = extractDisplayMemo(row.status);
+      const hasMemo = Boolean(displayMemo);
       if (!isUnassigned && att !== 'vacation' && hasMemo) {
         keys.push(`${row.teacher}_${row.time}`);
       }
     });
     return Array.from(new Set(keys));
-  }, [scheduleData, getRowAttendance]);
+  }, [scheduleData, getRowAttendance, extractDisplayMemo]);
 
   // 모든 수업 메모가 펼쳐져 있는지 여부
   const isAllExpanded = memoRowKeys.length > 0 && memoRowKeys.every(k => !!expandedMemos[k]);
@@ -1283,9 +1303,10 @@ export default function DailyScheduleApp({ initialTeam, onNavigateBack, onTeamCh
                               const rowKey = `${row.teacher}_${row.time}`;
                               const isExpanded = !!expandedMemos[rowKey];
 
-                              // 메모 내용 추출 (상태 텍스트 중 실제 교육 내용)
+                              // 메모 내용 추출 (출결 버튼 텍스트 제외, 참석 인원 숫자 및 실제 교육 내용만)
                               const rawStatus = (row.status || "").trim();
-                              const hasMemo = rawStatus && rawStatus !== '-' && rawStatus !== '출석' && rawStatus !== '1' && rawStatus.length > 2;
+                              const displayMemo = extractDisplayMemo(rawStatus);
+                              const hasMemo = Boolean(displayMemo);
 
                               const att = isUnassigned ? 'unassigned' : getRowAttendance(row, names[0]);
 
@@ -1433,7 +1454,7 @@ export default function DailyScheduleApp({ initialTeam, onNavigateBack, onTeamCh
                                   {/* 펼쳐진 수업 메모 내용 */}
                                   {!isUnassigned && att !== 'vacation' && hasMemo && isExpanded && (
                                     <div className="mt-1.5 p-3 rounded-xl bg-blue-50/80 dark:bg-slate-700/60 border border-blue-100 dark:border-slate-600 text-slate-950 dark:text-white font-medium text-[15.5px] sm:text-[16.5px] leading-relaxed whitespace-pre-wrap break-words animate-fadeIn">
-                                      {rawStatus}
+                                      {displayMemo}
                                     </div>
                                   )}
 
