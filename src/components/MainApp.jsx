@@ -3586,15 +3586,15 @@ export default function MainApp({
             <Settings className="w-5 h-5 sm:w-[22px] sm:h-[22px]" />
           </button>
 
-          <div className="text-center mb-4 sm:mb-6 shrink-0 mt-2 sm:mt-1 px-9 sm:px-12">
-            <div className="flex items-center justify-center gap-2 sm:gap-3 mb-2.5 sm:mb-3.5">
+          <div className="text-center mb-3.5 sm:mb-5 shrink-0 mt-2 sm:mt-1 px-9 sm:px-12">
+            <div className="flex items-center justify-center gap-2 sm:gap-3 mb-1 sm:mb-1.5">
               <img
                 src="/Logo_of_Seoul.jpg"
                 alt="서울시 로고"
                 className="h-[30px] min-[390px]:h-[33px] sm:h-[42px] md:h-[46px] object-contain mix-blend-multiply shrink-0 relative -top-[1px] sm:-top-[2px]"
                 onError={(e) => e.target.style.display = 'none'}
               />
-              <h1 className="text-[23px] min-[390px]:text-[26px] sm:text-[38px] md:text-[42px] leading-tight font-extrabold tracking-[-0.035em] bg-gradient-to-br from-blue-700 via-blue-600 to-indigo-600 bg-clip-text text-transparent whitespace-nowrap">
+              <h1 className="text-[23px] min-[390px]:text-[26px] sm:text-[38px] md:text-[42px] leading-[1.1] font-extrabold tracking-[-0.035em] bg-gradient-to-br from-blue-700 via-blue-600 to-indigo-600 bg-clip-text text-transparent whitespace-nowrap">
                 성동노인종합복지관
               </h1>
             </div>
