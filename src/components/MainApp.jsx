@@ -4619,7 +4619,7 @@ export default function MainApp({
 
                             return (
                               <div key={index} id={`log-card-${index}`} className={`log-card p-4 sm:p-5 md:p-6 border-[1.5px] rounded-2xl ${cardColorClass}`}>
-                                <div className={`flex justify-between items-center w-full mb-3 transition-opacity flex-nowrap gap-2 ${(isDataLoading) ? 'opacity-50' : ''}`}>
+                                <div className={`flex justify-between items-center w-full min-h-[32px] sm:min-h-[36px] mb-3 transition-opacity flex-nowrap gap-2 ${(isDataLoading) ? 'opacity-50' : ''}`}>
                                   <div className="flex items-center text-gray-900 font-extrabold text-base sm:text-lg tracking-tight flex-nowrap min-w-0">
                                     <span className="shrink-0 whitespace-nowrap">
                                       {(() => {
