@@ -1,4 +1,6 @@
-const ATTENDANCE_TAGS = ['1', '결석', '종료', '선생님휴가'];
+const ATTENDANCE_TAGS = ['출석', '결석', '종료', '선생님휴가'];
+const PARSEABLE_ATTENDANCE_TAGS = ['1', '출석', '결석', '종료', '선생님휴가'];
+const normalizeAttendanceTag = (t) => (t === '1' ? '출석' : t);
 
 const parseStatusString = (statusStr, cleanMyStudent) => {
   const rawParts = statusStr.split(',').map(s => s.trim()).filter(Boolean);
@@ -23,7 +25,7 @@ const parseStatusString = (statusStr, cleanMyStudent) => {
       const isAllTags = subParts.every(p => {
         if (p === "") return true;
         const spaceParts = p.split(/\s+/);
-        return spaceParts.every(sp => ATTENDANCE_TAGS.includes(sp));
+        return spaceParts.every(sp => PARSEABLE_ATTENDANCE_TAGS.includes(sp));
       });
 
       if (isAllTags) {
@@ -52,7 +54,7 @@ const parseStatusString = (statusStr, cleanMyStudent) => {
     const combinedTagStr = tagParts.join(',');
     const studentTagStrs = combinedTagStr.split('/');
     loadedTags = studentTagStrs.map(str =>
-      str.split(/[,\s]+/).map(t => t.trim()).filter(t => ATTENDANCE_TAGS.includes(t))
+      str.split(/[,\s]+/).map(t => normalizeAttendanceTag(t.trim())).filter(t => ATTENDANCE_TAGS.includes(t))
     );
   }
   loadedTags = loadedTags.map(tags => tags.sort((a, b) => ATTENDANCE_TAGS.indexOf(a) - ATTENDANCE_TAGS.indexOf(b)));
@@ -1420,7 +1422,7 @@ export default function MainApp({
 
 
 
-  const RENDER_TAGS = ['1', '결석', '종료', '선생님휴가'];
+  const RENDER_TAGS = ['출석', '결석', '종료', '선생님휴가'];
 
   const fetchTeachersFromSheet = async (team) => {
     setIsFetchingTeachers(true);
@@ -1598,7 +1600,7 @@ export default function MainApp({
             const isAllTags = subParts.every(p => {
               if (p === "") return true;
               const spaceParts = p.split(/\s+/);
-              return spaceParts.every(sp => ATTENDANCE_TAGS.includes(sp));
+              return spaceParts.every(sp => PARSEABLE_ATTENDANCE_TAGS.includes(sp));
             });
 
             if (isAllTags) {
@@ -1626,7 +1628,7 @@ export default function MainApp({
           const combinedTagStr = tagParts.join(',');
           const studentTagStrs = combinedTagStr.split('/');
           loadedTags = studentTagStrs.map(str =>
-            str.split(/[,\s]+/).map(t => t.trim()).filter(t => ATTENDANCE_TAGS.includes(t))
+            str.split(/[,\s]+/).map(t => normalizeAttendanceTag(t.trim())).filter(t => ATTENDANCE_TAGS.includes(t))
           );
         }
         loadedTags = loadedTags.map(tags => tags.sort((a, b) => ATTENDANCE_TAGS.indexOf(a) - ATTENDANCE_TAGS.indexOf(b)));
@@ -3440,7 +3442,7 @@ export default function MainApp({
       let currentTagsArray = [...(log.selectedTags || [])];
       while (currentTagsArray.length < maxRows) currentTagsArray.push([]);
 
-      const exclusiveTags = ['1', '2', '결석'];
+      const exclusiveTags = ['출석', '결석'];
 
       if (tag === '선생님휴가') {
         const isAnySelected = currentTagsArray.some(tags => tags.includes('선생님휴가'));
@@ -4923,7 +4925,7 @@ export default function MainApp({
                                               const isKyungrodangIncluded = combinedText.includes("경로당") || combinedText.includes("도선복지관");
                                               const currentStudentName = studentNames[sIdx] || "";
                                               const hasRealName = currentStudentName.length > 0 && !currentStudentName.includes("경로당") && !currentStudentName.includes("복지관");
-                                              const isBlurTarget = isShowHeadcount && (isKyungrodangIncluded ? (!hasRealName && tag === '1') : ['1', '결석', '종료'].includes(tag));
+                                              const isBlurTarget = isShowHeadcount && (isKyungrodangIncluded ? (!hasRealName && tag === '출석') : ['출석', '결석', '종료'].includes(tag));
 
                                               return (
                                                 <button
@@ -4940,7 +4942,7 @@ export default function MainApp({
                                                       : "disabled:opacity-50 disabled:cursor-not-allowed " + getTagClass(index, sIdx, tag))
                                                   }
                                                 >
-                                                  {tag === '1' ? '출석' : tag}
+                                                  {tag}
                                                 </button>
                                               );
                                             })}
@@ -5285,7 +5287,7 @@ export default function MainApp({
                 let memo = statusStr.replace(/\u200B/g, '').trim();
                 memo = memo.replace(/\r\n/g, '\n').split('\n').map(l => l.trimEnd()).join('\n').trim();
 
-                if (memo === "1") memo = "출석 (메모 없음)";
+                if (memo === "1" || memo === "출석") memo = "출석 (메모 없음)";
                 else if (!memo) memo = "내용 없음";
 
                 if (!memoGroups[memo]) memoGroups[memo] = [];

@@ -517,7 +517,7 @@ export default function TeamScheduleApp({ team, onNavigateBack }) {
               if (isFirstShift && item) {
                 if (rowObj.category === "대상") val = item.student || "";
                 else if (rowObj.category === "장소") val = item.location || "";
-                else if (rowObj.category === "진행") val = item.status === "1" ? "1" : (item.status === '\u200B' ? "" : (item.status || ""));
+                else if (rowObj.category === "진행") val = (item.status === "1" || item.status === "출석") ? "출석" : (item.status === '\u200B' ? "" : (item.status || ""));
               } else {
                 val = "";
               }
@@ -528,7 +528,7 @@ export default function TeamScheduleApp({ team, onNavigateBack }) {
                 if (isSignatureUrl) val = ""; // Will overlay image
                 else val = item.location || "";
               }
-              else if (rowObj.category === "진행") val = item.status === "1" ? "1" : (item.status === '\u200B' ? "" : (item.status || ""));
+              else if (rowObj.category === "진행") val = (item.status === "1" || item.status === "출석") ? "출석" : (item.status === '\u200B' ? "" : (item.status || ""));
             }
             rowArr.push(val);
           });

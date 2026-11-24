@@ -543,7 +543,7 @@ export const attachRoEuro = (word) => {
  * ['카카오톡', '제미나이', '유튜브'] -> '카카오톡, 제미나이와 유튜브'
  * ['제미나이', '카카오톡', '유튜브'] -> '제미나이, 카카오톡과 유튜브'
  */
-export const ATTENDANCE_TAGS = ['1', '결석', '종료', '선생님휴가'];
+export const ATTENDANCE_TAGS = ['출석', '결석', '종료', '선생님휴가'];
 
 /**
  * daily_logs 레코드의 독립 attendance 컬럼과 메모 status 컬럼을 조합.
