@@ -613,19 +613,19 @@ export default function StudentSearchApp({ onNavigateBack }) {
                             {(rec.team || rec.teacher || (rec.location && rec.location.trim() !== '복지관')) && (
                               <div className="flex items-center gap-2 mt-1.5 flex-wrap">
                                 {rec.team && (
-                                  <span className="text-[13px] md:text-[15px] text-blue-600 font-bold bg-blue-50 px-2 py-0.5 rounded-full border border-blue-200 whitespace-nowrap">{rec.team}</span>
+                                  <span className="text-[14px] md:text-[16px] text-blue-600 font-bold bg-blue-50 px-2 py-0.5 rounded-full border border-blue-200 whitespace-nowrap">{rec.team}</span>
                                 )}
                                 {rec.teacher && (
-                                  <span className="text-[14px] md:text-[16px] text-gray-600 font-bold whitespace-nowrap">({rec.teacher} 선생님)</span>
+                                  <span className="text-[15.5px] md:text-[17.5px] text-gray-600 font-bold whitespace-nowrap">({rec.teacher} 선생님)</span>
                                 )}
                                 {rec.location && rec.location.trim() !== '복지관' && (
-                                  <span className="text-[14px] md:text-[16px] text-gray-500 font-medium whitespace-nowrap">📍 {rec.location}</span>
+                                  <span className="text-[15.5px] md:text-[17.5px] text-gray-500 font-medium whitespace-nowrap">📍 {rec.location}</span>
                                 )}
                               </div>
                             )}
                             {rec.memo && (
                               <div className="mt-1.5">
-                                <span className="text-[14px] md:text-[16px] text-gray-700 font-medium break-words">💬 {rec.memo}</span>
+                                <span className="text-[15.5px] md:text-[17.5px] text-gray-700 font-medium break-words">💬 {rec.memo}</span>
                               </div>
                             )}
                           </div>
