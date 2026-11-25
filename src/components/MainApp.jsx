@@ -97,6 +97,8 @@ import {
   attachRoEuro,
   mergeAttendanceAndStatus
 } from '../utils/helpers';
+import QuickNavBar from './QuickNavBar';
+import { showConfirm } from '../utils/dialog';
 import {
   DEFAULT_BG_GRAY_LEVEL,
   DEFAULT_FONT_SCALE,
@@ -4516,7 +4518,7 @@ export default function MainApp({
       </div>
 
       <main
-        className="w-full max-w-5xl lg:max-w-[1536px] mx-auto flex flex-col px-2.5 sm:px-5 pt-2 mt-1 pb-32"
+        className="w-full max-w-5xl lg:max-w-[1536px] mx-auto flex flex-col px-2.5 sm:px-5 pt-2 mt-1 pb-36"
       >
         <section className="flex flex-col h-auto">
           <div className="contents">
@@ -5150,7 +5152,7 @@ export default function MainApp({
                             );
                           })}
                         </div>
-                        <div className="save-bar sticky bottom-0 z-20 -mx-4 sm:-mx-6 md:-mx-8 px-4 sm:px-6 md:px-8 pt-6 mt-2 mb-8 sm:mb-2">
+                        <div className="save-bar sticky bottom-[62px] z-20 -mx-4 sm:-mx-6 md:-mx-8 px-4 sm:px-6 md:px-8 pt-6 mt-2 mb-2">
                           <button
                             type="submit"
                             disabled={isDataLoading || !hasChanges}
@@ -5650,6 +5652,25 @@ export default function MainApp({
           </div>
         </div>
       )}
+
+      <QuickNavBar
+        currentView="main"
+        onSelectView={async (targetView) => {
+          if (targetView === 'main') return;
+          if (hasChangesRef.current) {
+            const ok = await showConfirm('저장하지 않은 변경 사항이 있습니다. 저장하지 않고 이동할까요?');
+            if (!ok) return;
+          }
+          if (targetView === 'myWeeklySchedule') {
+            onNavigateToMyWeeklySchedule();
+          } else if (targetView === 'dailySchedule') {
+            window.sessionStorage.removeItem('sungdong_daily_schedule_date');
+            onNavigateToDailySchedule(selectedTeam || '1팀');
+          } else if (targetView === 'studentSearch') {
+            onNavigateToStudentSearch();
+          }
+        }}
+      />
     </div>
   );
 }
