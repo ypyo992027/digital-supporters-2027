@@ -1267,7 +1267,13 @@ export default function MainApp({
               isPending: merged === ''
             };
           })
-          .sort((a, b) => a.shift.localeCompare(b.shift));
+          .sort((a, b) => {
+            const toMin = (s) => {
+              const m = (s || '').match(/(\d+):(\d+)/);
+              return m ? parseInt(m[1], 10) * 60 + parseInt(m[2], 10) : 9999;
+            };
+            return toMin(a.shift) - toMin(b.shift);
+          });
         setTodaySummary({
           total: activeItems.length,
           pending: activeItems.filter(x => x.isPending).length,
@@ -3872,19 +3878,24 @@ export default function MainApp({
             {/* 팀/선생님 선택 및 일지 작성하기 박스 */}
             <div className="bg-white border border-slate-300 rounded-[1.25rem] sm:rounded-[1.5rem] p-3.5 sm:p-5 shadow-[0_4px_16px_-4px_rgba(15,23,42,0.08),0_2px_6px_-1px_rgba(0,0,0,0.04)] flex flex-col gap-3 sm:gap-3.5 w-full">
               {selectedTeam && currentUser && !isEditingProfile ? (
-                <div className="flex items-center justify-between gap-2 px-3 py-2.5 rounded-2xl bg-slate-50 border border-slate-200">
-                  <div className="flex items-center gap-2 min-w-0">
-                    <span className="px-2.5 py-0.5 rounded-lg bg-blue-100 text-blue-800 text-[13px] sm:text-[14px] font-extrabold shrink-0">
+                <div className="flex items-center justify-between gap-2.5 px-3.5 py-3 rounded-2xl bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-300 shadow-xs">
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <span className="px-3 py-1 rounded-xl bg-blue-600 text-white text-[14px] sm:text-[15px] font-black shadow-xs shrink-0">
                       {selectedTeam}
                     </span>
-                    <span className="text-[16px] sm:text-[18px] font-extrabold text-slate-900 truncate">
-                      {currentUser.replace(/\n/g, ' ')} 선생님
-                    </span>
+                    <div className="flex items-baseline gap-1 min-w-0 truncate">
+                      <span className="text-[20px] sm:text-[23px] font-black text-blue-950 tracking-tight truncate">
+                        {currentUser.replace(/\n/g, ' ')}
+                      </span>
+                      <span className="text-[15px] sm:text-[17px] font-bold text-slate-700 shrink-0">
+                        선생님
+                      </span>
+                    </div>
                   </div>
                   <button
                     type="button"
                     onClick={() => setIsEditingProfile(true)}
-                    className="px-3 py-1 rounded-xl border border-slate-300 bg-white hover:bg-slate-100 text-slate-700 text-[13px] font-bold shrink-0 active:scale-95 transition touch-manipulation"
+                    className="px-3 py-1.5 rounded-xl border border-blue-200 bg-white hover:bg-blue-50 text-blue-700 text-[13.5px] font-extrabold shrink-0 active:scale-95 transition shadow-2xs touch-manipulation"
                   >
                     변경
                   </button>
