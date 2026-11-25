@@ -3396,13 +3396,13 @@ export default function MainApp({
         if (theirStudents !== myStudents) return false;
         const siblingGroup = getTeacherGroup(selectedTeam, r.teacher, dbTeachers);
         if (siblingGroup !== myGroup) return false;
-        const siblingStatus = formatStatusIfDate(r.status) || "";
+        const siblingStatus = mergeAttendanceAndStatus(r.attendance, formatStatusIfDate(r.status)) || "";
         if (siblingStatus.includes("선생님휴가")) return false;
         return siblingStatus.replace(/\u200B/g, '').trim() !== "";
       });
 
       if (siblingRecord) {
-        const statusStr = formatStatusIfDate(siblingRecord.status) || "";
+        const statusStr = mergeAttendanceAndStatus(siblingRecord.attendance, formatStatusIfDate(siblingRecord.status)) || "";
         const { loadedTags, loadedMemo, loadedHeadcount } = parseStatusString(statusStr, cleanMyStudent);
 
         const newLogs = { ...prev };
