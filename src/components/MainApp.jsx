@@ -3584,28 +3584,6 @@ export default function MainApp({
     mainTouchStartY.current = null;
   };
 
-  const handleTouchStart = (e) => {
-    touchStartX.current = e.touches[0].clientX;
-    touchStartY.current = e.touches[0].clientY;
-  };
-
-  const handleTouchEnd = (e) => {
-    if (touchStartX.current === null || touchStartY.current === null) return;
-    const touchEndX = e.changedTouches[0].clientX;
-    const touchEndY = e.changedTouches[0].clientY;
-    const deltaX = touchStartX.current - touchEndX;
-    const deltaY = touchStartY.current - touchEndY;
-
-    if (isDataLoading) { touchStartX.current = null; touchStartY.current = null; return; }
-
-    if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 250) {
-      if (deltaX > 0) handleNextDay();
-      else handlePrevDay();
-    }
-    touchStartX.current = null;
-    touchStartY.current = null;
-  };
-
   const mainMenuScrollRef = useRef(null);
 
   const handleMainScroll = (e) => {
@@ -4532,8 +4510,6 @@ export default function MainApp({
 
       <main
         className="w-full max-w-5xl lg:max-w-[1536px] mx-auto flex flex-col px-2.5 sm:px-5 pt-2 mt-1 pb-32"
-        onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}
       >
         <section className="flex flex-col h-auto">
           <div className="contents">
