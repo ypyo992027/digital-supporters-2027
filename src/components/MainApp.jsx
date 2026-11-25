@@ -99,10 +99,13 @@ import {
 } from '../utils/helpers';
 import {
   DEFAULT_BG_GRAY_LEVEL,
+  DEFAULT_FONT_SCALE,
   getBgGrayLevel,
   getRoomPopupMode,
+  getFontScale,
   saveBgGrayLevel,
   saveRoomPopupMode,
+  saveFontScale,
   hasValidSavedAdminPassword,
   saveAdminPassword,
   clearSavedAdminPassword
@@ -326,6 +329,9 @@ export default function MainApp({
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [bgGrayLevel, setBgGrayLevel] = useState(() => getBgGrayLevel());
   const [roomPopupMode, setRoomPopupMode] = useState(() => getRoomPopupMode());
+  const [fontScale, setFontScale] = useState(() => getFontScale());
+  const [isEditingProfile, setIsEditingProfile] = useState(() => !(getSavedItem('sungdong_team', '') && getSavedItem('sungdong_teacher', '')));
+  const [todaySummary, setTodaySummary] = useState(null);
   const [hasAdminPassword, setHasAdminPassword] = useState(() => hasValidSavedAdminPassword());
   const [adminPwdInput, setAdminPwdInput] = useState('');
   const [adminPwdError, setAdminPwdError] = useState('');
@@ -1165,6 +1171,49 @@ export default function MainApp({
     loadRoomStatus();
     return () => { isMounted = false; };
   }, [isLoggedIn, selectedTeam, currentUser, dbTeachers, holidaysFullList, roomPopupMode, showSettingsModal]);
+
+  // 메인 화면: 선택된 선생님의 오늘 수업 요약 및 미입력 건수 로드
+  useEffect(() => {
+    if (isLoggedIn || !selectedTeam || !currentUser) {
+      setTodaySummary(null);
+      return;
+    }
+    let isMounted = true;
+    const loadTodaySummary = async () => {
+      try {
+        const todayStr = getLocalDateString(new Date());
+        const { data, error } = await supabaseClient
+          .from('daily_logs')
+          .select('shift, student, location, attendance, status')
+          .eq('team', selectedTeam)
+          .eq('teacher', currentUser)
+          .eq('log_date', todayStr);
+        if (!isMounted || error || !Array.isArray(data)) return;
+        const activeItems = data
+          .filter(r => {
+            const st = (r.student || '').trim();
+            const loc = (r.location || '').trim();
+            return st && st !== '-' && !st.includes('자체학습') && !st.includes('대상자발굴') && !st.includes('공휴일') && !loc.includes('공휴일') && !loc.includes('휴무일');
+          })
+          .map(r => {
+            const merged = mergeAttendanceAndStatus(r.attendance, formatStatusIfDate(r.status)).replace(/\u200B/g, '').trim();
+            return {
+              shift: r.shift || '',
+              student: (r.student || '').trim(),
+              isPending: merged === ''
+            };
+          })
+          .sort((a, b) => a.shift.localeCompare(b.shift));
+        setTodaySummary({
+          total: activeItems.length,
+          pending: activeItems.filter(x => x.isPending).length,
+          items: activeItems
+        });
+      } catch (_) {}
+    };
+    loadTodaySummary();
+    return () => { isMounted = false; };
+  }, [isLoggedIn, selectedTeam, currentUser]);
 
   useEffect(() => {
     const loadHolidays = async () => {
@@ -2166,10 +2215,10 @@ export default function MainApp({
     return finalStr;
   };
 
-  const hasChanges = useMemo(() => {
-    const todaysOriginalData = allScheduleData[date] || {};
-    return shifts.some((shift, i) => {
+  const changedShiftCount = useMemo(() => {
+    return shifts.reduce((count, shift, i) => {
       const log = logs[i];
+      if (!log) return count;
       const original = getMyOriginalRecord(date, shift);
       const originalStatus = formatStatusIfDate(original.status);
       const currentStatusStr = buildStatusString(log);
@@ -2185,9 +2234,11 @@ export default function MainApp({
       const normOriginal = originalStatus === "\u200B" ? "" : originalStatus;
       const statusChanged = isEmptyRow ? false : (normCurrent !== normOriginal || currentAttendanceStr !== originalAttendance);
 
-      return studentChanged || locationChanged || statusChanged;
-    });
+      return (studentChanged || locationChanged || statusChanged) ? count + 1 : count;
+    }, 0);
   }, [logs, allScheduleData, date, selectedTeam, shifts]);
+
+  const hasChanges = changedShiftCount > 0;
 
   useEffect(() => {
     hasChangesRef.current = hasChanges;
@@ -3742,7 +3793,7 @@ export default function MainApp({
                       return (
                         <p
                           key={idx}
-                          className={`${isToday || notice.is_top ? 'font-bold' : 'font-medium'} text-[15px] min-[380px]:text-[16px] sm:text-[17px] leading-snug tracking-tight whitespace-nowrap overflow-x-auto scrollbar-hide w-full block cursor-pointer hover:underline hover:opacity-80 active:scale-[0.99] transition-all`}
+                          className={`${isToday || notice.is_top ? 'font-bold' : 'font-medium'} text-[15px] min-[380px]:text-[16px] sm:text-[17px] leading-snug tracking-tight line-clamp-2 break-keep w-full block cursor-pointer hover:underline hover:opacity-80 active:scale-[0.99] transition-all`}
                           onClick={async (e) => {
                             e.stopPropagation();
                             const { data } = await supabaseClient.from('notices').select('*').eq('id', notice.id).single();
@@ -3771,30 +3822,89 @@ export default function MainApp({
 
             {/* 팀/선생님 선택 및 일지 작성하기 박스 */}
             <div className="bg-white border border-slate-300 rounded-[1.25rem] sm:rounded-[1.5rem] p-3.5 sm:p-5 shadow-[0_4px_16px_-4px_rgba(15,23,42,0.08),0_2px_6px_-1px_rgba(0,0,0,0.04)] flex flex-col gap-3 sm:gap-3.5 w-full">
-              <div className={`grid ${selectedTeam ? 'grid-cols-2' : 'grid-cols-1'} gap-2.5 sm:gap-3.5 w-full`}>
-                <div className="w-full min-w-0">
-                  <label className="flex items-center gap-1.5 sm:gap-2 text-slate-800 font-extrabold mb-1.5 sm:mb-2 text-[15.5px] sm:text-xl tracking-tight whitespace-nowrap"><StepBadge n={1} done={!!selectedTeam} />팀 선택</label>
-                  <select className={`w-full select-refined h-[50px] sm:h-[58px] md:h-[62px] px-3 sm:px-4 border-2 rounded-2xl text-[17px] sm:text-2xl tracking-tight ${selectedTeam ? 'bg-slate-50 border-slate-400 text-slate-900 font-extrabold' : 'bg-white border-slate-300 text-slate-600 font-bold'} outline-none shadow-sm transition-colors focus:border-blue-500 focus:ring-4 focus:ring-blue-500/15 cursor-pointer`} value={selectedTeam} onChange={(e) => {
-                    setSelectedTeam(e.target.value);
-                    setCurrentUser("");
-                  }}>
-                    <option value="">팀을 선택하세요</option>
-                    {teamList.map(team => <option key={team} value={team}>{team}</option>)}
-                  </select>
+              {selectedTeam && currentUser && !isEditingProfile ? (
+                <div className="flex items-center justify-between gap-2 px-3 py-2.5 rounded-2xl bg-slate-50 border border-slate-200">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <span className="px-2.5 py-0.5 rounded-lg bg-blue-100 text-blue-800 text-[13px] sm:text-[14px] font-extrabold shrink-0">
+                      {selectedTeam}
+                    </span>
+                    <span className="text-[16px] sm:text-[18px] font-extrabold text-slate-900 truncate">
+                      {currentUser.replace(/\n/g, ' ')} 선생님
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setIsEditingProfile(true)}
+                    className="px-3 py-1 rounded-xl border border-slate-300 bg-white hover:bg-slate-100 text-slate-700 text-[13px] font-bold shrink-0 active:scale-95 transition touch-manipulation"
+                  >
+                    변경
+                  </button>
                 </div>
-                {selectedTeam && (
+              ) : (
+                <div className={`grid ${selectedTeam ? 'grid-cols-2' : 'grid-cols-1'} gap-2.5 sm:gap-3.5 w-full`}>
                   <div className="w-full min-w-0">
-                    <label className="text-slate-800 font-extrabold mb-1.5 sm:mb-2 text-[15.5px] sm:text-xl tracking-tight flex justify-between items-end gap-1">
-                      <span className="flex items-center gap-1.5 sm:gap-2 whitespace-nowrap"><StepBadge n={2} done={!!currentUser} />선생님 선택</span>
-                      {isFetchingTeachers && <span className="text-[12px] sm:text-base text-slate-600 font-bold flex items-center mb-0.5 animate-pulse whitespace-nowrap"><Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-0.5 sm:mr-1 animate-spin" />불러오는 중</span>}
-                    </label>
-                    <select className={`w-full select-refined h-[50px] sm:h-[58px] md:h-[62px] px-3 sm:px-4 border-2 rounded-2xl text-[17px] sm:text-2xl tracking-tight ${currentUser ? 'bg-slate-50 border-slate-400 text-slate-900 font-extrabold' : 'bg-white border-slate-300 text-slate-600 font-bold'} outline-none shadow-sm transition-colors focus:border-blue-500 focus:ring-4 focus:ring-blue-500/15 cursor-pointer disabled:opacity-60`} value={currentUser} onChange={(e) => setCurrentUser(e.target.value)} disabled={isFetchingTeachers}>
-                      <option value="">선생님 선택</option>
-                      {teachers.map(name => <option key={name} value={name}>{name.replace(/\n/g, ' ')}</option>)}
+                    <label className="flex items-center gap-1.5 sm:gap-2 text-slate-800 font-extrabold mb-1.5 sm:mb-2 text-[15.5px] sm:text-xl tracking-tight whitespace-nowrap"><StepBadge n={1} done={!!selectedTeam} />팀 선택</label>
+                    <select className={`w-full select-refined h-[50px] sm:h-[58px] md:h-[62px] px-3 sm:px-4 border-2 rounded-2xl text-[17px] sm:text-2xl tracking-tight ${selectedTeam ? 'bg-slate-50 border-slate-400 text-slate-900 font-extrabold' : 'bg-white border-slate-300 text-slate-600 font-bold'} outline-none shadow-sm transition-colors focus:border-blue-500 focus:ring-4 focus:ring-blue-500/15 cursor-pointer`} value={selectedTeam} onChange={(e) => {
+                      setSelectedTeam(e.target.value);
+                      setCurrentUser("");
+                      setIsEditingProfile(true);
+                    }}>
+                      <option value="">팀을 선택하세요</option>
+                      {teamList.map(team => <option key={team} value={team}>{team}</option>)}
                     </select>
                   </div>
-                )}
-              </div>
+                  {selectedTeam && (
+                    <div className="w-full min-w-0">
+                      <label className="text-slate-800 font-extrabold mb-1.5 sm:mb-2 text-[15.5px] sm:text-xl tracking-tight flex justify-between items-end gap-1">
+                        <span className="flex items-center gap-1.5 sm:gap-2 whitespace-nowrap"><StepBadge n={2} done={!!currentUser} />선생님 선택</span>
+                        {isFetchingTeachers && <span className="text-[12px] sm:text-base text-slate-600 font-bold flex items-center mb-0.5 animate-pulse whitespace-nowrap"><Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-0.5 sm:mr-1 animate-spin" />불러오는 중</span>}
+                      </label>
+                      <select className={`w-full select-refined h-[50px] sm:h-[58px] md:h-[62px] px-3 sm:px-4 border-2 rounded-2xl text-[17px] sm:text-2xl tracking-tight ${currentUser ? 'bg-slate-50 border-slate-400 text-slate-900 font-extrabold' : 'bg-white border-slate-300 text-slate-600 font-bold'} outline-none shadow-sm transition-colors focus:border-blue-500 focus:ring-4 focus:ring-blue-500/15 cursor-pointer disabled:opacity-60`} value={currentUser} onChange={(e) => {
+                        setCurrentUser(e.target.value);
+                        if (e.target.value) setIsEditingProfile(false);
+                      }} disabled={isFetchingTeachers}>
+                        <option value="">선생님 선택</option>
+                        {teachers.map(name => <option key={name} value={name}>{name.replace(/\n/g, ' ')}</option>)}
+                      </select>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {selectedTeam && currentUser && todaySummary && todaySummary.total > 0 && (
+                <div className="flex flex-col gap-1.5 px-3 py-2 rounded-xl bg-blue-50/70 border border-blue-200/80 text-left">
+                  <div className="flex items-center justify-between gap-2 text-[13px] sm:text-[14px] font-extrabold">
+                    <span className="text-slate-800">
+                      오늘 내 수업 <span className="text-blue-700">{todaySummary.total}건</span>
+                    </span>
+                    {todaySummary.pending > 0 ? (
+                      <span className="px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-300 text-[12px] font-extrabold">
+                        미입력 {todaySummary.pending}건
+                      </span>
+                    ) : (
+                      <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 text-[12px] font-extrabold">
+                        모두 입력 완료
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    {todaySummary.items.map((item, idx) => (
+                      <button
+                        key={idx}
+                        type="button"
+                        onClick={handleLogin}
+                        disabled={!isLoginReady}
+                        className={`px-2 py-0.5 rounded-lg text-[12px] font-bold border transition active:scale-95 ${item.isPending
+                          ? 'bg-white border-amber-300 text-amber-900'
+                          : 'bg-emerald-50 border-emerald-200 text-emerald-800'
+                          }`}
+                      >
+                        {item.shift.split('~')[0]} {item.student}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               <div className="pt-0.5 sm:pt-1 flex">
                 {!isLoginReady ? (
@@ -3852,9 +3962,11 @@ export default function MainApp({
                 desc="이름·초성으로 수업 기록 찾기"
               />
               <MenuRow
+                disabled={!selectedTeam || !currentUser}
                 onClick={() => {
                   if (!selectedTeam || !currentUser) {
-                    alert("팀과 선생님을 먼저 선택해주세요.");
+                    setErrorMessage("팀과 선생님을 먼저 선택해주세요.");
+                    setTimeout(() => setErrorMessage(""), 3000);
                     return;
                   }
                   onNavigateToStudentFormsAdmin({
@@ -3866,7 +3978,7 @@ export default function MainApp({
                 icon={<IconDocumentCheck />}
                 chipColor="chip-blue"
                 label="참여자 서류 관리"
-                desc="학생별 서류 작성 현황 파악"
+                desc={(!selectedTeam || !currentUser) ? (errorMessage || "팀과 선생님을 먼저 선택하세요") : "학생별 서류 작성 현황 파악"}
               />
               <MenuRow
                 onClick={onNavigateToClassApplicants}
@@ -4229,11 +4341,42 @@ export default function MainApp({
                   </div>
                 </div>
 
-                {/* 3. 관리자 비밀번호 저장 */}
+                {/* 3. 전체 글자 크기 설정 */}
+                <div className="pt-4 border-t border-slate-200">
+                  <div className="mb-2">
+                    <span className="block text-[14.5px] sm:text-[15.5px] font-extrabold text-slate-900">
+                      3. 전체 글자 크기
+                    </span>
+                    <span className="block text-[12.5px] text-slate-500 font-medium mt-0.5">
+                      화면의 전반적인 글자 크기를 조절합니다.
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-3 gap-2">
+                    {[
+                      { value: 'normal', label: '보통' },
+                      { value: 'large', label: '크게' },
+                      { value: 'xlarge', label: '아주 크게' }
+                    ].map(opt => (
+                      <button
+                        key={opt.value}
+                        type="button"
+                        onClick={() => setFontScale(saveFontScale(opt.value))}
+                        className={`py-2 px-2 rounded-xl border-2 text-[13.5px] font-extrabold transition cursor-pointer ${fontScale === opt.value
+                          ? 'border-blue-600 bg-blue-50 text-blue-700'
+                          : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'
+                          }`}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 4. 관리자 비밀번호 저장 */}
                 <div className="pt-4 border-t border-slate-200">
                   <div className="flex items-center justify-between gap-2 mb-1">
                     <span className="text-[14.5px] sm:text-[15.5px] font-extrabold text-slate-900">
-                      3. 관리자 비밀번호
+                      4. 관리자 비밀번호
                     </span>
                     <span className={`px-2 py-0.5 rounded-full text-[11.5px] font-extrabold whitespace-nowrap ${hasAdminPassword
                       ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
@@ -4668,7 +4811,7 @@ export default function MainApp({
                                               </button>
                                               <button
                                                 type="button"
-                                                onClick={() => setSelectedStudentHistory(c)}
+                                                onClick={() => setSelectedStudentHistory({ ...c, shiftIndex: index })}
                                                 title={`${c.student ? `${c.student} 님의 ` : ''}이전 교육 기록 보기`}
                                                 className="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 ring-1 ring-inset ring-emerald-200 h-[32px] sm:h-[36px] px-2.5 py-1 sm:px-3 sm:py-1 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap transition-all cursor-pointer active:scale-95 font-bold flex items-center justify-center shadow-sm shrink-0"
                                               >
@@ -4805,6 +4948,8 @@ export default function MainApp({
                                     const isAppSubmitted = checkFormSubmitted(submittedForms.apps, singleStudent);
                                     const isPreSubmitted = checkFormSubmitted(submittedForms.preSurveys, singleStudent);
                                     const isPostSubmitted = checkFormSubmitted(submittedForms.postSurveys, singleStudent);
+                                    const maxStudentCount = counts.reduce((mx, c) => Math.max(mx, c.count || 0), 0);
+                                    const needPostSurvey = !isPostSubmitted && (allSelectedTags.includes('종료') || maxStudentCount >= 15);
 
                                     return (
                                       <div className="flex items-center gap-1.5 flex-wrap w-full">
@@ -4814,13 +4959,14 @@ export default function MainApp({
                                             const url = `/application_form.html${singleStudent ? `?name=${encodeURIComponent(singleStudent)}` : ''}`;
                                             window.open(url, '_blank');
                                           }}
-                                          title={`2027년 프로그램 참여 신청서 열기${isAppSubmitted ? ' (작성완료)' : ''}`}
+                                          title={`2027년 프로그램 참여 신청서 열기${isAppSubmitted ? ' (작성완료)' : ' (미작성)'}`}
                                           className={`${isAppSubmitted
                                             ? 'bg-blue-600 hover:bg-blue-700 text-white ring-1 ring-inset ring-blue-700'
                                             : 'bg-blue-50 hover:bg-blue-100 text-blue-700 ring-1 ring-inset ring-blue-200'
                                             } h-[32px] sm:h-[36px] px-2.5 sm:px-3 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap transition-all cursor-pointer active:scale-95 font-bold flex items-center justify-center shadow-sm`}
                                         >
                                           <span>신청서</span>
+                                          {!isAppSubmitted && <span className="ml-1 w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" aria-hidden="true" />}
                                         </button>
                                         <button
                                           type="button"
@@ -4829,13 +4975,14 @@ export default function MainApp({
                                             const url = `/survey_form.html?type=pre${singleStudent ? `&name=${encodeURIComponent(singleStudent)}` : ''}${surveyor ? `&surveyor=${encodeURIComponent(surveyor)}` : ''}`;
                                             window.open(url, '_blank');
                                           }}
-                                          title={`2027년 1:1 디지털 교육 사전설문지 열기${isPreSubmitted ? ' (작성완료)' : ''}`}
+                                          title={`2027년 1:1 디지털 교육 사전설문지 열기${isPreSubmitted ? ' (작성완료)' : ' (미작성)'}`}
                                           className={`${isPreSubmitted
                                             ? 'bg-indigo-600 hover:bg-indigo-700 text-white ring-1 ring-inset ring-indigo-700'
                                             : 'bg-indigo-50 hover:bg-indigo-100 text-indigo-700 ring-1 ring-inset ring-indigo-200'
                                             } h-[32px] sm:h-[36px] px-2.5 sm:px-3 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap transition-all cursor-pointer active:scale-95 font-bold flex items-center justify-center shadow-sm`}
                                         >
                                           <span>사전설문지</span>
+                                          {!isPreSubmitted && <span className="ml-1 w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" aria-hidden="true" />}
                                         </button>
                                         <button
                                           type="button"
@@ -4844,13 +4991,14 @@ export default function MainApp({
                                             const url = `/survey_form.html?type=post${singleStudent ? `&name=${encodeURIComponent(singleStudent)}` : ''}${surveyor ? `&surveyor=${encodeURIComponent(surveyor)}` : ''}`;
                                             window.open(url, '_blank');
                                           }}
-                                          title={`2027년 1:1 디지털 교육 사후설문지 열기${isPostSubmitted ? ' (작성완료)' : ''}`}
+                                          title={`2027년 1:1 디지털 교육 사후설문지 열기${isPostSubmitted ? ' (작성완료)' : needPostSurvey ? ' (작성 필요)' : ''}`}
                                           className={`${isPostSubmitted
                                             ? 'bg-purple-700 hover:bg-purple-800 text-white ring-1 ring-inset ring-purple-800'
                                             : 'bg-purple-50 hover:bg-purple-100 text-purple-700 ring-1 ring-inset ring-purple-200'
                                             } h-[32px] sm:h-[36px] px-2.5 sm:px-3 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap transition-all cursor-pointer active:scale-95 font-bold flex items-center justify-center shadow-sm`}
                                         >
                                           <span>사후설문지</span>
+                                          {needPostSurvey && <span className="ml-1 w-2 h-2 rounded-full bg-rose-500 animate-pulse shrink-0" aria-hidden="true" />}
                                         </button>
                                         {resetOrUndoButton}
                                       </div>
@@ -4994,6 +5142,26 @@ export default function MainApp({
                                       />
                                     </div>
                                   </div>
+                                  {!isSpecialDay && (logs[index]?.student || "").trim() && !((logs[index]?.selectedTags || []).flat().includes('선생님휴가')) && (
+                                    <div className="flex items-center gap-1 overflow-x-auto scrollbar-none pt-1">
+                                      {['카카오톡', '사진/갤러리', '네이버 지도', '키오스크', '유튜브', '보이스피싱 예방', '문자/연락처'].map((chip) => (
+                                        <button
+                                          key={chip}
+                                          type="button"
+                                          disabled={isDataLoading || isInfoMissing}
+                                          onClick={() => {
+                                            const cur = (logs[index]?.memo || "").trim();
+                                            if (cur.includes(chip)) return;
+                                            const next = cur ? `${cur}, ${chip}` : chip;
+                                            handleLogChange(index, 'memo', next);
+                                          }}
+                                          className="px-2 py-0.5 rounded-full bg-slate-100 hover:bg-blue-50 text-slate-600 hover:text-blue-700 border border-slate-200 hover:border-blue-300 text-[11.5px] sm:text-[12px] font-bold whitespace-nowrap shrink-0 active:scale-95 transition disabled:opacity-40"
+                                        >
+                                          + {chip}
+                                        </button>
+                                      ))}
+                                    </div>
+                                  )}
                                 </div>
                               </div>
                             );
@@ -5006,7 +5174,7 @@ export default function MainApp({
                             onMouseDown={(e) => e.preventDefault()}
                             className={`w-full h-14 md:h-16 font-bold rounded-2xl text-[21px] md:text-[26px] tracking-tight transition-all duration-150 active:scale-[0.98] flex items-center justify-center touch-manipulation ${(isDataLoading || !hasChanges) ? 'bg-gray-200 text-gray-400 ring-1 ring-inset ring-gray-300/60 cursor-not-allowed' : 'text-white bg-gradient-to-b from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 ring-1 ring-inset ring-blue-700/20 shadow-lg shadow-blue-600/30'}`}
                           >
-                            {isSubmitting ? <><Clock className="w-6 h-6 mr-2 animate-spin" />저장 중...</> : <><SaveIcon className="w-6 h-6 mr-2" />{hasChanges || isDataLoading ? '데이터베이스에 저장' : '저장할 변경 사항 없음'}</>}
+                            {isSubmitting ? <><Clock className="w-6 h-6 mr-2 animate-spin" />저장 중...</> : <><SaveIcon className="w-6 h-6 mr-2" />{isDataLoading ? '데이터 불러오는 중...' : hasChanges ? `데이터베이스에 저장 (${changedShiftCount}건 변경)` : '저장할 변경 사항 없음'}</>}
                           </button>
                         </div>
                       </>
@@ -5376,9 +5544,26 @@ export default function MainApp({
 
                       return (
                         <div key={idx} className="bg-gray-50 border border-gray-200 rounded-lg p-3 shadow-sm">
-                          <div className="text-sm font-bold text-gray-500 mb-1">
-                            {h.date} ({h.dayOfWeek}) <span className="text-gray-400 ml-1">{h.shift ? h.shift.split('~')[0].trim() : ''}</span>
-                            {h.teacher && <span className="text-indigo-600 ml-2 font-extrabold tracking-tight">[{h.teacher}]</span>}
+                          <div className="flex items-center justify-between gap-2 mb-1">
+                            <div className="text-sm font-bold text-gray-500">
+                              {h.date} ({h.dayOfWeek}) <span className="text-gray-400 ml-1">{h.shift ? h.shift.split('~')[0].trim() : ''}</span>
+                              {h.teacher && <span className="text-indigo-600 ml-2 font-extrabold tracking-tight">[{h.teacher}]</span>}
+                            </div>
+                            {selectedStudentHistory.shiftIndex !== undefined && cleanMemo && cleanMemo !== "내용 없음" && cleanMemo !== "출석 (메모 없음)" && !isAbsent && (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const sIdx = selectedStudentHistory.shiftIndex;
+                                  const cur = (logs[sIdx]?.memo || "").trim();
+                                  const next = cur ? `${cur}\n${cleanMemo}` : cleanMemo;
+                                  handleLogChange(sIdx, 'memo', next);
+                                  setSelectedStudentHistory(null);
+                                }}
+                                className="px-2 py-0.5 rounded-md bg-emerald-100 hover:bg-emerald-200 text-emerald-800 border border-emerald-300 text-[12px] font-extrabold whitespace-nowrap active:scale-95 transition"
+                              >
+                                메모에 이어쓰기
+                              </button>
+                            )}
                           </div>
                           <div className={`text-base sm:text-lg font-bold ${textColorClass} break-words whitespace-pre-wrap`}>{cleanMemo}</div>
                         </div>

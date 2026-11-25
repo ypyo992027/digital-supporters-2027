@@ -1032,7 +1032,7 @@ export default function DailyScheduleApp({ initialTeam, onNavigateBack, onTeamCh
   const datePickerValue = `${y}-${m}-${d}`;
 
   return (
-    <div className="min-h-[100dvh] flex flex-col app-surface dark:bg-slate-900 font-sans text-slate-800 dark:text-slate-100">
+    <div className="min-h-[100dvh] flex flex-col app-surface font-sans text-slate-800">
       {/* 1. 상단 메인 헤더 (원본 헤더 유지) */}
       <div className="shrink-0 app-header text-white z-40 relative">
         <div className="max-w-5xl lg:max-w-[1536px] mx-auto px-2.5 sm:px-5 pb-4 pt-safe-4 flex justify-between items-center">
@@ -1076,18 +1076,18 @@ export default function DailyScheduleApp({ initialTeam, onNavigateBack, onTeamCh
 
           {/* 날짜 선택 바 위에 섹션 제목 + 일정/요약 탭 스위처 */}
           <div className="pb-1.5 px-1 flex items-center justify-between gap-2">
-            <h2 className="text-[19px] sm:text-xl font-bold text-gray-800 dark:text-gray-100 flex items-center tracking-tight whitespace-nowrap">
+            <h2 className="text-[19px] sm:text-xl font-bold text-gray-800 flex items-center tracking-tight whitespace-nowrap">
               <span className="flex items-center"><CalendarClockIcon className="w-5 h-5 mr-2 text-blue-600" /> 팀별 오늘 일정</span>
             </h2>
 
             {/* 일정 / 요약 탭 스위처 */}
-            <div className="bg-slate-200/80 dark:bg-slate-800 p-0.5 rounded-lg flex items-center shadow-inner shrink-0">
+            <div className="bg-slate-200/80 p-0.5 rounded-lg flex items-center shadow-inner shrink-0">
               <button
                 type="button"
                 onClick={() => setActiveTab('schedule')}
                 className={`px-3 sm:px-4 py-0.5 text-[13px] sm:text-[14px] font-bold rounded-md transition-all touch-manipulation text-center cursor-pointer whitespace-nowrap ${activeTab === 'schedule'
-                    ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm'
-                    : 'text-slate-600 dark:text-slate-300 hover:text-slate-900'
+                    ? 'bg-white text-blue-600 shadow-sm'
+                    : 'text-slate-600 hover:text-slate-900'
                   }`}
               >
                 일정
@@ -1096,8 +1096,8 @@ export default function DailyScheduleApp({ initialTeam, onNavigateBack, onTeamCh
                 type="button"
                 onClick={() => setActiveTab('summary')}
                 className={`px-3 sm:px-4 py-0.5 text-[13px] sm:text-[14px] font-bold rounded-md transition-all touch-manipulation text-center cursor-pointer whitespace-nowrap ${activeTab === 'summary'
-                    ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm'
-                    : 'text-slate-600 dark:text-slate-300 hover:text-slate-900'
+                    ? 'bg-white text-blue-600 shadow-sm'
+                    : 'text-slate-600 hover:text-slate-900'
                   }`}
               >
                 요약
@@ -1107,7 +1107,7 @@ export default function DailyScheduleApp({ initialTeam, onNavigateBack, onTeamCh
 
           {/* 상단 고정 영역: 날짜 선택 바 + 팀 선택 필 */}
           <div
-            className="sticky top-0 z-30 app-surface dark:bg-slate-900 pt-1.5 pb-2 -mx-3 px-3 md:-mx-6 md:px-6 shadow-xs border-b border-slate-200/60 dark:border-slate-800"
+            className="sticky top-0 z-30 app-surface pt-1.5 pb-2 -mx-3 px-3 md:-mx-6 md:px-6 shadow-xs border-b border-slate-200/60"
             onTouchStart={(e) => e.stopPropagation()}
             onTouchEnd={(e) => e.stopPropagation()}
           >
@@ -1116,14 +1116,14 @@ export default function DailyScheduleApp({ initialTeam, onNavigateBack, onTeamCh
               <button
                 onClick={() => handleDateChange(-1)}
                 title="이전 날짜"
-                className="w-10 sm:w-11 h-10 sm:h-11 flex items-center justify-center border border-slate-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700 active:scale-95 text-slate-700 dark:text-slate-200 shrink-0 transition-all touch-manipulation cursor-pointer"
+                className="w-10 sm:w-11 h-10 sm:h-11 flex items-center justify-center border border-slate-200 rounded-xl bg-white shadow-sm hover:bg-slate-50 active:scale-95 text-slate-700 shrink-0 transition-all touch-manipulation cursor-pointer"
               >
                 <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z" />
                 </svg>
               </button>
 
-              <div className="flex-1 h-10 sm:h-11 relative flex items-center justify-center border border-slate-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 text-center shadow-sm">
+              <div className="flex-1 h-10 sm:h-11 relative flex items-center justify-center border border-slate-200 rounded-xl bg-white text-center shadow-sm">
                 <input
                   type="date"
                   value={datePickerValue}
@@ -1131,7 +1131,7 @@ export default function DailyScheduleApp({ initialTeam, onNavigateBack, onTeamCh
                   className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                   title="달력 열기"
                 />
-                <span className="font-extrabold text-slate-800 dark:text-slate-100 text-[16px] sm:text-[18px] tracking-tight whitespace-nowrap">
+                <span className="font-extrabold text-slate-800 text-[16px] sm:text-[18px] tracking-tight whitespace-nowrap">
                   {currentDisplayDate.getMonth() + 1}/{currentDisplayDate.getDate()} ({day})
                 </span>
               </div>
@@ -1146,7 +1146,7 @@ export default function DailyScheduleApp({ initialTeam, onNavigateBack, onTeamCh
               <button
                 onClick={() => handleDateChange(1)}
                 title="다음 날짜"
-                className="w-10 sm:w-11 h-10 sm:h-11 flex items-center justify-center border border-slate-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700 active:scale-95 text-slate-700 dark:text-slate-200 shrink-0 transition-all touch-manipulation cursor-pointer"
+                className="w-10 sm:w-11 h-10 sm:h-11 flex items-center justify-center border border-slate-200 rounded-xl bg-white shadow-sm hover:bg-slate-50 active:scale-95 text-slate-700 shrink-0 transition-all touch-manipulation cursor-pointer"
               >
                 <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" />
@@ -1164,8 +1164,8 @@ export default function DailyScheduleApp({ initialTeam, onNavigateBack, onTeamCh
                     if (onTeamChange) onTeamChange(team);
                   }}
                   className={`h-10 sm:h-11 flex items-center justify-center text-[15px] sm:text-[16px] font-bold rounded-xl border text-center transition-all touch-manipulation cursor-pointer ${selectedTeam === team
-                      ? 'bg-slate-800 dark:bg-slate-200 border-slate-800 dark:border-slate-200 text-white dark:text-slate-900 shadow-sm'
-                      : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700'
+                      ? 'bg-slate-800 border-slate-800 text-white shadow-sm'
+                      : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
                     }`}
                 >
                   {team}
@@ -1197,12 +1197,12 @@ export default function DailyScheduleApp({ initialTeam, onNavigateBack, onTeamCh
 
             if (currentHoliday && !currentHoliday.vacation_available) {
               return (
-                <div className="bg-red-50 dark:bg-red-950/40 border-2 border-red-300 dark:border-red-800 rounded-2xl p-4 sm:p-5 text-center shadow-sm mb-4 animate-fadeIn">
-                  <h3 className="text-lg sm:text-xl font-black text-red-700 dark:text-red-400 mb-1">
+                <div className="bg-red-50 border-2 border-red-300 rounded-2xl p-4 sm:p-5 text-center shadow-sm mb-4 animate-fadeIn">
+                  <h3 className="text-lg sm:text-xl font-black text-red-700 mb-1">
                     {currentHoliday.name}
                   </h3>
                   {currentHoliday.content1 && (
-                    <p className="text-sm sm:text-base font-bold text-red-600 dark:text-red-300">
+                    <p className="text-sm sm:text-base font-bold text-red-600">
                       {currentHoliday.content1}
                     </p>
                   )}
@@ -1224,8 +1224,8 @@ export default function DailyScheduleApp({ initialTeam, onNavigateBack, onTeamCh
                   type="button"
                   onClick={() => setShowLegend(prev => !prev)}
                   className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-[14px] sm:text-[14.5px] font-bold rounded-lg transition-all touch-manipulation cursor-pointer border shadow-xs active:scale-95 ${showLegend
-                      ? 'bg-slate-800 dark:bg-slate-200 text-white dark:text-slate-900 border-slate-800 dark:border-slate-200 shadow-sm'
-                      : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-slate-900'
+                      ? 'bg-slate-800 text-white border-slate-800 shadow-sm'
+                      : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50 hover:text-slate-900'
                     }`}
                 >
                   <span>회차 색상</span>
@@ -1238,10 +1238,10 @@ export default function DailyScheduleApp({ initialTeam, onNavigateBack, onTeamCh
                   onClick={handleToggleAllMemos}
                   disabled={memoRowKeys.length === 0}
                   className={`shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 text-[14px] sm:text-[14.5px] font-bold rounded-lg transition-all touch-manipulation whitespace-nowrap border shadow-xs active:scale-95 ${memoRowKeys.length === 0
-                      ? 'text-slate-400 dark:text-slate-500 border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 cursor-not-allowed opacity-60 shadow-none'
+                      ? 'text-slate-400 border-slate-200 bg-slate-100 cursor-not-allowed opacity-60 shadow-none'
                       : isAllExpanded
-                        ? 'bg-slate-800 dark:bg-slate-200 text-white dark:text-slate-900 border-slate-800 dark:border-slate-200 shadow-sm'
-                        : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-slate-900'
+                        ? 'bg-slate-800 text-white border-slate-800 shadow-sm'
+                        : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50 hover:text-slate-900'
                     }`}
                   title={isAllExpanded ? "모든 수업 내용 접기" : "모든 수업 내용 보기"}
                 >
@@ -1251,7 +1251,7 @@ export default function DailyScheduleApp({ initialTeam, onNavigateBack, onTeamCh
               </div>
 
               {showLegend && (
-                <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap px-2.5 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl animate-fadeIn">
+                <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap px-2.5 py-2 bg-white border border-slate-200 rounded-xl animate-fadeIn">
                   <span className="px-2.5 py-0.5 rounded-md text-[13px] sm:text-[14px] font-bold bg-slate-200 text-slate-800 border border-slate-300">1–6회</span>
                   <span className="px-2.5 py-0.5 rounded-md text-[13px] sm:text-[14px] font-bold bg-purple-100 text-purple-900 border border-purple-200">7–9회</span>
                   <span className="px-2.5 py-0.5 rounded-md text-[13px] sm:text-[14px] font-bold bg-indigo-950 text-white">10–14회</span>
@@ -1261,7 +1261,7 @@ export default function DailyScheduleApp({ initialTeam, onNavigateBack, onTeamCh
 
               {/* 3. 조별 & 선생님별 카드 목록 */}
               {groupedByGroup.length === 0 ? (
-                <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-8 text-center text-slate-500 font-medium">
+                <div className="bg-white border border-slate-200 rounded-2xl p-8 text-center text-slate-500 font-medium">
                   일정 데이터가 없습니다.
                 </div>
               ) : (
@@ -1269,7 +1269,7 @@ export default function DailyScheduleApp({ initialTeam, onNavigateBack, onTeamCh
                   <div key={grp.groupName} className="space-y-2">
                     {/* 조 배지 */}
                     <div className="pt-1">
-                      <span className="bg-slate-700 dark:bg-slate-600 text-white font-extrabold text-[12.5px] px-2.5 py-0.5 rounded-full shadow-xs">
+                      <span className="bg-slate-700 text-white font-extrabold text-[12.5px] px-2.5 py-0.5 rounded-full shadow-xs">
                         {grp.groupName}
                       </span>
                     </div>
@@ -1280,15 +1280,15 @@ export default function DailyScheduleApp({ initialTeam, onNavigateBack, onTeamCh
                       return (
                         <div
                           key={teacher.teacherName}
-                          className={`bg-white dark:bg-slate-800 rounded-xl sm:rounded-2xl border shadow-sm overflow-hidden ${
-                            isMe ? 'border-blue-400 dark:border-blue-500 ring-2 ring-blue-400/30' : 'border-slate-300 dark:border-slate-600'
+                          className={`bg-white rounded-xl sm:rounded-2xl border shadow-sm overflow-hidden ${
+                            isMe ? 'border-blue-400 ring-2 ring-blue-400/30' : 'border-slate-300'
                           }`}
                         >
                           {/* 선생님 카드 헤더 */}
                           <div className={`px-3.5 py-2 tracking-tight flex items-center justify-between border-b text-white ${
                             isMe
-                              ? 'bg-blue-700 dark:bg-blue-800 border-blue-800 dark:border-blue-900'
-                              : 'bg-slate-700 dark:bg-slate-900 border-slate-800 dark:border-slate-950'
+                              ? 'bg-blue-700 border-blue-800'
+                              : 'bg-slate-700 border-slate-800'
                           }`}>
                             <span className="flex items-baseline gap-1">
                               <span className="font-black text-[17px] sm:text-[18px]">{teacher.teacherName}</span>
@@ -1302,7 +1302,7 @@ export default function DailyScheduleApp({ initialTeam, onNavigateBack, onTeamCh
                           </div>
 
                           {/* 시간대별 수업 목록 */}
-                          <div className="divide-y divide-slate-400 dark:divide-slate-500">
+                          <div className="divide-y divide-slate-400">
                             {teacher.shifts.map((row, idx) => {
                               const rawStartTime = typeof row.time === 'string'
                                 ? row.time.split('~')[0].trim()
@@ -1328,20 +1328,20 @@ export default function DailyScheduleApp({ initialTeam, onNavigateBack, onTeamCh
                               let rowBgClass = '';
 
                               if (isUnassigned) {
-                                barColorClass = 'bg-slate-200 border-r border-slate-300 dark:bg-slate-700 dark:border-slate-600'; // 배정 없음: 연한 회색 막대
-                                rowBgClass = 'bg-slate-50/40 dark:bg-slate-800/40';
+                                barColorClass = 'bg-slate-200 border-r border-slate-300'; // 배정 없음: 연한 회색 막대
+                                rowBgClass = 'bg-slate-50/40';
                               } else if (att === 'attended') {
-                                barColorClass = 'bg-emerald-300 border-r border-emerald-400 dark:bg-emerald-700 dark:border-emerald-600'; // 출석: 에메랄드 그린 막대
-                                rowBgClass = 'bg-emerald-50/20 dark:bg-emerald-950/10';
+                                barColorClass = 'bg-emerald-300 border-r border-emerald-400'; // 출석: 에메랄드 그린 막대
+                                rowBgClass = 'bg-emerald-50/20';
                               } else if (att === 'absent') {
-                                barColorClass = 'bg-rose-300 border-r border-rose-400 dark:bg-rose-700 dark:border-rose-600'; // 결석: 코랄 로즈 레드 막대
-                                rowBgClass = 'bg-rose-50/20 dark:bg-rose-950/10';
+                                barColorClass = 'bg-rose-300 border-r border-rose-400'; // 결석: 코랄 로즈 레드 막대
+                                rowBgClass = 'bg-rose-50/20';
                               } else if (att === 'vacation') {
-                                barColorClass = 'bg-amber-300 border-r border-amber-400 dark:bg-amber-700 dark:border-amber-600'; // 휴가: 웜 앰버 막대
-                                rowBgClass = 'bg-amber-50/20 dark:bg-amber-950/10';
+                                barColorClass = 'bg-amber-300 border-r border-amber-400'; // 휴가: 웜 앰버 막대
+                                rowBgClass = 'bg-amber-50/20';
                               } else {
-                                barColorClass = 'bg-slate-300 border-r border-slate-400 dark:bg-slate-600 dark:border-slate-500'; // 확인 전/진행 중: 슬레이트 그레이 막대
-                                rowBgClass = 'bg-white dark:bg-slate-800';
+                                barColorClass = 'bg-slate-300 border-r border-slate-400'; // 확인 전/진행 중: 슬레이트 그레이 막대
+                                rowBgClass = 'bg-white';
                               }
 
                               const canToggleMemo = !isUnassigned && att !== 'vacation' && hasMemo;
@@ -1350,7 +1350,7 @@ export default function DailyScheduleApp({ initialTeam, onNavigateBack, onTeamCh
                                 <div
                                   key={idx}
                                   onClick={canToggleMemo ? () => toggleMemo(rowKey) : undefined}
-                                  className={`relative py-1.5 px-2.5 sm:py-2 sm:px-3 pl-3 sm:pl-3.5 transition-colors ${rowBgClass} ${canToggleMemo ? 'cursor-pointer hover:bg-slate-50/70 dark:hover:bg-slate-700/40' : ''}`}
+                                  className={`relative py-1.5 px-2.5 sm:py-2 sm:px-3 pl-3 sm:pl-3.5 transition-colors ${rowBgClass} ${canToggleMemo ? 'cursor-pointer hover:bg-slate-50/70' : ''}`}
                                 >
                                   {/* 시간대 좌측 상태 표시 막대 (우측 버튼과 동일한 색상 배색) */}
                                   <div className={`absolute left-0 top-0 bottom-0 w-2 sm:w-2.5 ${barColorClass} transition-colors`} />
@@ -1362,15 +1362,15 @@ export default function DailyScheduleApp({ initialTeam, onNavigateBack, onTeamCh
                                       <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap min-w-0">
                                         {/* 시간대와 학생이름: 무조건 같은 라인에 표시 */}
                                         <div className="inline-flex items-center gap-1.5 sm:gap-2 shrink-0">
-                                          <span className="font-bold text-slate-700 dark:text-slate-300 text-[14.5px] sm:text-[16px] whitespace-nowrap tabular-nums">
+                                          <span className="font-bold text-slate-700 text-[14.5px] sm:text-[16px] whitespace-nowrap tabular-nums">
                                             {startTime}
                                           </span>
                                           {isUnassigned ? (
-                                            <span className="text-slate-400 dark:text-slate-500 font-semibold text-[14px] sm:text-[15px] whitespace-nowrap">
+                                            <span className="text-slate-400 font-semibold text-[14px] sm:text-[15px] whitespace-nowrap">
                                               배정 없음
                                             </span>
                                           ) : (
-                                            <span className="font-bold text-slate-900 dark:text-slate-100 text-[16px] sm:text-[17.5px] tracking-tight whitespace-nowrap">
+                                            <span className="font-bold text-slate-900 text-[16px] sm:text-[17.5px] tracking-tight whitespace-nowrap">
                                               {studentStr}
                                             </span>
                                           )}
@@ -1397,7 +1397,7 @@ export default function DailyScheduleApp({ initialTeam, onNavigateBack, onTeamCh
 
                                             {/* 장소 표시 (있을 경우) */}
                                             {row.location && row.location !== '-' && row.location !== '복지관' && !row.location.startsWith('http') && (
-                                              <span className="text-[11px] sm:text-xs font-semibold text-slate-500 dark:text-slate-400 whitespace-nowrap">
+                                              <span className="text-[11px] sm:text-xs font-semibold text-slate-500 whitespace-nowrap">
                                                 ({row.location})
                                               </span>
                                             )}
@@ -1409,7 +1409,7 @@ export default function DailyScheduleApp({ initialTeam, onNavigateBack, onTeamCh
                                                 className={`inline-flex items-center justify-center px-1.5 py-0.5 rounded-md text-[11px] font-bold transition-colors whitespace-nowrap ${
                                                   isExpanded
                                                     ? 'bg-blue-600 text-white'
-                                                    : 'bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-300 border border-blue-200 dark:border-blue-800'
+                                                    : 'bg-blue-50 text-blue-600 border border-blue-200'
                                                 }`}
                                               >
                                                 📝
@@ -1430,16 +1430,16 @@ export default function DailyScheduleApp({ initialTeam, onNavigateBack, onTeamCh
                                           let btnLabel = '';
 
                                           if (att === 'attended') {
-                                            btnClass = 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700';
+                                            btnClass = 'bg-emerald-100 text-emerald-800 border border-emerald-300';
                                             btnLabel = '출석';
                                           } else if (att === 'absent') {
-                                            btnClass = 'bg-rose-100 dark:bg-rose-950/60 text-rose-800 dark:text-rose-300 border border-rose-300 dark:border-rose-700';
+                                            btnClass = 'bg-rose-100 text-rose-800 border border-rose-300';
                                             btnLabel = '결석';
                                           } else if (att === 'vacation') {
-                                            btnClass = 'bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-700';
+                                            btnClass = 'bg-amber-100 text-amber-800 border border-amber-300';
                                             btnLabel = '휴가';
                                           } else {
-                                            btnClass = 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600';
+                                            btnClass = 'bg-slate-100 text-slate-700 border border-slate-200';
                                             btnLabel = '확인 전';
                                           }
 
@@ -1452,7 +1452,7 @@ export default function DailyScheduleApp({ initialTeam, onNavigateBack, onTeamCh
                                               </div>
                                               {isEnded && (
                                                 <div
-                                                  className="min-h-[26px] sm:min-h-[30px] min-w-[44px] sm:min-w-[52px] px-2 sm:px-2.5 py-0.5 sm:py-1 text-[12.5px] sm:text-[13.5px] font-bold rounded-lg shadow-2xs select-none flex items-center justify-center cursor-default whitespace-nowrap bg-indigo-100 dark:bg-indigo-950/60 text-indigo-800 dark:text-indigo-300 border border-indigo-300 dark:border-indigo-700"
+                                                  className="min-h-[26px] sm:min-h-[30px] min-w-[44px] sm:min-w-[52px] px-2 sm:px-2.5 py-0.5 sm:py-1 text-[12.5px] sm:text-[13.5px] font-bold rounded-lg shadow-2xs select-none flex items-center justify-center cursor-default whitespace-nowrap bg-indigo-100 text-indigo-800 border border-indigo-300"
                                                 >
                                                   종료
                                                 </div>
@@ -1466,7 +1466,7 @@ export default function DailyScheduleApp({ initialTeam, onNavigateBack, onTeamCh
 
                                   {/* 펼쳐진 수업 메모 내용 */}
                                   {!isUnassigned && att !== 'vacation' && hasMemo && isExpanded && (
-                                    <div className="mt-1.5 p-3 rounded-xl bg-blue-50/80 dark:bg-slate-700/60 border border-blue-100 dark:border-slate-600 text-slate-950 dark:text-white font-medium text-[15.5px] sm:text-[16.5px] leading-relaxed whitespace-pre-wrap break-words animate-fadeIn">
+                                    <div className="mt-1.5 p-3 rounded-xl bg-blue-50/80 border border-blue-100 text-slate-950 font-medium text-[15.5px] sm:text-[16.5px] leading-relaxed whitespace-pre-wrap break-words animate-fadeIn">
                                       {displayMemo}
                                     </div>
                                   )}
@@ -1501,18 +1501,18 @@ export default function DailyScheduleApp({ initialTeam, onNavigateBack, onTeamCh
             <div className="space-y-4 animate-fadeIn">
 
               {/* 0. 출석 확인 현황 카드 & 진행 막대 */}
-              <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-4 sm:p-5 shadow-sm">
+              <div className="bg-white border border-slate-200 rounded-2xl p-4 sm:p-5 shadow-sm">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="font-extrabold text-[17px] text-slate-800 dark:text-slate-100 tracking-tight">
+                  <span className="font-extrabold text-[17px] text-slate-800 tracking-tight">
                     출석 확인
                   </span>
-                  <span className="font-extrabold text-[17px] text-slate-800 dark:text-slate-100">
+                  <span className="font-extrabold text-[17px] text-slate-800">
                     {isLoading ? '- / -명' : `${stats.checkedCount} / ${stats.totalStudents}명`}
                   </span>
                 </div>
 
                 {/* 진행 막대 */}
-                <div className="w-full bg-slate-100 dark:bg-slate-700 h-3 rounded-full overflow-hidden mb-3.5">
+                <div className="w-full bg-slate-100 h-3 rounded-full overflow-hidden mb-3.5">
                   <div
                     className="bg-blue-600 h-full rounded-full transition-all duration-300 ease-out"
                     style={{ width: `${isLoading ? 0 : stats.currentPercent}%` }}
@@ -1521,38 +1521,38 @@ export default function DailyScheduleApp({ initialTeam, onNavigateBack, onTeamCh
 
                 {/* 4개 출결 상태 통계 박스 */}
                 <div className="grid grid-cols-4 gap-1.5 sm:gap-2 text-center">
-                  <div className="bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 rounded-xl py-2 flex flex-col items-center justify-center">
-                    <span className="text-[20px] font-black text-emerald-800 dark:text-emerald-400 leading-tight">
+                  <div className="bg-emerald-50 border border-emerald-200 rounded-xl py-2 flex flex-col items-center justify-center">
+                    <span className="text-[20px] font-black text-emerald-800 leading-tight">
                       {isLoading ? '-' : stats.attendedCount}
                     </span>
-                    <span className="text-[12px] font-bold text-emerald-700 dark:text-emerald-400 mt-0.5">
+                    <span className="text-[12px] font-bold text-emerald-700 mt-0.5">
                       출석
                     </span>
                   </div>
 
-                  <div className="bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 rounded-xl py-2 flex flex-col items-center justify-center">
-                    <span className="text-[20px] font-black text-rose-800 dark:text-rose-400 leading-tight">
+                  <div className="bg-rose-50 border border-rose-200 rounded-xl py-2 flex flex-col items-center justify-center">
+                    <span className="text-[20px] font-black text-rose-800 leading-tight">
                       {isLoading ? '-' : stats.absentCount}
                     </span>
-                    <span className="text-[12px] font-bold text-rose-700 dark:text-rose-400 mt-0.5">
+                    <span className="text-[12px] font-bold text-rose-700 mt-0.5">
                       결석
                     </span>
                   </div>
 
-                  <div className="bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 rounded-xl py-2 flex flex-col items-center justify-center">
-                    <span className="text-[20px] font-black text-amber-800 dark:text-amber-400 leading-tight">
+                  <div className="bg-amber-50 border border-amber-200 rounded-xl py-2 flex flex-col items-center justify-center">
+                    <span className="text-[20px] font-black text-amber-800 leading-tight">
                       {isLoading ? '-' : stats.vacationCount}
                     </span>
-                    <span className="text-[12px] font-bold text-amber-700 dark:text-amber-400 mt-0.5">
+                    <span className="text-[12px] font-bold text-amber-700 mt-0.5">
                       휴가
                     </span>
                   </div>
 
-                  <div className="bg-slate-100 dark:bg-slate-700/60 border border-slate-200 dark:border-slate-700 rounded-xl py-2 flex flex-col items-center justify-center">
-                    <span className="text-[20px] font-black text-slate-800 dark:text-slate-200 leading-tight">
+                  <div className="bg-slate-100 border border-slate-200 rounded-xl py-2 flex flex-col items-center justify-center">
+                    <span className="text-[20px] font-black text-slate-800 leading-tight">
                       {isLoading ? '-' : stats.unconfirmedCount}
                     </span>
-                    <span className="text-[12px] font-bold text-slate-600 dark:text-slate-300 mt-0.5">
+                    <span className="text-[12px] font-bold text-slate-600 mt-0.5">
                       확인 전
                     </span>
                   </div>
@@ -1562,10 +1562,10 @@ export default function DailyScheduleApp({ initialTeam, onNavigateBack, onTeamCh
               {/* 1. 오늘 다룬 주제 */}
               <div className="pt-0.5">
                 <div className="flex items-center justify-between mb-2.5">
-                  <h3 className="font-extrabold text-[18px] sm:text-[19px] text-slate-900 dark:text-slate-100 tracking-tight">
+                  <h3 className="font-extrabold text-[18px] sm:text-[19px] text-slate-900 tracking-tight">
                     오늘 다룬 주제
                   </h3>
-                  <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                  <span className="text-xs font-semibold text-slate-500">
                     수업 내용 메모 분석
                   </span>
                 </div>
@@ -1574,42 +1574,42 @@ export default function DailyScheduleApp({ initialTeam, onNavigateBack, onTeamCh
                   {categorizedThemes.themes.map((t, idx) => (
                     <div
                       key={idx}
-                      className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-3.5 sm:p-4 rounded-2xl shadow-sm transition-all"
+                      className="bg-white border border-slate-200 p-3.5 sm:p-4 rounded-2xl shadow-sm transition-all"
                     >
                       <div className="flex items-center justify-between mb-1.5">
                         <div className="flex items-center gap-2">
                           <span className="text-xl sm:text-2xl">{t.icon}</span>
-                          <span className="font-extrabold text-[15.5px] sm:text-[16.5px] text-slate-900 dark:text-slate-100">
+                          <span className="font-extrabold text-[15.5px] sm:text-[16.5px] text-slate-900">
                             {t.name}
                           </span>
                         </div>
-                        <span className="text-blue-600 dark:text-blue-400 font-black text-[16px] sm:text-[17px] shrink-0 ml-2">
+                        <span className="text-blue-600 font-black text-[16px] sm:text-[17px] shrink-0 ml-2">
                           {t.count}건
                         </span>
                       </div>
-                      <div className="text-[13px] sm:text-[13.5px] text-slate-600 dark:text-slate-300 pl-7 sm:pl-8 leading-relaxed flex items-start gap-1">
-                        <span className="text-slate-400 dark:text-slate-500 shrink-0 font-medium">↳ 세부 실습:</span>
-                        <span className="font-medium text-slate-700 dark:text-slate-200 break-keep">{t.detailSummary}</span>
+                      <div className="text-[13px] sm:text-[13.5px] text-slate-600 pl-7 sm:pl-8 leading-relaxed flex items-start gap-1">
+                        <span className="text-slate-400 shrink-0 font-medium">↳ 세부 실습:</span>
+                        <span className="font-medium text-slate-700 break-keep">{t.detailSummary}</span>
                       </div>
                     </div>
                   ))}
 
                   {categorizedThemes.uncategorizedCount > 0 && (
-                    <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-3.5 sm:p-4 rounded-2xl shadow-sm flex items-center justify-between">
+                    <div className="bg-white border border-slate-200 p-3.5 sm:p-4 rounded-2xl shadow-sm flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <span className="text-xl sm:text-2xl">📝</span>
-                        <span className="font-extrabold text-[15.5px] sm:text-[16.5px] text-slate-900 dark:text-slate-100">
+                        <span className="font-extrabold text-[15.5px] sm:text-[16.5px] text-slate-900">
                           기타 맞춤 실습
                         </span>
                       </div>
-                      <span className="text-blue-600 dark:text-blue-400 font-black text-[16px] sm:text-[17px] shrink-0 ml-2">
+                      <span className="text-blue-600 font-black text-[16px] sm:text-[17px] shrink-0 ml-2">
                         {categorizedThemes.uncategorizedCount}건
                       </span>
                     </div>
                   )}
 
                   {categorizedThemes.themes.length === 0 && categorizedThemes.uncategorizedCount === 0 && (
-                    <div className="text-slate-500 dark:text-slate-400 text-sm font-medium py-4 text-center bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700">
+                    <div className="text-slate-500 text-sm font-medium py-4 text-center bg-white rounded-2xl border border-slate-200">
                       등록된 수업 내용 메모가 없습니다.
                     </div>
                   )}
@@ -1618,16 +1618,16 @@ export default function DailyScheduleApp({ initialTeam, onNavigateBack, onTeamCh
 
               {/* 3. 오늘의 인사이트 (사실 근거 문장 3개) */}
               <div className="pt-2">
-                <h3 className="font-extrabold text-[18px] sm:text-[19px] text-slate-900 dark:text-slate-100 mb-3 tracking-tight">
+                <h3 className="font-extrabold text-[18px] sm:text-[19px] text-slate-900 mb-3 tracking-tight">
                   오늘의 인사이트
                 </h3>
-                <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-4 sm:p-5 shadow-sm divide-y divide-slate-200 dark:divide-slate-700">
+                <div className="bg-white border border-slate-200 rounded-2xl p-4 sm:p-5 shadow-sm divide-y divide-slate-200">
                   {factualInsights.map((insight, idx) => (
                     <div key={idx} className={`${idx > 0 ? 'pt-3.5' : ''} ${idx < factualInsights.length - 1 ? 'pb-3.5' : ''}`}>
-                      <p className="text-[15.5px] sm:text-[16.5px] font-semibold text-slate-800 dark:text-slate-100 leading-relaxed break-keep mb-1">
+                      <p className="text-[15.5px] sm:text-[16.5px] font-semibold text-slate-800 leading-relaxed break-keep mb-1">
                         {insight.text}
                       </p>
-                      <span className="text-[13px] font-medium text-slate-500 dark:text-slate-400">
+                      <span className="text-[13px] font-medium text-slate-500">
                         {insight.evidence}
                       </span>
                     </div>
@@ -1644,7 +1644,7 @@ export default function DailyScheduleApp({ initialTeam, onNavigateBack, onTeamCh
       {/* 3. 학생별 과거 출석 일자 팝업 모달 */}
       {selectedStudentDates && (
         <div className="fixed inset-0 bg-slate-900/45 backdrop-blur-[3px] flex items-center justify-center z-[60] p-3 sm:p-4" onClick={() => setSelectedStudentDates(null)}>
-          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl w-full max-w-xl overflow-hidden flex flex-col max-h-[85vh] animate-fadeIn" onClick={e => e.stopPropagation()}>
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-xl overflow-hidden flex flex-col max-h-[85vh] animate-fadeIn" onClick={e => e.stopPropagation()}>
             <div className="bg-purple-600 text-white py-3 px-4 flex justify-between items-center shrink-0">
               <h3 className="font-bold text-[18px] sm:text-[20px]">
                 {selectedStudentDates.name}님의 출석 일자 <span className="text-purple-200 text-[15px] sm:text-[16px]">({selectedStudentDates.count}회)</span>

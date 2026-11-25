@@ -2,10 +2,21 @@ import { getSavedItem, setSavedItem, removeSavedItem } from './helpers';
 
 export const BG_GRAY_LEVEL_KEY = 'sungdong_bg_gray_level';
 export const ROOM_POPUP_MODE_KEY = 'sungdong_room_popup_mode';
+export const FONT_SCALE_KEY = 'sungdong_font_scale';
 export const ADMIN_PASSWORD_KEY = 'sungdong_admin_password';
 
 export const DEFAULT_BG_GRAY_LEVEL = 20;
 export const DEFAULT_ROOM_POPUP_MODE = 'once';
+export const DEFAULT_FONT_SCALE = 'normal';
+
+export const getFontScale = () => {
+  try {
+    const saved = getSavedItem(FONT_SCALE_KEY);
+    return (saved === 'large' || saved === 'xlarge') ? saved : DEFAULT_FONT_SCALE;
+  } catch (_) {
+    return DEFAULT_FONT_SCALE;
+  }
+};
 
 const lerp = (start, end, ratio) => Math.round(start + (end - start) * ratio);
 
@@ -87,9 +98,10 @@ export const computeMainBgColors = (level) => {
   };
 };
 
-export const applyAppAppearance = (grayLevelOverride) => {
+export const applyAppAppearance = (grayLevelOverride, fontScaleOverride) => {
   if (typeof document === 'undefined') return;
   const grayLevel = grayLevelOverride !== undefined ? clampBgGrayLevel(grayLevelOverride) : getBgGrayLevel();
+  const fontScale = fontScaleOverride !== undefined ? fontScaleOverride : getFontScale();
   const root = document.documentElement;
 
   root.classList.remove('dark');
@@ -103,6 +115,14 @@ export const applyAppAppearance = (grayLevelOverride) => {
   const { mainBg, outerBg } = computeMainBgColors(grayLevel);
   root.style.setProperty('--main-bg-color', mainBg);
   root.style.setProperty('--main-outer-bg-color', outerBg);
+  root.style.fontSize = fontScale === 'xlarge' ? '115%' : fontScale === 'large' ? '107.5%' : '100%';
+};
+
+export const saveFontScale = (scale) => {
+  const normalized = (scale === 'large' || scale === 'xlarge') ? scale : DEFAULT_FONT_SCALE;
+  setSavedItem(FONT_SCALE_KEY, normalized);
+  applyAppAppearance(undefined, normalized);
+  return normalized;
 };
 
 export const saveBgGrayLevel = (level) => {

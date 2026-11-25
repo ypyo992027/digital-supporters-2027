@@ -12,6 +12,7 @@ import {
 import { fetchAssistantSchedules, toApplyEntries, isMissingTableError } from '../utils/assistantSchedule';
 import { Home, LucideCalendar } from './Icons';
 import { hasValidSavedAdminPassword } from '../utils/appSettings';
+import { showAlert, showConfirm } from '../utils/dialog';
 
 // 스마트폰 환경 등에서 날짜 파싱 오류 및 Timezone 문제를 방지하기 위해 로컬 타임으로 안전하게 파싱하는 공통 함수
 const parseDateLocal = (dateStr) => {
@@ -127,11 +128,11 @@ export default function AutoScheduleApp({ onNavigateBack, onNavigateToAssistantS
 
   const handleAnalyze = async () => {
     if (!startDate || !endDate) {
-      alert("시작일자와 종료일자를 선택해주세요.");
+      showAlert("시작일자와 종료일자를 선택해주세요.");
       return;
     }
     if (new Date(startDate) > new Date(endDate)) {
-      alert("시작일자는 종료일자보다 빠르거나 같아야 합니다.");
+      showAlert("시작일자는 종료일자보다 빠르거나 같아야 합니다.");
       return;
     }
 
@@ -563,7 +564,7 @@ export default function AutoScheduleApp({ onNavigateBack, onNavigateToAssistantS
 
   const handleUndo = async () => {
     if (!lastBackupId) return;
-    if (!window.confirm("가장 최근에 저장한 시간표 작성을 취소하고 이전 상태로 되돌리시겠습니까?")) return;
+    if (!(await showConfirm("가장 최근에 저장한 시간표 작성을 취소하고 이전 상태로 되돌리시겠습니까?"))) return;
 
     setRestoring(true);
     setProgressMsg("이전 상태로 복원 중입니다...");
@@ -630,12 +631,12 @@ export default function AutoScheduleApp({ onNavigateBack, onNavigateToAssistantS
 
       await supabaseClient.from('daily_logs_backup').delete().eq('backup_id', lastBackupId);
       setLastBackupId(null);
-      alert("이전 시간표 상태로 성공적으로 되돌렸습니다!");
+      showAlert("이전 시간표 상태로 성공적으로 되돌렸습니다!");
       setDraftRecords([]);
       setScheduleTemplates({});
     } catch (err) {
       console.error(err);
-      alert("되돌리기 실패: " + err.message);
+      showAlert("되돌리기 실패: " + err.message);
     } finally {
       setRestoring(false);
       setProgressMsg("");
@@ -661,7 +662,7 @@ export default function AutoScheduleApp({ onNavigateBack, onNavigateToAssistantS
   // [② 보조강사 적용] 보조강사 시간표 화면에서 저장한 데이터(DB)를 불러와 시간표 초안에 반영
   const handleApplyAssistantClick = async () => {
     if (draftRecords.length === 0) {
-      alert("먼저 '주간 시간표 보기'를 통해 시간표 초안을 작성해 주세요.");
+      showAlert("먼저 '주간 시간표 보기'를 통해 시간표 초안을 작성해 주세요.");
       return;
     }
 
@@ -672,13 +673,13 @@ export default function AutoScheduleApp({ onNavigateBack, onNavigateToAssistantS
         rows = await fetchAssistantSchedules();
       } catch (fetchErr) {
         if (isMissingTableError(fetchErr)) {
-          alert("보조강사 시간표 데이터베이스가 아직 준비되지 않았습니다.\n[보조강사 시간표] 화면의 안내를 확인해 주세요.");
+          showAlert("보조강사 시간표 데이터베이스가 아직 준비되지 않았습니다.\n[보조강사 시간표] 화면의 안내를 확인해 주세요.");
           return;
         }
         throw fetchErr;
       }
       if (rows.length === 0) {
-        alert("등록된 보조강사 시간표가 없습니다.\n[보조강사 시간표] 화면에서 먼저 입력해 주세요.");
+        showAlert("등록된 보조강사 시간표가 없습니다.\n[보조강사 시간표] 화면에서 먼저 입력해 주세요.");
         return;
       }
       const assistantData = toApplyEntries(rows);
@@ -813,11 +814,11 @@ export default function AutoScheduleApp({ onNavigateBack, onNavigateToAssistantS
         });
 
         setTimeout(() => {
-          alert(`총 ${updateCount}건의 보조강사 일정이 업데이트되었습니다.`);
+          showAlert(`총 ${updateCount}건의 보조강사 일정이 업데이트되었습니다.`);
         }, 100);
       } else {
         setTimeout(() => {
-          alert("해당 기간의 주간시간표와 보조강사 시간표 중 일치하는 항목이 없습니다.");
+          showAlert("해당 기간의 주간시간표와 보조강사 시간표 중 일치하는 항목이 없습니다.");
         }, 100);
       }
 
@@ -825,7 +826,7 @@ export default function AutoScheduleApp({ onNavigateBack, onNavigateToAssistantS
 
     } catch (err) {
       console.error(err);
-      alert("보조강사 데이터를 적용하는 중 오류가 발생했습니다: " + err.message);
+      showAlert("보조강사 데이터를 적용하는 중 오류가 발생했습니다: " + err.message);
     } finally {
       setProgressMsg("");
     }
@@ -839,8 +840,8 @@ export default function AutoScheduleApp({ onNavigateBack, onNavigateToAssistantS
     setIsAssistantApplied(false);
   };
 
-  const handleOpenAssistantSchedule = () => {
-    if (draftRecords.length > 0 && !window.confirm("보조강사 시간표 화면으로 이동하면 지금 작성 중인 시간표 미리보기가 초기화됩니다.\n이동할까요?")) return;
+  const handleOpenAssistantSchedule = async () => {
+    if (draftRecords.length > 0 && !(await showConfirm("보조강사 시간표 화면으로 이동하면 지금 작성 중인 시간표 미리보기가 초기화됩니다.\n이동할까요?"))) return;
     if (onNavigateToAssistantSchedule) onNavigateToAssistantSchedule();
   };
 

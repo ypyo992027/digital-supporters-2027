@@ -3,6 +3,7 @@ import { supabaseClient } from '../utils/supabase';
 import { Home, LucideCalendar } from './Icons';
 import { getSavedItem, setSavedItem, removeSavedItem } from '../utils/helpers';
 import { hasValidSavedAdminPassword } from '../utils/appSettings';
+import { showAlert, showConfirm } from '../utils/dialog';
 
 const FloatingScrollButton = ({ listRef, show }) => {
   const [isListVisible, setIsListVisible] = useState(false);
@@ -387,7 +388,7 @@ export default function NoticeManagementApp({ onNavigateBack, initialNotice }) {
       }
     } catch (err) {
       console.error(err);
-      alert("이미지 업로드에 실패했습니다: " + err.message);
+      showAlert("이미지 업로드에 실패했습니다: " + err.message);
     } finally {
       setUploading(false);
       e.target.value = '';
@@ -449,7 +450,7 @@ export default function NoticeManagementApp({ onNavigateBack, initialNotice }) {
     const effectiveTitle = title.trim() ? title.trim() : (silent ? '작성 중인 공지사항' : '');
 
     if (!effectiveTitle || !content.trim()) {
-      if (!silent) alert("제목과 내용을 입력해 주세요.");
+      if (!silent) showAlert("제목과 내용을 입력해 주세요.");
       return false;
     }
 
@@ -457,7 +458,7 @@ export default function NoticeManagementApp({ onNavigateBack, initialNotice }) {
     const effectiveEndDate = endDate || effectiveStartDate;
 
     if (!silent && (!startDate || !endDate)) {
-      alert("게시시작일과 게시종료일을 입력해 주세요.");
+      showAlert("게시시작일과 게시종료일을 입력해 주세요.");
       return false;
     }
 
@@ -472,7 +473,7 @@ export default function NoticeManagementApp({ onNavigateBack, initialNotice }) {
       : `${currentYear}-${createdAt}`;
 
     if (new Date(fullStartDate) > new Date(fullEndDate)) {
-      if (!silent) alert("게시시작일은 게시종료일보다 빠르거나 같아야 합니다.");
+      if (!silent) showAlert("게시시작일은 게시종료일보다 빠르거나 같아야 합니다.");
       return false;
     }
 
@@ -499,7 +500,7 @@ export default function NoticeManagementApp({ onNavigateBack, initialNotice }) {
 
       if (error) throw error;
 
-      if (!silent) alert("공지사항을 저장하였습니다.");
+      if (!silent) showAlert("공지사항을 저장하였습니다.");
       setIsEditing(false);
       setSelectedNotice(null);
       setSelectedImg(null);
@@ -507,7 +508,7 @@ export default function NoticeManagementApp({ onNavigateBack, initialNotice }) {
       return true;
     } catch (err) {
       console.error(err);
-      if (!silent) alert("저장 실패: " + err.message);
+      if (!silent) showAlert("저장 실패: " + err.message);
       return false;
     } finally {
       setSaving(false);
@@ -516,7 +517,7 @@ export default function NoticeManagementApp({ onNavigateBack, initialNotice }) {
 
   const handleDelete = async () => {
     if (!selectedNotice) return;
-    if (!window.confirm("이 공지사항을 정말 삭제하시겠습니까?")) return;
+    if (!await showConfirm("이 공지사항을 정말 삭제하시겠습니까?")) return;
 
     setSaving(true);
     try {
@@ -527,7 +528,7 @@ export default function NoticeManagementApp({ onNavigateBack, initialNotice }) {
 
       if (error) throw error;
 
-      alert("공지사항이 삭제되었습니다.");
+      showAlert("공지사항이 삭제되었습니다.");
       setIsEditing(false);
       setSelectedNotice(null);
       setTitle("");
@@ -542,7 +543,7 @@ export default function NoticeManagementApp({ onNavigateBack, initialNotice }) {
       loadNotices();
     } catch (err) {
       console.error(err);
-      alert("삭제 실패: " + err.message);
+      showAlert("삭제 실패: " + err.message);
     } finally {
       setSaving(false);
     }
@@ -633,7 +634,7 @@ export default function NoticeManagementApp({ onNavigateBack, initialNotice }) {
           <button
             onClick={async () => {
               if (isEditing && hasChanges) {
-                const wantsToSave = window.confirm("공지사항을 저장하시겠습니까?");
+                const wantsToSave = await showConfirm("공지사항을 저장하시겠습니까?");
                 if (wantsToSave) {
                   try {
                     await handleSave({ preventDefault: () => {} }, true);
@@ -693,7 +694,7 @@ CREATE POLICY "Allow public all access" ON public.notices FOR ALL USING (true) W
               <button
                 onClick={() => {
                   navigator.clipboard.writeText(`ALTER TABLE public.notices ADD COLUMN IF NOT EXISTS is_top boolean DEFAULT false;`);
-                  alert("컬럼 추가 SQL이 클립보드에 복사되었습니다!");
+                  showAlert("컬럼 추가 SQL이 클립보드에 복사되었습니다!");
                 }}
                 className="bg-sky-600 text-white font-bold py-1.5 px-3 rounded-lg hover:bg-sky-700 active:scale-95 transition-all text-xs shadow-sm"
               >
@@ -716,7 +717,7 @@ ALTER TABLE public.notices ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Allow public read access" ON public.notices FOR SELECT USING (true);
 CREATE POLICY "Allow public all access" ON public.notices FOR ALL USING (true) WITH CHECK (true);`);
-                  alert("신규 생성 SQL이 클립보드에 복사되었습니다!");
+                  showAlert("신규 생성 SQL이 클립보드에 복사되었습니다!");
                 }}
                 className="bg-amber-600 text-white font-bold py-1.5 px-3 rounded-lg hover:bg-amber-700 active:scale-95 transition-all text-xs shadow-sm"
               >

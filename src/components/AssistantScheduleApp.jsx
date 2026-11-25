@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { Home, LucideCalendar } from './Icons';
 import { hasValidSavedAdminPassword } from '../utils/appSettings';
+import { showConfirm } from '../utils/dialog';
 import { fetchAllTeachersFromDb, getTeacherSortWeight } from '../utils/helpers';
 import {
   ASSISTANT_DAYS,
@@ -140,9 +141,9 @@ export default function AssistantScheduleApp({ onNavigateBack }) {
     setTimeout(() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }), 50);
   };
 
-  const deleteRow = (row) => {
+  const deleteRow = async (row) => {
     const label = row.program_name || row.subject || '이 행';
-    if (!window.confirm(`'${label}'을(를) 삭제할까요?\n[저장]을 눌러야 실제로 반영됩니다.`)) return;
+    if (!(await showConfirm(`'${label}'을(를) 삭제할까요?\n[저장]을 눌러야 실제로 반영됩니다.`))) return;
     setRows(prev => prev.filter(r => r._key !== row._key));
   };
 
@@ -156,14 +157,14 @@ export default function AssistantScheduleApp({ onNavigateBack }) {
     });
   };
 
-  const handleRevert = () => {
+  const handleRevert = async () => {
     if (!isDirty) return;
-    if (!window.confirm('저장하지 않은 변경 내용을 모두 취소할까요?')) return;
+    if (!(await showConfirm('저장하지 않은 변경 내용을 모두 취소할까요?'))) return;
     load();
   };
 
-  const handleLoadDefaults = () => {
-    if (rows.length > 0 && !window.confirm('현재 목록을 기본 데이터(2026년 4분기 배정표)로 바꿀까요?\n[저장]을 눌러야 실제로 반영됩니다.')) return;
+  const handleLoadDefaults = async () => {
+    if (rows.length > 0 && !(await showConfirm('현재 목록을 기본 데이터(2026년 4분기 배정표)로 바꿀까요?\n[저장]을 눌러야 실제로 반영됩니다.'))) return;
     // 기존 DB 행은 originalIds에 남아 있으므로 저장 시 삭제되고 기본 데이터가 새로 추가됨
     setRows(DEFAULT_ASSISTANT_ROWS.map(r => withKey(withInstructors({ ...r }))));
     setCourseStart(DEFAULT_ASSISTANT_ROWS[0].course_start);
@@ -209,8 +210,8 @@ export default function AssistantScheduleApp({ onNavigateBack }) {
     }
   };
 
-  const handleBack = () => {
-    if (isDirty && !window.confirm('저장하지 않은 변경 내용이 있습니다. 저장하지 않고 나갈까요?')) return;
+  const handleBack = async () => {
+    if (isDirty && !(await showConfirm('저장하지 않은 변경 내용이 있습니다. 저장하지 않고 나갈까요?'))) return;
     onNavigateBack();
   };
 

@@ -1,6 +1,6 @@
 // 나의 주간 일정 보기
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { supabaseClient } from '../utils/supabase';
 import {
   getLocalDateString,
@@ -51,6 +51,11 @@ export default function MyWeeklyScheduleApp({
   teacher: initialTeacher,
   onNavigateBack
 }) {
+  const [viewMode, setViewMode] = useState('weekly'); // 'weekly' | 'monthly'
+  const [monthlyDate, setMonthlyDate] = useState(() => new Date());
+  const [monthlyRecords, setMonthlyRecords] = useState([]);
+  const [isMonthlyLoading, setIsMonthlyLoading] = useState(false);
+
   const [team, setTeam] = useState(() => {
     return (
       initialTeam ||
@@ -737,6 +742,81 @@ export default function MyWeeklyScheduleApp({
     setScheduleData(parsedData);
   }, [teacher, currentWeekStart, supabaseRecords, teamLeader, dbHolidays, allTeamRecords]);
 
+  // 월간 활동 요약 데이터 로드
+  useEffect(() => {
+    if (viewMode !== 'monthly' || !team || !teacher || teacher === '__ALL__') return;
+    let isMounted = true;
+    const fetchMonthly = async () => {
+      setIsMonthlyLoading(true);
+      try {
+        const y = monthlyDate.getFullYear();
+        const m = monthlyDate.getMonth() + 1;
+        const monthStart = `${y}-${String(m).padStart(2, '0')}-01`;
+        const lastDay = new Date(y, m, 0).getDate();
+        const monthEnd = `${y}-${String(m).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`;
+        const { data, error } = await supabaseClient
+          .from('daily_logs')
+          .select('log_date, shift, student, location, attendance, status')
+          .eq('team', team)
+          .eq('teacher', teacher)
+          .gte('log_date', monthStart)
+          .lte('log_date', monthEnd);
+        if (!isMounted) return;
+        if (!error && Array.isArray(data)) {
+          setMonthlyRecords(data);
+        } else {
+          setMonthlyRecords([]);
+        }
+      } catch (_) {
+        if (isMounted) setMonthlyRecords([]);
+      } finally {
+        if (isMounted) setIsMonthlyLoading(false);
+      }
+    };
+    fetchMonthly();
+    return () => { isMounted = false; };
+  }, [viewMode, monthlyDate, team, teacher]);
+
+  const monthlyStats = useMemo(() => {
+    const workDateSet = new Set();
+    let totalClasses = 0;
+    let attendedCount = 0;
+    let absentCount = 0;
+    let vacationCount = 0;
+    let specialCount = 0;
+
+    monthlyRecords.forEach(r => {
+      const st = (r.student || '').trim();
+      const loc = (r.location || '').trim();
+      if (!st || st === '-' || st.includes('자체학습') || st.includes('대상자발굴') || st.includes('공휴일') || loc.includes('공휴일') || loc.includes('휴무일')) return;
+      totalClasses += 1;
+      const merged = mergeAttendanceAndStatus(r.attendance, r.status).replace(/\u200B/g, '').trim();
+      if (st.includes('경로당') || loc.includes('경로당') || st.includes('보조강사')) {
+        specialCount += 1;
+      }
+      if (hasIndependentKeyword(merged, ['선생님휴가']) || merged.includes('선생님휴가')) {
+        vacationCount += 1;
+      } else {
+        workDateSet.add(r.log_date);
+        const hasAtt = hasIndependentKeyword(merged, ['1', '출석']);
+        if (merged.includes('결석') && !hasAtt) {
+          absentCount += 1;
+        } else if (hasAtt || /^[1-9]\d*/.test(merged) || merged.length > 2) {
+          attendedCount += 1;
+        }
+      }
+    });
+
+    return {
+      workDays: workDateSet.size,
+      totalClasses,
+      attendedCount,
+      absentCount,
+      vacationCount,
+      specialCount
+    };
+  }, [monthlyRecords]);
+
   const getStatusColorClass = (statusStr) => {
     if (!statusStr) return "text-gray-800";
     const parts = statusStr.split(',').map(s => s.trim().replace(/\s+/g, ''));
@@ -821,11 +901,82 @@ export default function MyWeeklyScheduleApp({
 
       <div className="flex-1 flex flex-col pb-4">
         <div className="max-w-5xl lg:max-w-[1536px] w-full mx-auto flex-1 flex flex-col px-2.5 sm:px-5 py-3 md:py-6 mt-1">
-          <div className="pb-2 px-1">
+          <div className="pb-2 px-1 flex items-center justify-between gap-2">
             <h2 className="text-[19px] sm:text-xl font-bold text-gray-800 flex items-center tracking-tight">
-              <span className="flex items-center"><CalendarDaysIcon className="w-5 h-5 mr-2 text-blue-600" /> 나의 주간 일정</span>
+              <span className="flex items-center"><CalendarDaysIcon className="w-5 h-5 mr-2 text-blue-600" /> {viewMode === 'weekly' ? '나의 주간 일정' : '나의 월간 활동 요약'}</span>
             </h2>
+            {teacher && teacher !== '__ALL__' && (
+              <div className="inline-flex bg-slate-200/80 p-0.5 rounded-xl border border-slate-300/60 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => setViewMode('weekly')}
+                  className={`px-3 py-1 rounded-lg text-[13px] font-extrabold transition ${viewMode === 'weekly' ? 'bg-white text-blue-700 shadow-xs' : 'text-slate-600 hover:text-slate-900'}`}
+                >
+                  주간
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setViewMode('monthly')}
+                  className={`px-3 py-1 rounded-lg text-[13px] font-extrabold transition ${viewMode === 'monthly' ? 'bg-white text-blue-700 shadow-xs' : 'text-slate-600 hover:text-slate-900'}`}
+                >
+                  월간 요약
+                </button>
+              </div>
+            )}
           </div>
+          {viewMode === 'monthly' ? (
+            <div className="bg-white rounded-2xl shadow-lg ring-1 ring-gray-900/5 p-4 sm:p-6 space-y-4">
+              <div className="flex items-center justify-between gap-2">
+                <button
+                  type="button"
+                  onClick={() => setMonthlyDate(prev => new Date(prev.getFullYear(), prev.getMonth() - 1, 1))}
+                  className="w-11 h-11 flex items-center justify-center rounded-xl bg-white ring-1 ring-gray-200 shadow-sm hover:bg-gray-50 active:scale-95 text-gray-600"
+                >
+                  <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor"><path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z" /></svg>
+                </button>
+                <div className="flex-1 h-11 flex items-center justify-center ring-1 ring-blue-200 rounded-xl bg-white text-[17px] sm:text-[19px] font-extrabold text-slate-900 shadow-sm">
+                  {monthlyDate.getFullYear()}년 {monthlyDate.getMonth() + 1}월
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setMonthlyDate(prev => new Date(prev.getFullYear(), prev.getMonth() + 1, 1))}
+                  className="w-11 h-11 flex items-center justify-center rounded-xl bg-white ring-1 ring-gray-200 shadow-sm hover:bg-gray-50 active:scale-95 text-gray-600"
+                >
+                  <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" /></svg>
+                </button>
+              </div>
+              {isMonthlyLoading ? (
+                <div className="py-12 text-center text-slate-500 font-bold">월간 활동 내역을 불러오는 중...</div>
+              ) : (
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  <div className="p-4 rounded-2xl bg-blue-50 border border-blue-200 text-center">
+                    <div className="text-[13px] font-bold text-blue-700">총 근무일수</div>
+                    <div className="text-3xl font-black text-blue-950 mt-1">{monthlyStats.workDays}<span className="text-base font-bold ml-0.5">일</span></div>
+                  </div>
+                  <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-center">
+                    <div className="text-[13px] font-bold text-slate-600">배정 수업</div>
+                    <div className="text-3xl font-black text-slate-900 mt-1">{monthlyStats.totalClasses}<span className="text-base font-bold ml-0.5">건</span></div>
+                  </div>
+                  <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-center">
+                    <div className="text-[13px] font-bold text-emerald-700">출석 진행</div>
+                    <div className="text-3xl font-black text-emerald-900 mt-1">{monthlyStats.attendedCount}<span className="text-base font-bold ml-0.5">건</span></div>
+                  </div>
+                  <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-center">
+                    <div className="text-[13px] font-bold text-rose-700">학생 결석</div>
+                    <div className="text-3xl font-black text-rose-900 mt-1">{monthlyStats.absentCount}<span className="text-base font-bold ml-0.5">건</span></div>
+                  </div>
+                  <div className="p-4 rounded-2xl bg-gray-100 border border-gray-300 text-center">
+                    <div className="text-[13px] font-bold text-gray-600">선생님 휴가</div>
+                    <div className="text-3xl font-black text-gray-800 mt-1">{monthlyStats.vacationCount}<span className="text-base font-bold ml-0.5">건</span></div>
+                  </div>
+                  <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-center">
+                    <div className="text-[13px] font-bold text-amber-800">경로당·보조강사</div>
+                    <div className="text-3xl font-black text-amber-950 mt-1">{monthlyStats.specialCount}<span className="text-base font-bold ml-0.5">건</span></div>
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : (
           <div className="bg-white rounded-2xl shadow-lg ring-1 ring-gray-900/5 flex flex-col flex-1 overflow-hidden">
           <div className="shrink-0 bg-white px-2 sm:px-4 pt-4 pb-3 shadow-sm relative z-10 flex flex-col items-center border-b border-gray-100">
             <div className="flex items-center gap-1.5 sm:gap-2 w-full">
@@ -967,6 +1118,7 @@ export default function MyWeeklyScheduleApp({
             </div>
           </div>
         </div>
+          )}
       </div>
     </div>
 

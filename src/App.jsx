@@ -1,5 +1,7 @@
 import React, { useState, useEffect, Suspense, lazy } from 'react';
 import MainApp from './components/MainApp';
+import AppDialog from './components/AppDialog';
+import QuickNavBar from './components/QuickNavBar';
 import {
   getSessionItem,
   setSessionItem,
@@ -343,9 +345,34 @@ export default function App() {
     );
   };
 
+  const showQuickNav = ['dailySchedule', 'myWeeklySchedule', 'studentSearch'].includes(currentView);
+
+  const handleQuickNavSelect = (targetView) => {
+    if (targetView === 'main') {
+      const savedTeam = getSavedItem('sungdong_team', '');
+      const savedTeacher = getSavedItem('sungdong_teacher', '');
+      if (savedTeam && savedTeacher) {
+        setSessionItem('sungdong_is_logged_in', 'true');
+      }
+      navigateTo('main');
+      return;
+    }
+    if (targetView === 'myWeeklySchedule') {
+      const t = getSavedItem('sungdong_team', '') || selectedTeamForSchedule;
+      const th = getSavedItem('sungdong_teacher', '') || selectedTeacherForWeekly;
+      if (t) setSelectedTeamForSchedule(t);
+      if (th) setSelectedTeacherForWeekly(th);
+    }
+    navigateTo(targetView);
+  };
+
   return (
     <Suspense fallback={<LoadingFallback />}>
-      {renderView()}
+      <div className={showQuickNav ? 'pb-16' : ''}>
+        {renderView()}
+      </div>
+      {showQuickNav && <QuickNavBar currentView={currentView} onSelectView={handleQuickNavSelect} />}
+      <AppDialog />
     </Suspense>
   );
 }

@@ -376,7 +376,31 @@ export default function StudentSearchApp({ onNavigateBack }) {
     const attended = filteredRecords.filter(r => r.attendanceTag.includes("출석")).length;
     const absent = filteredRecords.filter(r => r.attendanceTag.includes("결석")).length;
     const other = filteredRecords.length - attended - absent;
-    return { total: filteredRecords.length, attended, absent, other };
+
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
+    const todayTime = todayStart.getTime();
+
+    const lastAttendedRec = filteredRecords.find(r => r.attendanceTag.includes("출석") && r.colDate.getTime() <= todayTime);
+    const futureRecords = filteredRecords.filter(r => r.colDate.getTime() > todayTime);
+    const nextScheduledRec = futureRecords.length > 0 ? futureRecords[futureRecords.length - 1] : null;
+
+    const formatShortDate = (rec) => {
+      if (!rec) return null;
+      const m = rec.colDate.getMonth() + 1;
+      const d = rec.colDate.getDate();
+      const day = ['일', '월', '화', '수', '목', '금', '토'][rec.colDate.getDay()];
+      return `${m}/${d}(${day})`;
+    };
+
+    return {
+      total: filteredRecords.length,
+      attended,
+      absent,
+      other,
+      lastAttendedDate: formatShortDate(lastAttendedRec),
+      nextScheduledDate: formatShortDate(nextScheduledRec)
+    };
   }, [filteredRecords]);
 
   return (
@@ -570,6 +594,16 @@ export default function StudentSearchApp({ onNavigateBack }) {
                   <div className="bg-gray-200 rounded-xl p-2.5 md:p-3 text-center border border-gray-300">
                     <div className="text-[13px] md:text-[15px] text-gray-800 font-bold">기타</div>
                     <div className="text-2xl md:text-3xl font-black text-gray-900">{stats.other}</div>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-2 md:gap-3 mt-2">
+                  <div className="flex items-center justify-between px-3 py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-[12.5px] sm:text-[13.5px]">
+                    <span className="text-slate-500 font-bold">최근 출석일</span>
+                    <span className="font-extrabold text-blue-700">{stats.lastAttendedDate || '기록 없음'}</span>
+                  </div>
+                  <div className="flex items-center justify-between px-3 py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-[12.5px] sm:text-[13.5px]">
+                    <span className="text-slate-500 font-bold">다음 예정일</span>
+                    <span className="font-extrabold text-emerald-700">{stats.nextScheduledDate || '예정 없음'}</span>
                   </div>
                 </div>
               </div>

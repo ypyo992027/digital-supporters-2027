@@ -5,6 +5,7 @@ import { supabaseClient } from '../utils/supabase';
 import { setGlobalTeachersList, formatTeacherRow, getLocalDateString } from '../utils/helpers';
 import { User, Home } from './Icons';
 import { hasValidSavedAdminPassword } from '../utils/appSettings';
+import { showAlert, showConfirm } from '../utils/dialog';
 
 const TEAM_OPTIONS = ['1팀', '2팀', '3팀', '취업팀'];
 
@@ -91,7 +92,7 @@ export default function TeacherManagementApp({ onNavigateBack }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.name.trim()) {
-      alert('이름을 입력해주세요.');
+      showAlert('이름을 입력해주세요.');
       return;
     }
 
@@ -122,7 +123,7 @@ export default function TeacherManagementApp({ onNavigateBack }) {
       closeForm();
     } catch (err) {
       console.error(err);
-      alert('저장에 실패했습니다.');
+      showAlert('저장에 실패했습니다.');
     } finally {
       setIsLoading(false);
     }
@@ -173,7 +174,7 @@ export default function TeacherManagementApp({ onNavigateBack }) {
     const trimmed = typeof rawVal === 'string' ? rawVal.trim() : rawVal;
 
     if (field === 'name' && !trimmed) {
-      alert('이름은 비워둘 수 없습니다.');
+      showAlert('이름은 비워둘 수 없습니다.');
       return;
     }
 
@@ -189,7 +190,7 @@ export default function TeacherManagementApp({ onNavigateBack }) {
       } else {
         const parsed = parseInt(trimmed, 10);
         if (Number.isNaN(parsed)) {
-          alert('번호는 숫자로 입력해 주세요.');
+          showAlert('번호는 숫자로 입력해 주세요.');
           return;
         }
         dbValue = parsed;
@@ -214,7 +215,7 @@ export default function TeacherManagementApp({ onNavigateBack }) {
       showNotice('데이터가 저장되었습니다.');
     } catch (err) {
       console.error(err);
-      alert('수정 중 오류가 발생했습니다: ' + err.message);
+      showAlert('수정 중 오류가 발생했습니다: ' + err.message);
     } finally {
       setIsLoading(false);
     }
@@ -233,7 +234,7 @@ export default function TeacherManagementApp({ onNavigateBack }) {
       showNotice(nextActive ? `${teacher.name} 선생님이 재직 상태로 변경되었습니다.` : `${teacher.name} 선생님이 퇴직처리 완료되었습니다.`);
     } catch (err) {
       console.error(err);
-      alert('상태 변경 중 오류가 발생했습니다: ' + err.message);
+      showAlert('상태 변경 중 오류가 발생했습니다: ' + err.message);
     } finally {
       setIsLoading(false);
     }
@@ -314,7 +315,7 @@ export default function TeacherManagementApp({ onNavigateBack }) {
   }, [teachers, searchQuery, teamFilter, showInactive]);
 
   const handleDelete = async (id) => {
-    if (window.confirm('정말 삭제하시겠습니까?')) {
+    if (await showConfirm('정말 삭제하시겠습니까?')) {
       setIsLoading(true);
       try {
         const { error } = await supabaseClient.from('teachers').delete().eq('id', id);
@@ -323,7 +324,7 @@ export default function TeacherManagementApp({ onNavigateBack }) {
         showNotice('삭제되었습니다.');
       } catch (err) {
         console.error(err);
-        alert('삭제에 실패했습니다.');
+        showAlert('삭제에 실패했습니다.');
       } finally {
         setIsLoading(false);
       }
@@ -338,9 +339,9 @@ export default function TeacherManagementApp({ onNavigateBack }) {
   };
 
   const handleTransferSubmit = async () => {
-    if (!transferTargetName) return alert("이관 받을 선생님을 선택하세요.");
-    if (!transferDate) return alert("기준 일자를 선택하세요.");
-    if (window.confirm(`${transferSource.name} 선생님의 ${transferDate} 이후 일정을 ${transferTargetName} 선생님으로 모두 이관하시겠습니까?`)) {
+    if (!transferTargetName) return showAlert("이관 받을 선생님을 선택하세요.");
+    if (!transferDate) return showAlert("기준 일자를 선택하세요.");
+    if (await showConfirm(`${transferSource.name} 선생님의 ${transferDate} 이후 일정을 ${transferTargetName} 선생님으로 모두 이관하시겠습니까?`)) {
       setIsLoading(true);
       try {
         const { error } = await supabaseClient
@@ -350,10 +351,10 @@ export default function TeacherManagementApp({ onNavigateBack }) {
           .eq('teacher', transferSource.name)
           .gte('log_date', transferDate);
         if (error) throw error;
-        alert("일정 이관이 완료되었습니다.");
+        await showAlert("일정 이관이 완료되었습니다.");
         setShowTransferModal(false);
       } catch (e) {
-        alert("이관 오류: " + e.message);
+        showAlert("이관 오류: " + e.message);
       } finally {
         setIsLoading(false);
       }

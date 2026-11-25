@@ -4,6 +4,7 @@ import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { supabaseClient } from '../utils/supabase';
 import { getSavedItem, setSavedItem, safeJsonSetItem, getLocalDateString } from '../utils/helpers';
 import { hasValidSavedAdminPassword } from '../utils/appSettings';
+import { showAlert, showConfirm } from '../utils/dialog';
 import { LucideCalendar, Home } from './Icons';
 
 const appId = typeof window.__app_id !== 'undefined' ? window.__app_id : 'default-app-id';
@@ -280,7 +281,7 @@ export default function NangmanStudioApp({ onNavigateBack, onNavigateToClassroom
   const copyPreviousWeek = async (e) => {
     e.stopPropagation();
     if (!isManagerMode) return;
-    if (!window.confirm("이전 주의 데이터를 복제하시겠습니까?")) return;
+    if (!(await showConfirm("이전 주의 데이터를 복제하시겠습니까?"))) return;
 
     const currentDays = getCurrentWeekDays();
     const changes = {};
@@ -309,7 +310,7 @@ export default function NangmanStudioApp({ onNavigateBack, onNavigateToClassroom
   const deleteCurrentWeek = async (e) => {
     e.stopPropagation();
     if (!isManagerMode) return;
-    if (!window.confirm("일정 데이터를 지우시겠습니까?")) return;
+    if (!(await showConfirm("일정 데이터를 지우시겠습니까?"))) return;
 
     const currentDays = getCurrentWeekDays();
     const changes = {};
@@ -563,7 +564,7 @@ ALTER TABLE public.nangman_schedules ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Allow public read access" ON public.nangman_schedules FOR SELECT USING (true);
 CREATE POLICY "Allow public all access" ON public.nangman_schedules FOR ALL USING (true) WITH CHECK (true);`);
-                      alert("SQL 쿼리가 클립보드에 복사되었습니다!");
+                      showAlert("SQL 쿼리가 클립보드에 복사되었습니다!");
                     }}
                     className="bg-amber-600 text-white font-bold py-1.5 px-4 rounded-lg hover:bg-amber-700 active:scale-95 transition-all self-start text-xs shadow-sm"
                   >

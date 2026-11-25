@@ -4,6 +4,7 @@ import { saveAs } from 'file-saver';
 import { supabaseClient } from '../utils/supabase';
 import { teamList, fetchAllTeachersFromDb, getGlobalTeachersList } from '../utils/helpers';
 import { Home, Clock, UsersIcon, DownloadIcon } from './Icons';
+import { showAlert, showConfirm } from '../utils/dialog';
 
 const Search = ({ className }) => <svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>;
 const Plus = ({ className }) => <svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14" /><path d="M12 5v14" /></svg>;
@@ -236,7 +237,7 @@ export default function ClassApplicantsApp({ onNavigateBack }) {
     e.preventDefault();
     const cleanName = form.name.trim();
     if (!cleanName) {
-      alert('성명을 입력해 주세요.');
+      showAlert('성명을 입력해 주세요.');
       return;
     }
 
@@ -271,7 +272,7 @@ export default function ClassApplicantsApp({ onNavigateBack }) {
       setShowFormModal(false);
       await loadApplicants();
     } catch (err) {
-      alert('저장 중 오류가 발생했습니다: ' + (err.message || err));
+      showAlert('저장 중 오류가 발생했습니다: ' + (err.message || err));
     } finally {
       setSaving(false);
     }
@@ -279,7 +280,7 @@ export default function ClassApplicantsApp({ onNavigateBack }) {
 
   // Delete applicant
   const handleDelete = async (item) => {
-    if (!window.confirm(`'${item.name}' 님의 수업 희망자 내역을 삭제하시겠습니까?`)) return;
+    if (!(await showConfirm(`'${item.name}' 님의 수업 희망자 내역을 삭제하시겠습니까?`))) return;
     try {
       const { error } = await supabaseClient
         .from('class_applicants')
@@ -288,7 +289,7 @@ export default function ClassApplicantsApp({ onNavigateBack }) {
       if (error) throw error;
       setApplicants(prev => prev.filter(a => a.id !== item.id));
     } catch (err) {
-      alert('삭제 중 오류가 발생했습니다: ' + (err.message || err));
+      showAlert('삭제 중 오류가 발생했습니다: ' + (err.message || err));
     }
   };
 
@@ -396,7 +397,7 @@ export default function ClassApplicantsApp({ onNavigateBack }) {
       const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
       saveAs(blob, `수업_희망자_관리_${new Date().toISOString().slice(0, 10)}.xlsx`);
     } catch (err) {
-      alert('엑셀 파일 생성 중 오류가 발생했습니다: ' + (err.message || err));
+      showAlert('엑셀 파일 생성 중 오류가 발생했습니다: ' + (err.message || err));
     }
   };
 
@@ -469,7 +470,7 @@ export default function ClassApplicantsApp({ onNavigateBack }) {
                 type="button"
                 onClick={() => {
                   navigator.clipboard.writeText(SQL_SETUP);
-                  alert('SQL 쿼리가 클립보드에 복사되었습니다!');
+                  showAlert('SQL 쿼리가 클립보드에 복사되었습니다!');
                 }}
                 className="bg-amber-600 text-white font-bold py-2 px-4 rounded-xl hover:bg-amber-700 active:scale-95 transition-all text-xs sm:text-sm shadow-sm cursor-pointer"
               >
