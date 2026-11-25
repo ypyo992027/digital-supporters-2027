@@ -12,6 +12,8 @@ const sanitizePart = (str) =>
     .replace(/[\\/:*?"<>|\s_]+/g, '-')
     .replace(/^-+|-+$/g, '') || '미지정';
 
+export const normalizeStudentPhotoKey = (studentName) => sanitizePart(studentName);
+
 // 파일명 규칙: {학생이름}_{날짜}_{교시}_{선생님}_{타임스탬프}.jpg
 export const buildStudentPhotoFileName = ({ studentName, date, shift, teacher }) => {
   const cleanStudent = sanitizePart(studentName);
@@ -126,4 +128,17 @@ export const deleteStudentPhotoFromDrive = async (fileId) => {
     action: 'deleteStudentPhoto',
     fileId
   }, 15000);
+};
+
+export const fetchPhotoCountsByStudent = async () => {
+  const files = await listStudentPhotosFromDrive('');
+  const counts = {};
+  files.forEach((f) => {
+    const meta = parseStudentPhotoFileName(f?.name);
+    const key = meta.studentName;
+    if (key) {
+      counts[key] = (counts[key] || 0) + 1;
+    }
+  });
+  return counts;
 };

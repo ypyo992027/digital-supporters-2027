@@ -11,7 +11,7 @@ import {
 } from '../utils/studentPhotoDrive';
 import { showAlert, showConfirm } from '../utils/dialog';
 
-export default function StudentPhotoModal({ target, onClose }) {
+export default function StudentPhotoModal({ target, onClose, onPhotosChanged }) {
   const cameraInputRef = useRef(null);
   const albumInputRef = useRef(null);
 
@@ -33,6 +33,7 @@ export default function StudentPhotoModal({ target, onClose }) {
     try {
       const list = await listStudentPhotosFromDrive(studentName);
       setPhotos(list);
+      onPhotosChanged?.(studentName, list.length);
     } catch (err) {
       setErrorMsg(err?.message || '사진 목록을 불러오지 못했습니다.');
     } finally {
@@ -73,7 +74,11 @@ export default function StudentPhotoModal({ target, onClose }) {
         teacher: target?.teacher || ''
       });
       if (uploaded) {
-        setPhotos((prev) => [uploaded, ...prev]);
+        setPhotos((prev) => {
+          const next = [uploaded, ...prev];
+          onPhotosChanged?.(studentName, next.length);
+          return next;
+        });
       } else {
         await loadPhotos();
       }
@@ -90,7 +95,11 @@ export default function StudentPhotoModal({ target, onClose }) {
     setDeletingId(photo.id);
     try {
       await deleteStudentPhotoFromDrive(photo.id);
-      setPhotos((prev) => prev.filter((p) => p.id !== photo.id));
+      setPhotos((prev) => {
+        const next = prev.filter((p) => p.id !== photo.id);
+        onPhotosChanged?.(studentName, next.length);
+        return next;
+      });
       if (previewPhoto?.id === photo.id) setPreviewPhoto(null);
     } catch (err) {
       await showAlert('삭제 실패: ' + (err?.message || '오류가 발생했습니다.'));

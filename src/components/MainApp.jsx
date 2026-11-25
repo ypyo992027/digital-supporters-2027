@@ -99,6 +99,7 @@ import {
 } from '../utils/helpers';
 import QuickNavBar from './QuickNavBar';
 import StudentPhotoModal from './StudentPhotoModal';
+import { fetchPhotoCountsByStudent, normalizeStudentPhotoKey } from '../utils/studentPhotoDrive';
 import { showConfirm } from '../utils/dialog';
 import {
   DEFAULT_BG_GRAY_LEVEL,
@@ -334,6 +335,18 @@ export default function MainApp({
   const [roomPopupMode, setRoomPopupMode] = useState(() => getRoomPopupMode());
   const [fontScale, setFontScale] = useState(() => getFontScale());
   const [photoModalTarget, setPhotoModalTarget] = useState(null);
+  const [studentPhotoCounts, setStudentPhotoCounts] = useState({});
+
+  useEffect(() => {
+    if (!isLoggedIn) return;
+    let isMounted = true;
+    fetchPhotoCountsByStudent()
+      .then((counts) => {
+        if (isMounted) setStudentPhotoCounts(counts);
+      })
+      .catch(() => {});
+    return () => { isMounted = false; };
+  }, [isLoggedIn, refreshTrigger]);
   const studentLongPressTimerRef = useRef(null);
   const studentLongPressOriginRef = useRef(null);
 
@@ -5034,37 +5047,63 @@ export default function MainApp({
                                   })()}
 
                                   <div className="flex gap-1.5 sm:gap-3 lg:gap-4 items-stretch">
-                                    <input
-                                      type="text"
-                                      placeholder="대상자 이름"
-                                      value={logs[index].student}
-                                      onChange={(e) => {
-                                        const newVal = e.target.value;
-                                        const prevStudent = logs[index]?.student || "";
-                                        const prevLocation = logs[index]?.location || "";
-                                        handleLogChange(index, 'student', newVal);
-                                        // 학생이름과 장소가 모두 블랭크인 상태에서 학생이름을 새로 입력할 때 장소를 '복지관'으로 자동 입력
-                                        if (!prevStudent.trim() && !prevLocation.trim() && newVal.trim()) {
-                                          handleLogChange(index, 'location', '복지관');
-                                        }
-                                        // 다른 선생님의 기록에서 출결/메모 동기화
-                                        if (newVal.trim() !== "") {
-                                          syncSiblingStatus(index, newVal);
-                                        }
-                                      }}
-                                      onBlur={handleInputBlur}
-                                      onTouchStart={(e) => startStudentLongPress(e, index)}
-                                      onTouchMove={handleStudentLongPressMove}
-                                      onTouchEnd={cancelStudentLongPress}
-                                      onTouchCancel={cancelStudentLongPress}
-                                      onMouseDown={(e) => startStudentLongPress(e, index)}
-                                      onMouseUp={cancelStudentLongPress}
-                                      onMouseLeave={cancelStudentLongPress}
-                                      title="길게 누르면 학생 사진 촬영 및 조회/삭제"
-                                      disabled={isDataLoading}
-                                      className={`flex-[1.5] min-w-0 h-12 sm:h-[52px] md:h-14 px-3 md:px-4 border-[1.5px] rounded-xl outline-none font-bold disabled:opacity-50 disabled:cursor-not-allowed transition-all text-[18px] min-[360px]:text-[20px] sm:text-xl md:text-2xl landscape:text-[22px] md:landscape:text-[26px] leading-tight tracking-tight caret-blue-600 focus:ring-4 focus:ring-blue-500/15 ${!logs[index].student ? 'bg-gray-50 text-gray-800 placeholder-gray-400 border-dashed border-gray-300 focus:border-blue-400' : (logs[index].location === '공휴일' || logs[index].location === '휴무일' ? 'bg-rose-100 text-rose-800 placeholder-rose-300 border-rose-200 focus:border-rose-400' : (logs[index].student || '').includes('보조강사') ? 'bg-amber-200 text-amber-950 placeholder-gray-500 border-amber-300 focus:border-amber-500' : 'bg-blue-50 text-blue-900 placeholder-blue-300 border-blue-200 focus:border-blue-500')}`}
-
-                                    />
+                                    {(() => {
+                                      const studentVal = (logs[index].student || '').trim();
+                                      const photoKey = studentVal ? normalizeStudentPhotoKey(studentVal) : '';
+                                      const photoCount = photoKey ? (studentPhotoCounts[photoKey] || 0) : 0;
+                                      return (
+                                        <div className="relative flex-[1.5] min-w-0">
+                                          <input
+                                            type="text"
+                                            placeholder="대상자 이름"
+                                            value={logs[index].student}
+                                            onChange={(e) => {
+                                              const newVal = e.target.value;
+                                              const prevStudent = logs[index]?.student || "";
+                                              const prevLocation = logs[index]?.location || "";
+                                              handleLogChange(index, 'student', newVal);
+                                              // 학생이름과 장소가 모두 블랭크인 상태에서 학생이름을 새로 입력할 때 장소를 '복지관'으로 자동 입력
+                                              if (!prevStudent.trim() && !prevLocation.trim() && newVal.trim()) {
+                                                handleLogChange(index, 'location', '복지관');
+                                              }
+                                              // 다른 선생님의 기록에서 출결/메모 동기화
+                                              if (newVal.trim() !== "") {
+                                                syncSiblingStatus(index, newVal);
+                                              }
+                                            }}
+                                            onBlur={handleInputBlur}
+                                            onTouchStart={(e) => startStudentLongPress(e, index)}
+                                            onTouchMove={handleStudentLongPressMove}
+                                            onTouchEnd={cancelStudentLongPress}
+                                            onTouchCancel={cancelStudentLongPress}
+                                            onMouseDown={(e) => startStudentLongPress(e, index)}
+                                            onMouseUp={cancelStudentLongPress}
+                                            onMouseLeave={cancelStudentLongPress}
+                                            title="길게 누르면 학생 사진 촬영 및 조회/삭제"
+                                            disabled={isDataLoading}
+                                            className={`w-full h-12 sm:h-[52px] md:h-14 pl-3 md:pl-4 ${photoCount > 0 ? 'pr-10 sm:pr-11' : 'pr-3 md:pr-4'} border-[1.5px] rounded-xl outline-none font-bold disabled:opacity-50 disabled:cursor-not-allowed transition-all text-[18px] min-[360px]:text-[20px] sm:text-xl md:text-2xl landscape:text-[22px] md:landscape:text-[26px] leading-tight tracking-tight caret-blue-600 focus:ring-4 focus:ring-blue-500/15 ${!logs[index].student ? 'bg-gray-50 text-gray-800 placeholder-gray-400 border-dashed border-gray-300 focus:border-blue-400' : (logs[index].location === '공휴일' || logs[index].location === '휴무일' ? 'bg-rose-100 text-rose-800 placeholder-rose-300 border-rose-200 focus:border-rose-400' : (logs[index].student || '').includes('보조강사') ? 'bg-amber-200 text-amber-950 placeholder-gray-500 border-amber-300 focus:border-amber-500' : 'bg-blue-50 text-blue-900 placeholder-blue-300 border-blue-200 focus:border-blue-500')}`}
+                                          />
+                                          {photoCount > 0 && (
+                                            <button
+                                              type="button"
+                                              onClick={() => setPhotoModalTarget({
+                                                studentName: studentVal,
+                                                date,
+                                                shift: shifts[index] || '',
+                                                teacher: currentUser || ''
+                                              })}
+                                              title={`첨부된 사진 ${photoCount}장 보기`}
+                                              className="absolute right-2 top-1/2 -translate-y-1/2 inline-flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-blue-100 hover:bg-blue-200 text-blue-700 border border-blue-200 shadow-2xs active:scale-90 transition touch-manipulation"
+                                            >
+                                              <svg className="w-4 h-4 sm:w-[18px] sm:h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                                                <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" />
+                                                <circle cx="12" cy="13" r="3" />
+                                              </svg>
+                                            </button>
+                                          )}
+                                        </div>
+                                      );
+                                    })()}
                                     <input
                                       type="text"
                                       placeholder="장소"
@@ -5708,6 +5747,10 @@ export default function MainApp({
         <StudentPhotoModal
           target={photoModalTarget}
           onClose={() => setPhotoModalTarget(null)}
+          onPhotosChanged={(name, count) => {
+            const key = normalizeStudentPhotoKey(name);
+            setStudentPhotoCounts((prev) => ({ ...prev, [key]: count }));
+          }}
         />
       )}
 
