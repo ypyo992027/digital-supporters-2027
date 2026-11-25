@@ -226,8 +226,9 @@ export default function StudentPhotoModal({ target, onClose, onPhotosChanged }) 
                         className="aspect-[4/3] w-full bg-slate-200 overflow-hidden"
                       >
                         <img
-                          src={photo.thumbnailUrl || photo.viewUrl}
+                          src={photo.thumbnailUrl || (photo.id ? `https://drive.google.com/thumbnail?id=${photo.id}&sz=w800` : photo.viewUrl)}
                           alt={photo.name}
+                          referrerPolicy="no-referrer"
                           className="w-full h-full object-cover"
                           loading="lazy"
                         />
@@ -283,13 +284,22 @@ export default function StudentPhotoModal({ target, onClose, onPhotosChanged }) 
 
       {previewPhoto && (
         <div
-          className="fixed inset-0 bg-black/85 z-[100] flex flex-col items-center justify-center p-4"
-          onClick={() => setPreviewPhoto(null)}
+          className="fixed inset-0 bg-black/90 z-[100] flex flex-col items-center justify-center p-3 sm:p-5"
+          onClick={(e) => {
+            e.stopPropagation();
+            setPreviewPhoto(null);
+          }}
         >
           <img
-            src={previewPhoto.viewUrl || previewPhoto.thumbnailUrl}
+            src={previewPhoto.id ? `https://drive.google.com/thumbnail?id=${previewPhoto.id}&sz=w1600` : (previewPhoto.thumbnailUrl || previewPhoto.viewUrl)}
             alt={previewPhoto.name}
-            className="max-w-full max-h-[80vh] rounded-xl shadow-2xl object-contain"
+            referrerPolicy="no-referrer"
+            onError={(e) => {
+              if (previewPhoto.thumbnailUrl && e.currentTarget.src !== previewPhoto.thumbnailUrl) {
+                e.currentTarget.src = previewPhoto.thumbnailUrl;
+              }
+            }}
+            className="max-w-full max-h-[82vh] rounded-xl shadow-2xl object-contain"
             onClick={(e) => e.stopPropagation()}
           />
           <div className="mt-3 flex items-center gap-3">
