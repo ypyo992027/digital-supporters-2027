@@ -14,24 +14,82 @@ const sanitizePart = (str) =>
 
 export const normalizeStudentPhotoKey = (studentName) => sanitizePart(studentName);
 
-// 파일명 규칙: {학생이름}_{날짜}_{교시}_{선생님}_{타임스탬프}.jpg
-export const buildStudentPhotoFileName = ({ studentName, date, shift, teacher }) => {
+// 파일명 규칙: {학생이름}_{날짜}_{교시}_{선생님}_{타임스탬프}[_{lat},{lng}].jpg
+export const buildStudentPhotoFileName = ({ studentName, date, shift, teacher, coords }) => {
   const cleanStudent = sanitizePart(studentName);
   const cleanDate = sanitizePart(date);
   const cleanShift = sanitizePart((shift || '').split('~')[0]);
   const cleanTeacher = sanitizePart(teacher);
-  return `${cleanStudent}_${cleanDate}_${cleanShift}_${cleanTeacher}_${Date.now()}.jpg`;
+  const coordPart = (coords && Number.isFinite(coords.lat) && Number.isFinite(coords.lng))
+    ? `_${coords.lat.toFixed(5)},${coords.lng.toFixed(5)}`
+    : '';
+  return `${cleanStudent}_${cleanDate}_${cleanShift}_${cleanTeacher}_${Date.now()}${coordPart}.jpg`;
 };
 
 export const parseStudentPhotoFileName = (fileName) => {
   const base = String(fileName || '').replace(/\.[^.]+$/, '');
   const parts = base.split('_');
+  let coords = null;
+  if (parts[5]) {
+    const m = parts[5].match(/^(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)$/);
+    if (m) {
+      coords = { lat: parseFloat(m[1]), lng: parseFloat(m[2]) };
+    }
+  }
   return {
     studentName: parts[0] || '',
     date: parts[1] || '',
     shift: parts[2] || '',
-    teacher: parts[3] || ''
+    teacher: parts[3] || '',
+    timestamp: parts[4] && /^\d{10,}$/.test(parts[4]) ? Number(parts[4]) : null,
+    coords
   };
+};
+
+export const getCurrentGeoCoords = (timeoutMs = 3500) => {
+  return new Promise((resolve) => {
+    if (typeof navigator === 'undefined' || !navigator.geolocation) {
+      resolve(null);
+      return;
+    }
+    let settled = false;
+    const timer = setTimeout(() => {
+      if (!settled) {
+        settled = true;
+        resolve(null);
+      }
+    }, timeoutMs);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timer);
+        resolve({
+          lat: pos.coords.latitude,
+          lng: pos.coords.longitude
+        });
+      },
+      () => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timer);
+        resolve(null);
+      },
+      { enableHighAccuracy: true, timeout: timeoutMs, maximumAge: 60000 }
+    );
+  });
+};
+
+export const formatCaptureTime = (createdTime, timestampNum) => {
+  const d = timestampNum ? new Date(timestampNum) : (createdTime ? new Date(createdTime) : null);
+  if (!d || isNaN(d.getTime())) return '';
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const dd = String(d.getDate()).padStart(2, '0');
+  const hh = String(d.getHours()).padStart(2, '0');
+  const mi = String(d.getMinutes()).padStart(2, '0');
+  const ss = String(d.getSeconds()).padStart(2, '0');
+  return `${yyyy}-${mm}-${dd} ${hh}:${mi}:${ss}`;
 };
 
 export const compressImageFileToDataUrl = (file, maxSize = 1600, quality = 0.85) => {

@@ -4,6 +4,8 @@ import {
   getStudentPhotoGasUrl,
   buildStudentPhotoFileName,
   parseStudentPhotoFileName,
+  getCurrentGeoCoords,
+  formatCaptureTime,
   compressImageFileToDataUrl,
   uploadStudentPhotoToDrive,
   listStudentPhotosFromDrive,
@@ -22,6 +24,7 @@ export default function StudentPhotoModal({ target, onClose, onPhotosChanged }) 
   const [isUploading, setIsUploading] = useState(false);
   const [deletingId, setDeletingId] = useState('');
   const [previewPhoto, setPreviewPhoto] = useState(null);
+  const [previewAddress, setPreviewAddress] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
 
   const studentName = (target?.studentName || '').trim();
@@ -45,6 +48,25 @@ export default function StudentPhotoModal({ target, onClose, onPhotosChanged }) 
     loadPhotos();
   }, [loadPhotos]);
 
+  useEffect(() => {
+    setPreviewAddress('');
+    if (!previewPhoto) return;
+    const meta = parseStudentPhotoFileName(previewPhoto.name);
+    if (!meta.coords) return;
+    let isMounted = true;
+    fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${meta.coords.lat}&lon=${meta.coords.lng}&accept-language=ko`)
+      .then((res) => res.ok ? res.json() : null)
+      .then((data) => {
+        if (!isMounted || !data) return;
+        const addr = data.display_name || '';
+        if (addr) {
+          setPreviewAddress(addr.split(',').slice(0, 4).reverse().map((s) => s.trim()).filter(Boolean).join(' '));
+        }
+      })
+      .catch(() => {});
+    return () => { isMounted = false; };
+  }, [previewPhoto]);
+
   const handleFileChange = async (e) => {
     const file = e.target.files?.[0];
     e.target.value = '';
@@ -58,12 +80,16 @@ export default function StudentPhotoModal({ target, onClose, onPhotosChanged }) 
     setIsUploading(true);
     setErrorMsg('');
     try {
-      const dataUrl = await compressImageFileToDataUrl(file);
+      const [dataUrl, coords] = await Promise.all([
+        compressImageFileToDataUrl(file),
+        getCurrentGeoCoords()
+      ]);
       const fileName = buildStudentPhotoFileName({
         studentName,
         date: target?.date || '',
         shift: target?.shift || '',
-        teacher: target?.teacher || ''
+        teacher: target?.teacher || '',
+        coords
       });
       const uploaded = await uploadStudentPhotoToDrive({
         fileName,
@@ -282,47 +308,77 @@ export default function StudentPhotoModal({ target, onClose, onPhotosChanged }) 
         </div>
       </div>
 
-      {previewPhoto && (
-        <div
-          className="fixed inset-0 bg-black/90 z-[100] flex flex-col items-center justify-center p-3 sm:p-5"
-          onClick={(e) => {
-            e.stopPropagation();
-            setPreviewPhoto(null);
-          }}
-        >
-          <img
-            src={previewPhoto.id ? `https://drive.google.com/thumbnail?id=${previewPhoto.id}&sz=w1600` : (previewPhoto.thumbnailUrl || previewPhoto.viewUrl)}
-            alt={previewPhoto.name}
-            referrerPolicy="no-referrer"
-            onError={(e) => {
-              if (previewPhoto.thumbnailUrl && e.currentTarget.src !== previewPhoto.thumbnailUrl) {
-                e.currentTarget.src = previewPhoto.thumbnailUrl;
-              }
+      {previewPhoto && (() => {
+        const meta = parseStudentPhotoFileName(previewPhoto.name);
+        const captureTimeText = formatCaptureTime(previewPhoto.createdTime, meta.timestamp);
+        const locationLabel = previewAddress || target?.location || (meta.coords ? `위도 ${meta.coords.lat.toFixed(5)}, 경도 ${meta.coords.lng.toFixed(5)}` : '위치 정보 없음');
+        return (
+          <div
+            className="fixed inset-0 bg-black/90 z-[100] flex flex-col items-center justify-center p-3 sm:p-5"
+            onClick={(e) => {
+              e.stopPropagation();
+              setPreviewPhoto(null);
             }}
-            className="max-w-full max-h-[82vh] rounded-xl shadow-2xl object-contain"
-            onClick={(e) => e.stopPropagation()}
-          />
-          <div className="mt-3 flex items-center gap-3">
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleDelete(previewPhoto);
+          >
+            <img
+              src={previewPhoto.id ? `https://drive.google.com/thumbnail?id=${previewPhoto.id}&sz=w1600` : (previewPhoto.thumbnailUrl || previewPhoto.viewUrl)}
+              alt={previewPhoto.name}
+              referrerPolicy="no-referrer"
+              onError={(e) => {
+                if (previewPhoto.thumbnailUrl && e.currentTarget.src !== previewPhoto.thumbnailUrl) {
+                  e.currentTarget.src = previewPhoto.thumbnailUrl;
+                }
               }}
-              className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-[14px]"
+              className="max-w-full max-h-[74vh] rounded-xl shadow-2xl object-contain"
+              onClick={(e) => e.stopPropagation()}
+            />
+            <div
+              className="mt-3 w-full max-w-md rounded-xl bg-white/10 backdrop-blur-md border border-white/20 px-3.5 py-2.5 text-white text-[13px] sm:text-[14px] space-y-1 text-left"
+              onClick={(e) => e.stopPropagation()}
             >
-              사진 삭제
-            </button>
-            <button
-              type="button"
-              onClick={() => setPreviewPhoto(null)}
-              className="px-4 py-2 rounded-xl bg-white text-slate-900 font-extrabold text-[14px]"
-            >
-              닫기
-            </button>
+              <div className="flex items-center gap-2">
+                <span className="text-white/70 font-bold shrink-0">촬영시간</span>
+                <span className="font-extrabold tabular-nums">{captureTimeText || meta.date || '정보 없음'}</span>
+              </div>
+              <div className="flex items-start justify-between gap-2">
+                <div className="flex items-start gap-2 min-w-0">
+                  <span className="text-white/70 font-bold shrink-0">촬영위치</span>
+                  <span className="font-bold break-words">{locationLabel}</span>
+                </div>
+                {meta.coords && (
+                  <a
+                    href={`https://maps.google.com/?q=${meta.coords.lat},${meta.coords.lng}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sky-300 hover:underline font-extrabold text-[12.5px] shrink-0"
+                  >
+                    지도 ↗
+                  </a>
+                )}
+              </div>
+            </div>
+            <div className="mt-3 flex items-center gap-3">
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDelete(previewPhoto);
+                }}
+                className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-[14px]"
+              >
+                사진 삭제
+              </button>
+              <button
+                type="button"
+                onClick={() => setPreviewPhoto(null)}
+                className="px-4 py-2 rounded-xl bg-white text-slate-900 font-extrabold text-[14px]"
+              >
+                닫기
+              </button>
+            </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
     </div>
   );
 }

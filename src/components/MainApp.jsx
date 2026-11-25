@@ -379,7 +379,8 @@ export default function MainApp({
         studentName,
         date,
         shift: shifts[index] || '',
-        teacher: currentUser || ''
+        teacher: currentUser || '',
+        location: (logs[index]?.location || '').trim()
       });
     }, 550);
   };
@@ -5058,7 +5059,8 @@ export default function MainApp({
                                                 studentName: singleStudent,
                                                 date,
                                                 shift: shifts[index] || '',
-                                                teacher: currentUser || ''
+                                                teacher: currentUser || '',
+                                                location: locVal
                                               })}
                                               title={hasPhotoForSession ? `${singleStudent} 님 수업 사진 촬영 완료 (클릭하여 보기/삭제)` : `${singleStudent} 님 수업 모습 촬영하기`}
                                               className={`${hasPhotoForSession
