@@ -7,8 +7,15 @@ self.addEventListener('activate', function(event) {
 });
 
 self.addEventListener('fetch', function(event) {
-  // Supabase 및 외부 공공 API 요청은 Service Worker가 가로채면 CORS나 인증 문제가 생길 수 있으므로 예외 처리
-  if (event.request.url.includes('supabase.co') || event.request.url.includes('apis.data.go.kr')) {
+  // 외부 도메인 요청(Google Apps Script, Supabase 등) 및 POST 요청은 Service Worker가 가로채면 CORS/리다이렉트 오류가 발생하므로 예외 처리
+  if (
+    event.request.method !== 'GET' ||
+    !event.request.url.startsWith(self.location.origin) ||
+    event.request.url.includes('supabase.co') ||
+    event.request.url.includes('apis.data.go.kr') ||
+    event.request.url.includes('script.google.com') ||
+    event.request.url.includes('script.googleusercontent.com')
+  ) {
     return;
   }
   
