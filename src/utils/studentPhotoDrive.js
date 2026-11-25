@@ -1,5 +1,5 @@
 export const STUDENT_PHOTO_FOLDER_ID = '1LMdhlJ8DVkfY0mSvPnUbieWUpVnmAtDy';
-export const STUDENT_PHOTO_FOLDER_URL = `https://drive.google.com/drive/u/3/folders/${STUDENT_PHOTO_FOLDER_ID}`;
+export const STUDENT_PHOTO_FOLDER_URL = `https://drive.google.com/drive/folders/${STUDENT_PHOTO_FOLDER_ID}`;
 export const DEFAULT_STUDENT_PHOTO_GAS_URL = 'https://script.google.com/macros/s/AKfycbxS2DoYvFJkjOG8NxOLilNAaJ1VsvtIPnf_O3lVrJJYhiYaPT3qs7G9boaelzaNBUBS/exec';
 
 export const getStudentPhotoGasUrl = () => {
