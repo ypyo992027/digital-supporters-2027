@@ -5003,56 +5003,9 @@ export default function MainApp({
                                     const hasPhotoForSession = Boolean(studentPhotoDateCounts[photoDateKey]);
 
                                     return (
-                                      <div className="flex items-center gap-1.5 flex-wrap w-full">
-                                        <button
-                                          type="button"
-                                          onClick={() => {
-                                            const url = `/application_form.html${singleStudent ? `?name=${encodeURIComponent(singleStudent)}` : ''}`;
-                                            window.open(url, '_blank');
-                                          }}
-                                          title={`2027년 프로그램 참여 신청서 열기${isAppSubmitted ? ' (작성완료)' : ' (미작성)'}`}
-                                          className={`${isAppSubmitted
-                                            ? 'bg-blue-600 hover:bg-blue-700 text-white ring-1 ring-inset ring-blue-700'
-                                            : 'bg-blue-50 hover:bg-blue-100 text-blue-700 ring-1 ring-inset ring-blue-200'
-                                            } h-[32px] sm:h-[36px] px-2.5 sm:px-3 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap transition-all cursor-pointer active:scale-95 font-bold flex items-center justify-center shadow-sm`}
-                                        >
-                                          <span>신청서</span>
-                                          {!isAppSubmitted && <span className="ml-1 w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" aria-hidden="true" />}
-                                        </button>
-                                        <button
-                                          type="button"
-                                          onClick={() => {
-                                            const surveyor = currentUser || "";
-                                            const url = `/survey_form.html?type=pre${singleStudent ? `&name=${encodeURIComponent(singleStudent)}` : ''}${surveyor ? `&surveyor=${encodeURIComponent(surveyor)}` : ''}`;
-                                            window.open(url, '_blank');
-                                          }}
-                                          title={`2027년 1:1 디지털 교육 사전설문지 열기${isPreSubmitted ? ' (작성완료)' : ' (미작성)'}`}
-                                          className={`${isPreSubmitted
-                                            ? 'bg-indigo-600 hover:bg-indigo-700 text-white ring-1 ring-inset ring-indigo-700'
-                                            : 'bg-indigo-50 hover:bg-indigo-100 text-indigo-700 ring-1 ring-inset ring-indigo-200'
-                                            } h-[32px] sm:h-[36px] px-2.5 sm:px-3 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap transition-all cursor-pointer active:scale-95 font-bold flex items-center justify-center shadow-sm`}
-                                        >
-                                          <span>사전설문지</span>
-                                          {!isPreSubmitted && <span className="ml-1 w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" aria-hidden="true" />}
-                                        </button>
-                                        <button
-                                          type="button"
-                                          onClick={() => {
-                                            const surveyor = currentUser || "";
-                                            const url = `/survey_form.html?type=post${singleStudent ? `&name=${encodeURIComponent(singleStudent)}` : ''}${surveyor ? `&surveyor=${encodeURIComponent(surveyor)}` : ''}`;
-                                            window.open(url, '_blank');
-                                          }}
-                                          title={`2027년 1:1 디지털 교육 사후설문지 열기${isPostSubmitted ? ' (작성완료)' : needPostSurvey ? ' (작성 필요)' : ''}`}
-                                          className={`${isPostSubmitted
-                                            ? 'bg-purple-700 hover:bg-purple-800 text-white ring-1 ring-inset ring-purple-800'
-                                            : 'bg-purple-50 hover:bg-purple-100 text-purple-700 ring-1 ring-inset ring-purple-200'
-                                            } h-[32px] sm:h-[36px] px-2.5 sm:px-3 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap transition-all cursor-pointer active:scale-95 font-bold flex items-center justify-center shadow-sm`}
-                                        >
-                                          <span>사후설문지</span>
-                                          {needPostSurvey && <span className="ml-1 w-2 h-2 rounded-full bg-rose-500 animate-pulse shrink-0" aria-hidden="true" />}
-                                        </button>
+                                      <div className="flex items-center justify-between gap-1.5 flex-wrap w-full">
                                         {isExternalLocation && (
-                                          <>
+                                          <div className="flex items-center gap-1.5 shrink-0">
                                             <button
                                               type="button"
                                               onClick={() => setPhotoModalTarget({
@@ -5087,8 +5040,57 @@ export default function MainApp({
                                                 <path d="m9 14 2 2 4-4" />
                                               </svg>
                                             </button>
-                                          </>
+                                          </div>
                                         )}
+                                        <div className="ml-auto flex items-center gap-1.5 flex-wrap">
+                                          <button
+                                            type="button"
+                                            onClick={() => {
+                                              const url = `/application_form.html${singleStudent ? `?name=${encodeURIComponent(singleStudent)}` : ''}`;
+                                              window.open(url, '_blank');
+                                            }}
+                                            title={`2027년 프로그램 참여 신청서 열기${isAppSubmitted ? ' (작성완료)' : ' (미작성)'}`}
+                                            className={`${isAppSubmitted
+                                              ? 'bg-blue-600 hover:bg-blue-700 text-white ring-1 ring-inset ring-blue-700'
+                                              : 'bg-blue-50 hover:bg-blue-100 text-blue-700 ring-1 ring-inset ring-blue-200'
+                                              } h-[32px] sm:h-[36px] px-2.5 sm:px-3 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap transition-all cursor-pointer active:scale-95 font-bold flex items-center justify-center shadow-sm`}
+                                          >
+                                            <span>신청서</span>
+                                            {!isAppSubmitted && <span className="ml-1 w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" aria-hidden="true" />}
+                                          </button>
+                                          <button
+                                            type="button"
+                                            onClick={() => {
+                                              const surveyor = currentUser || "";
+                                              const url = `/survey_form.html?type=pre${singleStudent ? `&name=${encodeURIComponent(singleStudent)}` : ''}${surveyor ? `&surveyor=${encodeURIComponent(surveyor)}` : ''}`;
+                                              window.open(url, '_blank');
+                                            }}
+                                            title={`2027년 1:1 디지털 교육 사전설문지 열기${isPreSubmitted ? ' (작성완료)' : ' (미작성)'}`}
+                                            className={`${isPreSubmitted
+                                              ? 'bg-indigo-600 hover:bg-indigo-700 text-white ring-1 ring-inset ring-indigo-700'
+                                              : 'bg-indigo-50 hover:bg-indigo-100 text-indigo-700 ring-1 ring-inset ring-indigo-200'
+                                              } h-[32px] sm:h-[36px] px-2.5 sm:px-3 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap transition-all cursor-pointer active:scale-95 font-bold flex items-center justify-center shadow-sm`}
+                                          >
+                                            <span>사전설문지</span>
+                                            {!isPreSubmitted && <span className="ml-1 w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" aria-hidden="true" />}
+                                          </button>
+                                          <button
+                                            type="button"
+                                            onClick={() => {
+                                              const surveyor = currentUser || "";
+                                              const url = `/survey_form.html?type=post${singleStudent ? `&name=${encodeURIComponent(singleStudent)}` : ''}${surveyor ? `&surveyor=${encodeURIComponent(surveyor)}` : ''}`;
+                                              window.open(url, '_blank');
+                                            }}
+                                            title={`2027년 1:1 디지털 교육 사후설문지 열기${isPostSubmitted ? ' (작성완료)' : needPostSurvey ? ' (작성 필요)' : ''}`}
+                                            className={`${isPostSubmitted
+                                              ? 'bg-purple-700 hover:bg-purple-800 text-white ring-1 ring-inset ring-purple-800'
+                                              : 'bg-purple-50 hover:bg-purple-100 text-purple-700 ring-1 ring-inset ring-purple-200'
+                                              } h-[32px] sm:h-[36px] px-2.5 sm:px-3 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap transition-all cursor-pointer active:scale-95 font-bold flex items-center justify-center shadow-sm`}
+                                          >
+                                            <span>사후설문지</span>
+                                            {needPostSurvey && <span className="ml-1 w-2 h-2 rounded-full bg-rose-500 animate-pulse shrink-0" aria-hidden="true" />}
+                                          </button>
+                                        </div>
                                       </div>
                                     );
                                   })()}
