@@ -5127,7 +5127,7 @@ export default function MainApp({
                                   </div>
                                   {!isSpecialDay && (logs[index]?.student || "").trim() && !((logs[index]?.selectedTags || []).flat().includes('선생님휴가')) && (
                                     <div className="flex items-center gap-1 overflow-x-auto scrollbar-none pt-1">
-                                      {['전화', '문자', '카카오톡', '사진/갤러리', '지도', '제미나이', '유튜브', '보이스피싱 예방', '키오스크'].map((chip) => (
+                                      {['전화', '문자', '카카오톡', '사진/갤러리', '지도', '제미나이', '챗GPT', '유튜브', '보이스피싱 예방', '키오스크'].map((chip) => (
                                         <button
                                           key={chip}
                                           type="button"
