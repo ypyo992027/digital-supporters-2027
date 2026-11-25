@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   STUDENT_PHOTO_FOLDER_URL,
   getStudentPhotoGasUrl,
-  saveStudentPhotoGasUrl,
   buildStudentPhotoFileName,
   parseStudentPhotoFileName,
   compressImageFileToDataUrl,
@@ -16,9 +15,7 @@ export default function StudentPhotoModal({ target, onClose }) {
   const cameraInputRef = useRef(null);
   const albumInputRef = useRef(null);
 
-  const [gasUrl, setGasUrl] = useState(() => getStudentPhotoGasUrl());
-  const [gasUrlInput, setGasUrlInput] = useState(() => getStudentPhotoGasUrl());
-  const [showSetup, setShowSetup] = useState(() => !getStudentPhotoGasUrl());
+  const gasUrl = getStudentPhotoGasUrl();
 
   const [photos, setPhotos] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -30,42 +27,30 @@ export default function StudentPhotoModal({ target, onClose }) {
   const studentName = (target?.studentName || '').trim();
 
   const loadPhotos = useCallback(async () => {
-    if (!getStudentPhotoGasUrl() || !studentName) return;
+    if (!gasUrl || !studentName) return;
     setIsLoading(true);
     setErrorMsg('');
     try {
       const list = await listStudentPhotosFromDrive(studentName);
       setPhotos(list);
     } catch (err) {
-      setErrorMsg(err?.message === 'GAS_URL_NOT_CONFIGURED'
-        ? '구글 드라이브 연동 URL을 먼저 설정해 주세요.'
-        : (err?.message || '사진 목록을 불러오지 못했습니다.'));
+      setErrorMsg(err?.message || '사진 목록을 불러오지 못했습니다.');
     } finally {
       setIsLoading(false);
     }
-  }, [studentName]);
+  }, [gasUrl, studentName]);
 
   useEffect(() => {
     loadPhotos();
   }, [loadPhotos]);
-
-  const handleSaveGasUrl = () => {
-    const saved = saveStudentPhotoGasUrl(gasUrlInput);
-    setGasUrl(saved);
-    if (saved) {
-      setShowSetup(false);
-      loadPhotos();
-    }
-  };
 
   const handleFileChange = async (e) => {
     const file = e.target.files?.[0];
     e.target.value = '';
     if (!file) return;
 
-    if (!getStudentPhotoGasUrl()) {
-      setShowSetup(true);
-      await showAlert('먼저 아래에 구글 앱스 스크립트 웹 앱 URL을 저장해 주세요.');
+    if (!gasUrl) {
+      await showAlert('구글 드라이브 연동 URL이 설정되지 않았습니다.');
       return;
     }
 
@@ -137,13 +122,6 @@ export default function StudentPhotoModal({ target, onClose }) {
           <div className="flex items-center gap-1.5 shrink-0">
             <button
               type="button"
-              onClick={() => setShowSetup((v) => !v)}
-              className="px-2.5 py-1 rounded-lg bg-white/15 hover:bg-white/25 text-[12px] font-bold transition"
-            >
-              연동설정
-            </button>
-            <button
-              type="button"
               onClick={onClose}
               className="p-1 rounded-lg text-white/90 hover:bg-white/20 active:scale-90 transition"
               aria-label="닫기"
@@ -192,43 +170,6 @@ export default function StudentPhotoModal({ target, onClose }) {
               <span>앨범에서 선택</span>
             </button>
           </div>
-
-          {showSetup && (
-            <div className="p-3.5 rounded-xl bg-amber-50 border border-amber-200 space-y-2 text-left">
-              <div className="flex items-center justify-between gap-2">
-                <span className="text-[13.5px] font-extrabold text-amber-900">
-                  구글 드라이브 웹 앱 URL 설정
-                </span>
-                <a
-                  href={STUDENT_PHOTO_FOLDER_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-[12px] font-bold text-blue-700 hover:underline"
-                >
-                  저장 폴더 열기 ↗
-                </a>
-              </div>
-              <p className="text-[12px] text-amber-800 leading-snug">
-                <code className="bg-amber-100 px-1 rounded">google_drive_student_photo_script.gs</code>를 구글 앱스 스크립트에 배포한 웹 앱 URL을 입력하세요.
-              </p>
-              <div className="flex gap-1.5">
-                <input
-                  type="url"
-                  value={gasUrlInput}
-                  onChange={(e) => setGasUrlInput(e.target.value)}
-                  placeholder="https://script.google.com/macros/s/.../exec"
-                  className="flex-1 min-w-0 px-2.5 py-1.5 rounded-lg border border-amber-300 bg-white text-[13px] outline-none focus:border-blue-500"
-                />
-                <button
-                  type="button"
-                  onClick={handleSaveGasUrl}
-                  className="px-3 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-700 text-white text-[13px] font-extrabold shrink-0"
-                >
-                  저장
-                </button>
-              </div>
-            </div>
-          )}
 
           {errorMsg && (
             <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-[13.5px] font-bold">
