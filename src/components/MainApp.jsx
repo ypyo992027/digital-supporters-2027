@@ -2216,7 +2216,7 @@ export default function MainApp({
   };
 
   const changedShiftCount = useMemo(() => {
-    return shifts.reduce((count, shift, i) => {
+    return (shifts || []).reduce((count, shift, i) => {
       const log = logs[i];
       if (!log) return count;
       const original = getMyOriginalRecord(date, shift);
@@ -4948,7 +4948,7 @@ export default function MainApp({
                                     const isAppSubmitted = checkFormSubmitted(submittedForms.apps, singleStudent);
                                     const isPreSubmitted = checkFormSubmitted(submittedForms.preSurveys, singleStudent);
                                     const isPostSubmitted = checkFormSubmitted(submittedForms.postSurveys, singleStudent);
-                                    const maxStudentCount = counts.reduce((mx, c) => Math.max(mx, c.count || 0), 0);
+                                    const maxStudentCount = (counts || []).reduce((mx, c) => Math.max(mx, c.count || 0), 0);
                                     const needPostSurvey = !isPostSubmitted && (allSelectedTags.includes('종료') || maxStudentCount >= 15);
 
                                     return (
