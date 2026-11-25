@@ -87,6 +87,8 @@ const postToStudentPhotoGas = async (payload, timeoutMs = 20000) => {
   try {
     const res = await fetch(gasUrl, {
       method: 'POST',
+      mode: 'cors',
+      redirect: 'follow',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       signal: controller.signal,
       body: JSON.stringify({
@@ -99,6 +101,14 @@ const postToStudentPhotoGas = async (payload, timeoutMs = 20000) => {
       throw new Error(data?.error || '구글 드라이브 요청에 실패했습니다.');
     }
     return data;
+  } catch (err) {
+    if (err?.name === 'AbortError') {
+      throw new Error('구글 드라이브 응답 시간이 초과되었습니다. 잠시 후 다시 시도해 주세요.');
+    }
+    if (err?.message === 'Failed to fetch' || err?.name === 'TypeError') {
+      throw new Error('구글 드라이브 연결에 실패했습니다. 웹 앱 배포 권한(모든 사용자)과 URL(/exec)을 확인해 주세요.');
+    }
+    throw err;
   } finally {
     clearTimeout(timer);
   }

@@ -313,6 +313,10 @@ export default function StudentPhotoModal({ target, onClose }) {
             href={STUDENT_PHOTO_FOLDER_URL}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={(e) => {
+              e.preventDefault();
+              window.open(STUDENT_PHOTO_FOLDER_URL, '_blank', 'noopener,noreferrer');
+            }}
             className="text-[13px] font-bold text-blue-600 hover:underline px-2"
           >
             드라이브 폴더 열기 ↗
