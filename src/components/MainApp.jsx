@@ -3555,6 +3555,13 @@ export default function MainApp({
   };
 
   const handleMainTouchStart = (e) => {
+    const scrollTop = mainMenuScrollRef.current?.scrollTop ?? window.scrollY ?? 0;
+    if (scrollTop > 2) {
+      mainTouchStartX.current = null;
+      mainTouchStartY.current = null;
+      setPullDistance(0);
+      return;
+    }
     mainTouchStartX.current = e.touches[0].clientX;
     mainTouchStartY.current = e.touches[0].clientY;
     setPullDistance(0);
@@ -3567,7 +3574,7 @@ export default function MainApp({
     const deltaX = touchEndX - mainTouchStartX.current;
     const deltaY = touchEndY - mainTouchStartY.current;
 
-    if (deltaY > 0 && deltaY > Math.abs(deltaX) * 2) setPullDistance(Math.min(deltaY, 400));
+    if (deltaY > 40 && deltaY > Math.abs(deltaX) * 2.5) setPullDistance(Math.min(deltaY, 500));
     else setPullDistance(0);
   };
 
@@ -3578,7 +3585,7 @@ export default function MainApp({
     const deltaX = touchEndX - mainTouchStartX.current;
     const deltaY = touchEndY - mainTouchStartY.current;
 
-    if (deltaY > 300 && deltaY > Math.abs(deltaX) * 2) window.location.reload();
+    if (deltaY > 420 && deltaY > Math.abs(deltaX) * 2.5) window.location.reload();
     else setPullDistance(0);
     mainTouchStartX.current = null;
     mainTouchStartY.current = null;
@@ -3621,13 +3628,13 @@ export default function MainApp({
         <div
           className="absolute left-0 right-0 flex items-center justify-center pointer-events-none z-50 pt-safe-4"
           style={{
-            transform: `translateY(${pullDistance > 0 ? (pullDistance * 0.4) : -50}px)`,
-            opacity: pullDistance > 10 ? Math.min(pullDistance / 300, 1) : 0,
+            transform: `translateY(${pullDistance > 40 ? (pullDistance * 0.35) : -50}px)`,
+            opacity: pullDistance > 40 ? Math.min((pullDistance - 40) / 380, 1) : 0,
             transition: pullDistance === 0 ? 'all 0.3s ease-out' : 'none'
           }}
         >
           <div className="flex items-center justify-center bg-white shadow-lg border border-sky-200 p-3 rounded-full">
-            <RefreshCw className={`w-8 h-8 ${pullDistance > 300 ? 'text-blue-600 animate-spin' : 'text-gray-400'}`} />
+            <RefreshCw className={`w-8 h-8 ${pullDistance > 420 ? 'text-blue-600 animate-spin' : 'text-gray-400'}`} />
           </div>
         </div>
 
