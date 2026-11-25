@@ -3,11 +3,12 @@ import { getSavedItem, setSavedItem, removeSavedItem } from './helpers';
 export const STUDENT_PHOTO_FOLDER_ID = '1LMdhlJ8DVkfY0mSvPnUbieWUpVnmAtDy';
 export const STUDENT_PHOTO_FOLDER_URL = `https://drive.google.com/drive/u/3/folders/${STUDENT_PHOTO_FOLDER_ID}`;
 export const STUDENT_PHOTO_GAS_URL_KEY = 'sungdong_student_photo_gas_url';
+export const DEFAULT_STUDENT_PHOTO_GAS_URL = 'https://script.google.com/macros/s/AKfycbxS2DoYvFJkjOG8NxOLilNAaJ1VsvtIPnf_O3lVrJJYhiYaPT3qs7G9boaelzaNBUBS/exec';
 
 export const getStudentPhotoGasUrl = () => {
   const saved = (getSavedItem(STUDENT_PHOTO_GAS_URL_KEY, '') || '').trim();
   if (saved) return saved;
-  return (import.meta.env.VITE_STUDENT_PHOTO_GAS_URL || '').trim();
+  return (import.meta.env.VITE_STUDENT_PHOTO_GAS_URL || DEFAULT_STUDENT_PHOTO_GAS_URL).trim();
 };
 
 export const saveStudentPhotoGasUrl = (url) => {
