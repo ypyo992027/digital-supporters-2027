@@ -334,6 +334,7 @@ export default function MainApp({
   const [bgGrayLevel, setBgGrayLevel] = useState(() => getBgGrayLevel());
   const [roomPopupMode, setRoomPopupMode] = useState(() => getRoomPopupMode());
   const [fontScale, setFontScale] = useState(() => getFontScale());
+  const [focusedMemoIndex, setFocusedMemoIndex] = useState(null);
   const [photoModalTarget, setPhotoModalTarget] = useState(null);
   const [studentPhotoCounts, setStudentPhotoCounts] = useState({});
   const [studentPhotoDateCounts, setStudentPhotoDateCounts] = useState({});
@@ -4586,23 +4587,45 @@ export default function MainApp({
             <h2 className="text-[19px] sm:text-xl font-bold text-gray-800 pt-2 pb-1 px-1 flex items-center justify-between tracking-tight">
               <span className="flex items-center"><MainCalendarIcon className="w-5 h-5 mr-2 text-blue-600" /> 근무기록 입력</span>
 
-              <div className="flex items-center">
+              <div className="flex items-center gap-1.5">
                 {(isDataLoading) ? (
                   <span className="text-sm sm:text-lg text-red-600 font-bold flex items-center animate-pulse tracking-tight">
                     <Clock className="w-4 h-4 sm:w-5 sm:h-5 mr-1 animate-spin" />
                     <span className="hidden sm:inline">{isSubmitting ? '자동 저장 중...' : isSyncing ? '최신 데이터 확인 중...' : '데이터 로딩 중...'}</span>
                     <span className="inline sm:hidden">{isSubmitting ? '저장중...' : '로딩중...'}</span>
                   </span>
-                ) : (logsDate === date && date >= getLocalDateString(new Date()) && !noNewScheduleToRepeat && (!currentSelectedHoliday || currentSelectedHoliday.vacation_available) && !Object.values(logs || {}).some(log => (log?.student || '').includes('직무교육') || (log?.student || '').includes('안전교육') || (log?.student || '').includes('간담회')) && (
-                  <button
-                    type="button"
-                    onClick={handleRepeatSchedule}
-                    className="text-[15px] sm:text-[16px] px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl font-bold flex items-center whitespace-nowrap transition-all bg-orange-50 hover:bg-orange-100 text-orange-700 ring-1 ring-inset ring-orange-200 active:scale-95 touch-manipulation"
-                    title="현재의 학생이름과 장소를 이후의 동일 요일들에 복제합니다."
-                  >
-                    <RefreshCw className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5" /> 일정 복제
-                  </button>
-                ))}
+                ) : (
+                  <>
+                    {Object.values(logs || {}).some(log => {
+                      const loc = (log?.location || '').trim();
+                      return Boolean(loc && loc !== '복지관' && loc !== '공휴일' && loc !== '휴무일');
+                    }) && (
+                      <button
+                        type="button"
+                        onClick={() => showAlert('출결체크 기능은 추후 구현될 예정입니다.')}
+                        title="외부근무 출결체크 (추후 구현 예정)"
+                        className="bg-gray-200 hover:bg-gray-300 text-gray-700 ring-1 ring-inset ring-gray-300 h-[34px] sm:h-[38px] px-2.5 sm:px-3 rounded-xl transition-all cursor-pointer active:scale-95 flex items-center justify-center shadow-sm touch-manipulation"
+                        aria-label="출결체크"
+                      >
+                        <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                          <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
+                          <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+                          <path d="m9 14 2 2 4-4" />
+                        </svg>
+                      </button>
+                    )}
+                    {logsDate === date && date >= getLocalDateString(new Date()) && !noNewScheduleToRepeat && (!currentSelectedHoliday || currentSelectedHoliday.vacation_available) && !Object.values(logs || {}).some(log => (log?.student || '').includes('직무교육') || (log?.student || '').includes('안전교육') || (log?.student || '').includes('간담회')) && (
+                      <button
+                        type="button"
+                        onClick={handleRepeatSchedule}
+                        className="text-[15px] sm:text-[16px] px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl font-bold flex items-center whitespace-nowrap transition-all bg-orange-50 hover:bg-orange-100 text-orange-700 ring-1 ring-inset ring-orange-200 active:scale-95 touch-manipulation"
+                        title="현재의 학생이름과 장소를 이후의 동일 요일들에 복제합니다."
+                      >
+                        <RefreshCw className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5" /> 일정 복제
+                      </button>
+                    )}
+                  </>
+                )}
               </div>
             </h2>
             <div className="contents">
@@ -5027,19 +5050,6 @@ export default function MainApp({
                                                 <circle cx="12" cy="13" r="3" />
                                               </svg>
                                             </button>
-                                            <button
-                                              type="button"
-                                              onClick={() => showAlert('출결체크 기능은 추후 구현될 예정입니다.')}
-                                              title="출결체크 (추후 구현 예정)"
-                                              className="bg-gray-200 hover:bg-gray-300 text-gray-700 ring-1 ring-inset ring-gray-300 h-[32px] sm:h-[36px] px-2.5 sm:px-3 rounded-lg transition-all cursor-pointer active:scale-95 flex items-center justify-center shadow-sm"
-                                              aria-label="출결체크"
-                                            >
-                                              <svg className="w-4 h-4 sm:w-[18px] sm:h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                                                <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
-                                                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
-                                                <path d="m9 14 2 2 4-4" />
-                                              </svg>
-                                            </button>
                                           </div>
                                         )}
                                         <div className="ml-auto flex items-center gap-1.5 flex-wrap">
@@ -5227,7 +5237,13 @@ export default function MainApp({
                                         rows="3"
                                         value={logs[index]?.memo || ""}
                                         onChange={(e) => handleLogChange(index, 'memo', e.target.value)}
-                                        onBlur={handleInputBlur}
+                                        onFocus={() => setFocusedMemoIndex(index)}
+                                        onBlur={() => {
+                                          handleInputBlur();
+                                          setTimeout(() => {
+                                            setFocusedMemoIndex((prev) => (prev === index ? null : prev));
+                                          }, 150);
+                                        }}
                                         onScroll={(e) => {
                                           if (e.target.previousSibling) {
                                             e.target.previousSibling.scrollTop = e.target.scrollTop;
@@ -5239,7 +5255,7 @@ export default function MainApp({
                                       />
                                     </div>
                                   </div>
-                                  {!isSpecialDay && (logs[index]?.student || "").trim() && !((logs[index]?.selectedTags || []).flat().includes('선생님휴가')) && (
+                                  {focusedMemoIndex === index && !isSpecialDay && (logs[index]?.student || "").trim() && !((logs[index]?.selectedTags || []).flat().includes('선생님휴가')) && (
                                     <div className="flex items-center flex-wrap gap-1.5 pt-1.5">
                                       {['전화', '문자', '카카오톡', '사진/갤러리', '지도', '제미나이', '챗GPT', '유튜브', '보이스피싱 예방', '키오스크'].map((chip) => {
                                         const curMemo = (logs[index]?.memo || "").trim();
@@ -5249,6 +5265,7 @@ export default function MainApp({
                                             key={chip}
                                             type="button"
                                             disabled={isDataLoading || isInfoMissing}
+                                            onMouseDown={(e) => e.preventDefault()}
                                             onClick={() => {
                                               if (isSelected) {
                                                 const next = curMemo
