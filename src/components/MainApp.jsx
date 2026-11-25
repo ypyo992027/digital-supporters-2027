@@ -99,8 +99,8 @@ import {
 } from '../utils/helpers';
 import QuickNavBar from './QuickNavBar';
 import StudentPhotoModal from './StudentPhotoModal';
-import { fetchPhotoCountsByStudent, normalizeStudentPhotoKey } from '../utils/studentPhotoDrive';
-import { showConfirm } from '../utils/dialog';
+import { fetchPhotoSummaryByStudent, normalizeStudentPhotoKey } from '../utils/studentPhotoDrive';
+import { showAlert, showConfirm } from '../utils/dialog';
 import {
   DEFAULT_BG_GRAY_LEVEL,
   DEFAULT_FONT_SCALE,
@@ -336,13 +336,17 @@ export default function MainApp({
   const [fontScale, setFontScale] = useState(() => getFontScale());
   const [photoModalTarget, setPhotoModalTarget] = useState(null);
   const [studentPhotoCounts, setStudentPhotoCounts] = useState({});
+  const [studentPhotoDateCounts, setStudentPhotoDateCounts] = useState({});
 
   useEffect(() => {
     if (!isLoggedIn) return;
     let isMounted = true;
-    fetchPhotoCountsByStudent()
-      .then((counts) => {
-        if (isMounted) setStudentPhotoCounts(counts);
+    fetchPhotoSummaryByStudent()
+      .then(({ counts, dateCounts }) => {
+        if (isMounted) {
+          setStudentPhotoCounts(counts);
+          setStudentPhotoDateCounts(dateCounts);
+        }
       })
       .catch(() => {});
     return () => { isMounted = false; };
@@ -4992,6 +4996,10 @@ export default function MainApp({
                                     const isPostSubmitted = checkFormSubmitted(submittedForms.postSurveys, singleStudent);
                                     const maxStudentCount = (counts || []).reduce((mx, c) => Math.max(mx, c.count || 0), 0);
                                     const needPostSurvey = !isPostSubmitted && (allSelectedTags.includes('종료') || maxStudentCount >= 15);
+                                    const locVal = (logs[index]?.location || "").trim();
+                                    const isExternalLocation = Boolean(locVal && locVal !== "복지관" && locVal !== "공휴일" && locVal !== "휴무일");
+                                    const photoDateKey = `${normalizeStudentPhotoKey(singleStudent)}__${date}`;
+                                    const hasPhotoForSession = Boolean(studentPhotoDateCounts[photoDateKey]);
 
                                     return (
                                       <div className="flex items-center gap-1.5 flex-wrap w-full">
@@ -5042,6 +5050,43 @@ export default function MainApp({
                                           <span>사후설문지</span>
                                           {needPostSurvey && <span className="ml-1 w-2 h-2 rounded-full bg-rose-500 animate-pulse shrink-0" aria-hidden="true" />}
                                         </button>
+                                        {isExternalLocation && (
+                                          <>
+                                            <button
+                                              type="button"
+                                              onClick={() => setPhotoModalTarget({
+                                                studentName: singleStudent,
+                                                date,
+                                                shift: shifts[index] || '',
+                                                teacher: currentUser || ''
+                                              })}
+                                              title={hasPhotoForSession ? `${singleStudent} 님 수업 사진 촬영 완료 (클릭하여 보기/삭제)` : `${singleStudent} 님 수업 모습 촬영하기`}
+                                              className={`${hasPhotoForSession
+                                                ? 'bg-blue-600 hover:bg-blue-700 text-white ring-1 ring-inset ring-blue-700'
+                                                : 'bg-gray-200 hover:bg-gray-300 text-gray-700 ring-1 ring-inset ring-gray-300'
+                                                } h-[32px] sm:h-[36px] px-2.5 sm:px-3 rounded-lg transition-all cursor-pointer active:scale-95 flex items-center justify-center shadow-sm`}
+                                              aria-label="수업 사진 촬영"
+                                            >
+                                              <svg className="w-4 h-4 sm:w-[18px] sm:h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                                                <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" />
+                                                <circle cx="12" cy="13" r="3" />
+                                              </svg>
+                                            </button>
+                                            <button
+                                              type="button"
+                                              onClick={() => showAlert('출결체크 기능은 추후 구현될 예정입니다.')}
+                                              title="출결체크 (추후 구현 예정)"
+                                              className="bg-gray-200 hover:bg-gray-300 text-gray-700 ring-1 ring-inset ring-gray-300 h-[32px] sm:h-[36px] px-2.5 sm:px-3 rounded-lg transition-all cursor-pointer active:scale-95 flex items-center justify-center shadow-sm"
+                                              aria-label="출결체크"
+                                            >
+                                              <svg className="w-4 h-4 sm:w-[18px] sm:h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                                                <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
+                                                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+                                                <path d="m9 14 2 2 4-4" />
+                                              </svg>
+                                            </button>
+                                          </>
+                                        )}
                                       </div>
                                     );
                                   })()}
@@ -5750,6 +5795,12 @@ export default function MainApp({
           onPhotosChanged={(name, count) => {
             const key = normalizeStudentPhotoKey(name);
             setStudentPhotoCounts((prev) => ({ ...prev, [key]: count }));
+            fetchPhotoSummaryByStudent()
+              .then(({ counts, dateCounts }) => {
+                setStudentPhotoCounts(counts);
+                setStudentPhotoDateCounts(dateCounts);
+              })
+              .catch(() => {});
           }}
         />
       )}

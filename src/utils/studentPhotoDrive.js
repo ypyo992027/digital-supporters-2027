@@ -130,15 +130,25 @@ export const deleteStudentPhotoFromDrive = async (fileId) => {
   }, 15000);
 };
 
-export const fetchPhotoCountsByStudent = async () => {
+export const fetchPhotoSummaryByStudent = async () => {
   const files = await listStudentPhotosFromDrive('');
   const counts = {};
+  const dateCounts = {};
   files.forEach((f) => {
     const meta = parseStudentPhotoFileName(f?.name);
     const key = meta.studentName;
     if (key) {
       counts[key] = (counts[key] || 0) + 1;
+      if (meta.date) {
+        const dk = `${key}__${meta.date}`;
+        dateCounts[dk] = (dateCounts[dk] || 0) + 1;
+      }
     }
   });
+  return { counts, dateCounts };
+};
+
+export const fetchPhotoCountsByStudent = async () => {
+  const { counts } = await fetchPhotoSummaryByStudent();
   return counts;
 };
