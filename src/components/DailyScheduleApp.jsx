@@ -195,6 +195,7 @@ export default function DailyScheduleApp({ initialTeam, onNavigateBack, onTeamCh
 
   // 수업 내용 메모 접기/펼치기 상태 관리
   const [expandedMemos, setExpandedMemos] = useState({});
+  const [keepAllMemosExpanded, setKeepAllMemosExpanded] = useState(false);
 
   const savedTeacher = useMemo(() => (getSavedItem('sungdong_teacher', '') || '').trim(), []);
 
@@ -785,8 +786,10 @@ export default function DailyScheduleApp({ initialTeam, onNavigateBack, onTeamCh
   const handleToggleAllMemos = () => {
     if (memoRowKeys.length === 0) return;
     if (isAllExpanded) {
+      setKeepAllMemosExpanded(false);
       setExpandedMemos({});
     } else {
+      setKeepAllMemosExpanded(true);
       const next = {};
       memoRowKeys.forEach(k => {
         next[k] = true;
@@ -794,6 +797,16 @@ export default function DailyScheduleApp({ initialTeam, onNavigateBack, onTeamCh
       setExpandedMemos(next);
     }
   };
+
+  // '수업 내용 보기' 상태가 켜져 있으면 날짜나 팀이 바뀌어도 새로 로드된 일정의 메모를 계속 펼침
+  useEffect(() => {
+    if (!keepAllMemosExpanded || memoRowKeys.length === 0) return;
+    const next = {};
+    memoRowKeys.forEach(k => {
+      next[k] = true;
+    });
+    setExpandedMemos(next);
+  }, [keepAllMemosExpanded, memoRowKeys]);
 
   // 통계 계산
   const stats = useMemo(() => {
