@@ -98,6 +98,7 @@ import {
   mergeAttendanceAndStatus
 } from '../utils/helpers';
 import QuickNavBar from './QuickNavBar';
+import StudentPhotoModal from './StudentPhotoModal';
 import { showConfirm } from '../utils/dialog';
 import {
   DEFAULT_BG_GRAY_LEVEL,
@@ -332,6 +333,48 @@ export default function MainApp({
   const [bgGrayLevel, setBgGrayLevel] = useState(() => getBgGrayLevel());
   const [roomPopupMode, setRoomPopupMode] = useState(() => getRoomPopupMode());
   const [fontScale, setFontScale] = useState(() => getFontScale());
+  const [photoModalTarget, setPhotoModalTarget] = useState(null);
+  const studentLongPressTimerRef = useRef(null);
+  const studentLongPressOriginRef = useRef(null);
+
+  const cancelStudentLongPress = () => {
+    if (studentLongPressTimerRef.current) {
+      clearTimeout(studentLongPressTimerRef.current);
+      studentLongPressTimerRef.current = null;
+    }
+    studentLongPressOriginRef.current = null;
+  };
+
+  const startStudentLongPress = (e, index) => {
+    const studentName = (logs[index]?.student || '').trim();
+    if (!studentName || isDataLoading) return;
+    cancelStudentLongPress();
+    const targetEl = e.currentTarget;
+    const touch = e.touches?.[0];
+    studentLongPressOriginRef.current = touch ? { x: touch.clientX, y: touch.clientY } : null;
+    studentLongPressTimerRef.current = setTimeout(() => {
+      studentLongPressTimerRef.current = null;
+      try {
+        targetEl?.blur?.();
+        window.getSelection?.()?.removeAllRanges?.();
+      } catch (_) {}
+      setPhotoModalTarget({
+        studentName,
+        date,
+        shift: shifts[index] || '',
+        teacher: currentUser || ''
+      });
+    }, 550);
+  };
+
+  const handleStudentLongPressMove = (e) => {
+    if (!studentLongPressOriginRef.current || !e.touches?.[0]) return;
+    const dx = Math.abs(e.touches[0].clientX - studentLongPressOriginRef.current.x);
+    const dy = Math.abs(e.touches[0].clientY - studentLongPressOriginRef.current.y);
+    if (dx > 10 || dy > 10) {
+      cancelStudentLongPress();
+    }
+  };
   const [isEditingProfile, setIsEditingProfile] = useState(() => !(getSavedItem('sungdong_team', '') && getSavedItem('sungdong_teacher', '')));
   const [todaySummary, setTodaySummary] = useState(null);
   const [hasAdminPassword, setHasAdminPassword] = useState(() => hasValidSavedAdminPassword());
@@ -5010,6 +5053,14 @@ export default function MainApp({
                                         }
                                       }}
                                       onBlur={handleInputBlur}
+                                      onTouchStart={(e) => startStudentLongPress(e, index)}
+                                      onTouchMove={handleStudentLongPressMove}
+                                      onTouchEnd={cancelStudentLongPress}
+                                      onTouchCancel={cancelStudentLongPress}
+                                      onMouseDown={(e) => startStudentLongPress(e, index)}
+                                      onMouseUp={cancelStudentLongPress}
+                                      onMouseLeave={cancelStudentLongPress}
+                                      title="길게 누르면 학생 사진 촬영 및 조회/삭제"
                                       disabled={isDataLoading}
                                       className={`flex-[1.5] min-w-0 h-12 sm:h-[52px] md:h-14 px-3 md:px-4 border-[1.5px] rounded-xl outline-none font-bold disabled:opacity-50 disabled:cursor-not-allowed transition-all text-[18px] min-[360px]:text-[20px] sm:text-xl md:text-2xl landscape:text-[22px] md:landscape:text-[26px] leading-tight tracking-tight caret-blue-600 focus:ring-4 focus:ring-blue-500/15 ${!logs[index].student ? 'bg-gray-50 text-gray-800 placeholder-gray-400 border-dashed border-gray-300 focus:border-blue-400' : (logs[index].location === '공휴일' || logs[index].location === '휴무일' ? 'bg-rose-100 text-rose-800 placeholder-rose-300 border-rose-200 focus:border-rose-400' : (logs[index].student || '').includes('보조강사') ? 'bg-amber-200 text-amber-950 placeholder-gray-500 border-amber-300 focus:border-amber-500' : 'bg-blue-50 text-blue-900 placeholder-blue-300 border-blue-200 focus:border-blue-500')}`}
 
@@ -5651,6 +5702,13 @@ export default function MainApp({
             </div>
           </div>
         </div>
+      )}
+
+      {photoModalTarget && (
+        <StudentPhotoModal
+          target={photoModalTarget}
+          onClose={() => setPhotoModalTarget(null)}
+        />
       )}
 
       <QuickNavBar
