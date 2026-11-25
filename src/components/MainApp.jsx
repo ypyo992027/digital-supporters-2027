@@ -5240,23 +5240,37 @@ export default function MainApp({
                                     </div>
                                   </div>
                                   {!isSpecialDay && (logs[index]?.student || "").trim() && !((logs[index]?.selectedTags || []).flat().includes('선생님휴가')) && (
-                                    <div className="flex items-center gap-1 overflow-x-auto scrollbar-none pt-1">
-                                      {['전화', '문자', '카카오톡', '사진/갤러리', '지도', '제미나이', '챗GPT', '유튜브', '보이스피싱 예방', '키오스크'].map((chip) => (
-                                        <button
-                                          key={chip}
-                                          type="button"
-                                          disabled={isDataLoading || isInfoMissing}
-                                          onClick={() => {
-                                            const cur = (logs[index]?.memo || "").trim();
-                                            if (cur.includes(chip)) return;
-                                            const next = cur ? `${cur}, ${chip}` : chip;
-                                            handleLogChange(index, 'memo', next);
-                                          }}
-                                          className="px-2 py-0.5 rounded-full bg-slate-100 hover:bg-blue-50 text-slate-600 hover:text-blue-700 border border-slate-200 hover:border-blue-300 text-[11.5px] sm:text-[12px] font-bold whitespace-nowrap shrink-0 active:scale-95 transition disabled:opacity-40"
-                                        >
-                                          + {chip}
-                                        </button>
-                                      ))}
+                                    <div className="flex items-center flex-wrap gap-1.5 pt-1.5">
+                                      {['전화', '문자', '카카오톡', '사진/갤러리', '지도', '제미나이', '챗GPT', '유튜브', '보이스피싱 예방', '키오스크'].map((chip) => {
+                                        const curMemo = (logs[index]?.memo || "").trim();
+                                        const isSelected = curMemo.split(/[,\n]+/).map(s => s.trim()).includes(chip);
+                                        return (
+                                          <button
+                                            key={chip}
+                                            type="button"
+                                            disabled={isDataLoading || isInfoMissing}
+                                            onClick={() => {
+                                              if (isSelected) {
+                                                const next = curMemo
+                                                  .split(',')
+                                                  .map(s => s.trim())
+                                                  .filter(s => s && s !== chip)
+                                                  .join(', ');
+                                                handleLogChange(index, 'memo', next);
+                                              } else {
+                                                const next = curMemo ? `${curMemo}, ${chip}` : chip;
+                                                handleLogChange(index, 'memo', next);
+                                              }
+                                            }}
+                                            className={`px-2.5 py-1 rounded-full border text-[12.5px] sm:text-[13px] font-bold whitespace-nowrap shrink-0 active:scale-95 transition disabled:opacity-40 shadow-2xs ${isSelected
+                                              ? 'bg-blue-600 text-white border-blue-600'
+                                              : 'bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 border-slate-300 hover:border-blue-400'
+                                              }`}
+                                          >
+                                            {isSelected ? `✓ ${chip}` : `+ ${chip}`}
+                                          </button>
+                                        );
+                                      })}
                                     </div>
                                   )}
                                 </div>
