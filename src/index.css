@@ -416,6 +416,21 @@ a.menu-row:hover .row-trail {
   border-width: 2.5px !important;
 }
 
+@keyframes siblingSparkle {
+  0%, 100% {
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.75), 0 0 12px rgba(59, 130, 246, 0.45);
+    filter: brightness(1);
+  }
+  50% {
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.95), 0 0 18px rgba(245, 158, 11, 0.7);
+    filter: brightness(1.08);
+  }
+}
+
+.animate-sibling-sparkle {
+  animation: siblingSparkle 0.9s ease-in-out infinite;
+}
+
 @keyframes btnTextFade {
   0% {
     opacity: 0;

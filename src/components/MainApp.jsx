@@ -1555,6 +1555,7 @@ export default function MainApp({
         let loadedStudent = (myRecord.student === undefined || myRecord.student === null) ? "" : myRecord.student;
         let loadedLocation = (myRecord.location === undefined || myRecord.location === null) ? "" : myRecord.location;
         let statusStr = mergeAttendanceAndStatus(myRecord.attendance, formatStatusIfDate(myRecord.status));
+        let isFromSibling = false;
 
         if (!statusStr.replace(/\u200B/g, '').trim() && loadedStudent.trim()) {
           const cleanMyStudent = loadedStudent.trim();
@@ -1572,6 +1573,7 @@ export default function MainApp({
           });
           if (siblingRecord) {
             statusStr = mergeAttendanceAndStatus(siblingRecord.attendance, formatStatusIfDate(siblingRecord.status));
+            isFromSibling = true;
           }
         }
 
@@ -1645,7 +1647,8 @@ export default function MainApp({
           student: loadedStudent,
           location: loadedLocation,
           selectedTags: loadedTags,
-          memo: loadedMemo
+          memo: loadedMemo,
+          isFromSibling
         };
         if (loadedHeadcount) {
           newLogs[index].headcount = loadedHeadcount;
@@ -3356,7 +3359,14 @@ export default function MainApp({
 
   const handleLogChange = (index, field, value) => {
     snapshotCardForUndo(index);
-    setLogs(prev => ({ ...prev, [index]: { ...prev[index], [field]: value } }));
+    setLogs(prev => ({
+      ...prev,
+      [index]: {
+        ...prev[index],
+        [field]: value,
+        ...(field === 'memo' || field === 'headcount' ? { isFromSibling: false } : {})
+      }
+    }));
 
     if (validationErrorIndex === index) setValidationErrorIndex(null);
 
@@ -3409,7 +3419,8 @@ export default function MainApp({
         newLogs[index] = {
           ...currentLog,
           selectedTags: loadedTags,
-          memo: loadedMemo
+          memo: loadedMemo,
+          isFromSibling: true
         };
         if (loadedHeadcount) {
           newLogs[index].headcount = loadedHeadcount;
@@ -3436,7 +3447,7 @@ export default function MainApp({
 
     setLogs(prev => {
       const newLogs = { ...prev };
-      const log = { ...newLogs[index] };
+      const log = { ...newLogs[index], isFromSibling: false };
       const studentNames = (log.student || "").split(/[/,]/).map(s => s.trim()).filter(s => s.length > 0);
       const maxRows = Math.max(1, studentNames.length);
       let currentTagsArray = [...(log.selectedTags || [])];
@@ -4897,6 +4908,9 @@ export default function MainApp({
                                               const hasRealName = currentStudentName.length > 0 && !currentStudentName.includes("경로당") && !currentStudentName.includes("복지관");
                                               const isBlurTarget = isShowHeadcount && (isKyungrodangIncluded ? (!hasRealName && tag === '출석') : ['출석', '결석', '종료'].includes(tag));
 
+                                              const isTagSelected = Boolean(logs[index]?.selectedTags?.[sIdx]?.includes(tag));
+                                              const isSiblingTagSparkle = Boolean(logs[index]?.isFromSibling && !isBlurTarget && isTagSelected);
+
                                               return (
                                                 <button
                                                   key={tag}
@@ -4909,7 +4923,8 @@ export default function MainApp({
                                                     " leading-[1.15] tracking-tighter sm:tracking-normal transition-all touch-manipulation break-keep whitespace-nowrap " +
                                                     (isBlurTarget
                                                       ? "bg-gray-100 text-gray-400 border-[1.5px] border-gray-200 blur-[1px] opacity-90 cursor-not-allowed"
-                                                      : "disabled:opacity-50 disabled:cursor-not-allowed " + getTagClass(index, sIdx, tag))
+                                                      : "disabled:opacity-50 disabled:cursor-not-allowed " + getTagClass(index, sIdx, tag)) +
+                                                    (isSiblingTagSparkle ? " animate-sibling-sparkle" : "")
                                                   }
                                                 >
                                                   {tag}
@@ -4951,7 +4966,7 @@ export default function MainApp({
                                     })()}
                                     <div className="relative flex-1 min-w-0 flex flex-col group">
                                       <div
-                                        className={`absolute inset-0 py-2 sm:py-2.5 md:py-3 px-3 md:px-4 border-[1.5px] border-gray-200 rounded-xl bg-gray-50 font-semibold ${memoTextColorClass} transition-all group-focus-within:bg-white group-focus-within:border-blue-400 group-focus-within:ring-4 group-focus-within:ring-blue-500/15 text-[18px] md:text-[22px] leading-tight whitespace-pre-wrap overflow-y-auto break-words z-0 pointer-events-none ${(isDataLoading || isInfoMissing) ? 'opacity-50' : ''}`}
+                                        className={`absolute inset-0 py-2 sm:py-2.5 md:py-3 px-3 md:px-4 border-[1.5px] ${logs[index]?.isFromSibling && (logs[index]?.memo || "").trim() ? 'border-amber-400 animate-sibling-sparkle' : 'border-gray-200'} rounded-xl bg-gray-50 font-semibold ${memoTextColorClass} transition-all group-focus-within:bg-white group-focus-within:border-blue-400 group-focus-within:ring-4 group-focus-within:ring-blue-500/15 text-[18px] md:text-[22px] leading-tight whitespace-pre-wrap overflow-y-auto break-words z-0 pointer-events-none ${(isDataLoading || isInfoMissing) ? 'opacity-50' : ''}`}
                                         aria-hidden="true"
                                       >
                                         {!logs[index]?.memo ? (
