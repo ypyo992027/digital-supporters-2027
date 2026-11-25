@@ -4809,6 +4809,38 @@ export default function MainApp({
                               memoTextColorClass = "text-gray-500";
                             }
 
+                            const hasCardContent = Boolean(
+                              logs[index]?.student?.trim() ||
+                              logs[index]?.location?.trim() ||
+                              logs[index]?.memo?.trim() ||
+                              logs[index]?.headcount?.trim() ||
+                              logs[index]?.selectedTags?.some(t => t?.length > 0)
+                            );
+                            const canUndoCard = Boolean(
+                              undoLogs[index] && JSON.stringify(undoLogs[index]) !== JSON.stringify(logs[index])
+                            );
+                            const resetOrUndoButton = (!hasCardContent && canUndoCard) ? (
+                              <button
+                                type="button"
+                                onClick={() => handleUndoCard(index)}
+                                disabled={isDataLoading}
+                                title="방금 초기화한 내용을 이전 상태로 되돌리기"
+                                className="bg-amber-50 hover:bg-amber-100 text-amber-800 ring-1 ring-inset ring-amber-300 h-[32px] sm:h-[36px] px-2.5 sm:px-3 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap shrink-0 transition-all cursor-pointer active:scale-95 font-bold shadow-sm flex items-center justify-center"
+                              >
+                                <span>되돌리기</span>
+                              </button>
+                            ) : hasCardContent ? (
+                              <button
+                                type="button"
+                                onClick={() => setClearConfirmIndex(index)}
+                                disabled={isDataLoading}
+                                title="이 시간대 수업 내용(이름·장소·출결·메모) 모두 비우기"
+                                className="bg-rose-50 hover:bg-rose-100 text-rose-700 ring-1 ring-inset ring-rose-200 h-[32px] sm:h-[36px] px-2.5 sm:px-3 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap shrink-0 transition-all cursor-pointer active:scale-95 font-bold shadow-sm flex items-center justify-center"
+                              >
+                                <span>초기화</span>
+                              </button>
+                            ) : null;
+
                             return (
                               <div key={index} id={`log-card-${index}`} className={`log-card p-4 sm:p-5 md:p-6 border-[1.5px] rounded-2xl ${cardColorClass}`}>
                                 <div className={`flex justify-between items-center w-full min-h-[32px] sm:min-h-[36px] mb-3 transition-opacity flex-nowrap gap-2 ${(isDataLoading) ? 'opacity-50' : ''}`}>
@@ -4865,50 +4897,22 @@ export default function MainApp({
                                     ) : null}
                                   </div>
 
-                                  {shouldRepeatPerShift[index] && !noNewScheduleToRepeat && logsDate === date && isFutureOrToday && (!currentSelectedHoliday || currentSelectedHoliday.vacation_available) && !logs[index].student?.includes("안전교육") && !logs[index].student?.includes("직무교육") && !logs[index].student?.includes("간담회") && (
-                                    <button
-                                      type="button"
-                                      onClick={() => handleRepeatScheduleForShift(index)}
-                                      className="ml-auto bg-orange-50 hover:bg-orange-100 text-orange-700 ring-1 ring-inset ring-orange-200 h-[32px] sm:h-[36px] px-2.5 py-1 sm:px-3 sm:py-1 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap shrink-0 transition-colors cursor-pointer active:scale-95 font-bold shadow-sm flex items-center justify-center"
-                                    >
-                                      복제
-                                    </button>
-                                  )}
+                                  <div className="ml-auto flex items-center gap-1.5 shrink-0">
+                                    {shouldRepeatPerShift[index] && !noNewScheduleToRepeat && logsDate === date && isFutureOrToday && (!currentSelectedHoliday || currentSelectedHoliday.vacation_available) && !logs[index].student?.includes("안전교육") && !logs[index].student?.includes("직무교육") && !logs[index].student?.includes("간담회") && (
+                                      <button
+                                        type="button"
+                                        onClick={() => handleRepeatScheduleForShift(index)}
+                                        className="bg-orange-50 hover:bg-orange-100 text-orange-700 ring-1 ring-inset ring-orange-200 h-[32px] sm:h-[36px] px-2.5 py-1 sm:px-3 sm:py-1 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap shrink-0 transition-colors cursor-pointer active:scale-95 font-bold shadow-sm flex items-center justify-center"
+                                      >
+                                        복제
+                                      </button>
+                                    )}
+                                    {resetOrUndoButton}
+                                  </div>
                                 </div>
 
                                 <div className="space-y-2 sm:space-y-2.5">
                                   {(() => {
-                                    const hasCardContent = Boolean(
-                                      logs[index]?.student?.trim() ||
-                                      logs[index]?.location?.trim() ||
-                                      logs[index]?.memo?.trim() ||
-                                      logs[index]?.headcount?.trim() ||
-                                      logs[index]?.selectedTags?.some(t => t?.length > 0)
-                                    );
-                                    const canUndoCard = Boolean(
-                                      undoLogs[index] && JSON.stringify(undoLogs[index]) !== JSON.stringify(logs[index])
-                                    );
-                                    const resetOrUndoButton = (!hasCardContent && canUndoCard) ? (
-                                      <button
-                                        type="button"
-                                        onClick={() => handleUndoCard(index)}
-                                        disabled={isDataLoading}
-                                        title="방금 초기화한 내용을 이전 상태로 되돌리기"
-                                        className="ml-auto bg-amber-50 hover:bg-amber-100 text-amber-800 ring-1 ring-inset ring-amber-300 h-[32px] sm:h-[36px] px-2.5 sm:px-3 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap shrink-0 transition-all cursor-pointer active:scale-95 font-bold shadow-sm flex items-center justify-center"
-                                      >
-                                        <span>되돌리기</span>
-                                      </button>
-                                    ) : hasCardContent ? (
-                                      <button
-                                        type="button"
-                                        onClick={() => setClearConfirmIndex(index)}
-                                        disabled={isDataLoading}
-                                        title="이 시간대 수업 내용(이름·장소·출결·메모) 모두 비우기"
-                                        className="ml-auto bg-rose-50 hover:bg-rose-100 text-rose-700 ring-1 ring-inset ring-rose-200 h-[32px] sm:h-[36px] px-2.5 sm:px-3 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap shrink-0 transition-all cursor-pointer active:scale-95 font-bold shadow-sm flex items-center justify-center"
-                                      >
-                                        <span>초기화</span>
-                                      </button>
-                                    ) : null;
 
                                     if (studentNames.length > 1) {
                                       const validStudents = studentNames.filter(s => s.trim() && !s.trim().includes("보조강사") && !s.trim().includes("도선복지관"));
@@ -4974,16 +4978,13 @@ export default function MainApp({
                                               </React.Fragment>
                                             );
                                           })}
-                                          {resetOrUndoButton}
                                         </div>
                                       );
                                     }
 
                                     const singleStudent = (studentNames[0] || logs[index]?.student || "").trim();
                                     if (!singleStudent || singleStudent.includes("보조강사") || singleStudent.includes("도선복지관")) {
-                                      return resetOrUndoButton ? (
-                                        <div className="flex items-center gap-1.5 w-full">{resetOrUndoButton}</div>
-                                      ) : null;
+                                      return null;
                                     }
 
                                     const isAppSubmitted = checkFormSubmitted(submittedForms.apps, singleStudent);
@@ -5041,7 +5042,6 @@ export default function MainApp({
                                           <span>사후설문지</span>
                                           {needPostSurvey && <span className="ml-1 w-2 h-2 rounded-full bg-rose-500 animate-pulse shrink-0" aria-hidden="true" />}
                                         </button>
-                                        {resetOrUndoButton}
                                       </div>
                                     );
                                   })()}
