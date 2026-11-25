@@ -5072,15 +5072,16 @@ export default function MainApp({
                   // 출결 텍스트 색상을 설정할 때도, "쿠팡 취소" 등의 문구에 반응하지 않고 
                   // 콤마나 슬래시로 명확히 분리된 상태일 때만 빨간색 등으로 표시되게 합니다.
                   const isPresent = hasIndependentKeyword(att, ["출석", "1"]);
-                  const isAbsentOrEnd = hasIndependentKeyword(att, ["결석", "종료", "취소"]);
+                  const isAbsent = hasIndependentKeyword(att, ["결석"]);
+                  const isEndOrCancel = hasIndependentKeyword(att, ["종료", "취소"]);
                   const isVacation = hasIndependentKeyword(att, ["선생님휴가"]);
 
                   if (isPresent) {
                     attColor = "text-gray-900";
-                  } else if (isAbsentOrEnd) {
+                  } else if (isAbsent) {
                     attColor = "text-red-600 font-bold";
-                  } else if (isVacation) {
-                    attColor = "text-gray-400 font-bold";
+                  } else if (isEndOrCancel || isVacation) {
+                    attColor = "text-gray-500 font-bold";
                   }
 
                   return (
