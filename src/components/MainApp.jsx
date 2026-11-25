@@ -3859,17 +3859,17 @@ export default function MainApp({
               )}
 
               {selectedTeam && currentUser && todaySummary && todaySummary.total > 0 && (
-                <div className="flex flex-col gap-1.5 px-3 py-2 rounded-xl bg-blue-50/70 border border-blue-200/80 text-left">
-                  <div className="flex items-center justify-between gap-2 text-[13px] sm:text-[14px] font-extrabold">
+                <div className="flex flex-col gap-2 px-3.5 py-2.5 rounded-xl bg-blue-50/70 border border-blue-200/80 text-left">
+                  <div className="flex items-center justify-between gap-2 text-[15px] sm:text-[16px] font-extrabold">
                     <span className="text-slate-800">
                       오늘 내 수업 <span className="text-blue-700">{todaySummary.total}건</span>
                     </span>
                     {todaySummary.pending > 0 ? (
-                      <span className="px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-300 text-[12px] font-extrabold">
+                      <span className="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-300 text-[13.5px] sm:text-[14px] font-extrabold">
                         미입력 {todaySummary.pending}건
                       </span>
                     ) : (
-                      <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 text-[12px] font-extrabold">
+                      <span className="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 text-[13.5px] sm:text-[14px] font-extrabold">
                         모두 입력 완료
                       </span>
                     )}
@@ -3881,7 +3881,7 @@ export default function MainApp({
                         type="button"
                         onClick={handleLogin}
                         disabled={!isLoginReady}
-                        className={`px-2 py-0.5 rounded-lg text-[12px] font-bold border transition active:scale-95 ${item.isPending
+                        className={`px-2.5 py-1 rounded-lg text-[14px] sm:text-[15px] font-bold border transition active:scale-95 ${item.isPending
                           ? 'bg-white border-amber-300 text-amber-900'
                           : 'bg-emerald-50 border-emerald-200 text-emerald-800'
                           }`}
