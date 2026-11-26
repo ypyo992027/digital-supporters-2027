@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
-  STUDENT_PHOTO_FOLDER_URL,
   getStudentPhotoGasUrl,
   buildStudentPhotoFileName,
   parseStudentPhotoFileName,
@@ -298,19 +297,7 @@ export default function StudentPhotoModal({ target, onClose, onPhotosChanged }) 
           </div>
         </div>
 
-        <div className="p-3 bg-slate-50 border-t border-slate-200 flex items-center justify-between gap-2 shrink-0">
-          <a
-            href={STUDENT_PHOTO_FOLDER_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={(e) => {
-              e.preventDefault();
-              window.open(STUDENT_PHOTO_FOLDER_URL, '_blank', 'noopener,noreferrer');
-            }}
-            className="text-[13px] font-bold text-blue-600 hover:underline px-2"
-          >
-            드라이브 폴더 열기 ↗
-          </a>
+        <div className="p-3 bg-slate-50 border-t border-slate-200 flex items-center justify-end gap-2 shrink-0">
           <button
             type="button"
             onClick={onClose}
