@@ -1206,11 +1206,17 @@ export default function MyWeeklyScheduleApp({
                   <span className="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-800 border border-slate-200 text-[13.5px] font-extrabold">
                     📍 {selectedClassDetail.location || '복지관'}
                   </span>
-                  {selectedClassDetail.tags.map((tag, idx) => (
-                    <span key={idx} className="px-2.5 py-1 rounded-lg bg-blue-100 text-blue-800 border border-blue-200 text-[13.5px] font-extrabold">
-                      {tag}
-                    </span>
-                  ))}
+                  {selectedClassDetail.tags.map((tag, idx) => {
+                    let badgeStyle = 'bg-blue-100 text-blue-800 border-blue-200';
+                    if (tag.includes('결석')) badgeStyle = 'bg-red-100 text-red-700 border-red-200';
+                    else if (tag.includes('휴가')) badgeStyle = 'bg-gray-200 text-gray-700 border-gray-300';
+                    else if (tag.includes('종료') || tag.includes('취소')) badgeStyle = 'bg-orange-100 text-orange-700 border-orange-200';
+                    return (
+                      <span key={idx} className={`px-2.5 py-1 rounded-lg border text-[13.5px] font-extrabold ${badgeStyle}`}>
+                        {tag}
+                      </span>
+                    );
+                  })}
                   {selectedClassDetail.sessionCounts && selectedClassDetail.sessionCounts.map((sc, idx) => (
                     <button
                       key={idx}
@@ -1219,19 +1225,31 @@ export default function MyWeeklyScheduleApp({
                         setSelectedClassDetail(null);
                         setSelectedStudentDates(sc);
                       }}
+                      title="출석 일자 보기"
                       className={`px-2.5 py-1 rounded-lg text-[13.5px] cursor-pointer active:scale-95 transition ${getSessionBadgeStyle(sc.count)}`}
                     >
-                      {sc.name ? `${sc.name} ` : ''}{sc.count}회차 (출석일 보기)
+                      {sc.count}회차
                     </button>
                   ))}
                 </div>
 
-                <div>
-                  <div className="text-[13px] font-extrabold text-slate-500 mb-1">수업 메모</div>
-                  <div className={`p-3 rounded-xl border text-[15px] sm:text-[16px] font-bold whitespace-pre-wrap break-words leading-relaxed ${selectedClassDetail.isAbsent ? 'bg-rose-50 border-rose-200 text-rose-700' : 'bg-slate-50 border-slate-200 text-slate-900'}`}>
-                    {selectedClassDetail.memo || '등록된 수업 메모가 없습니다.'}
-                  </div>
-                </div>
+                {(() => {
+                  const hasAtt = selectedClassDetail.tags.some(t => t.includes('출석') || /^\d+/.test(t));
+                  const hasVacation = !hasAtt && selectedClassDetail.tags.some(t => t.includes('휴가'));
+                  const memoBoxStyle = selectedClassDetail.isAbsent && !hasAtt
+                    ? 'bg-rose-50 border-rose-200 text-red-600'
+                    : hasVacation
+                      ? 'bg-gray-100 border-gray-300 text-gray-500'
+                      : 'bg-slate-50 border-slate-200 text-slate-900';
+                  return (
+                    <div>
+                      <div className="text-[13px] font-extrabold text-slate-500 mb-1">수업 메모</div>
+                      <div className={`p-3 rounded-xl border text-[15px] sm:text-[16px] font-bold whitespace-pre-wrap break-words leading-relaxed ${memoBoxStyle}`}>
+                        {selectedClassDetail.memo || '등록된 수업 메모가 없습니다.'}
+                      </div>
+                    </div>
+                  );
+                })()}
 
                 {recentHistory.length > 0 && (
                   <div>
@@ -1239,13 +1257,18 @@ export default function MyWeeklyScheduleApp({
                     <div className="space-y-1.5">
                       {recentHistory.map((h, hIdx) => {
                         const memoText = h.memos.join('\n');
+                        const hasAtt = h.tags.some(t => t.includes('출석') || /^\d+/.test(t));
+                        const isAbs = !hasAtt && h.tags.some(t => t.includes('결석'));
+                        const isVac = !hasAtt && h.tags.some(t => t.includes('휴가'));
+                        const statusColor = isAbs ? 'text-red-600' : isVac ? 'text-gray-500' : 'text-blue-700';
+                        const memoColor = isAbs ? 'text-red-600' : isVac ? 'text-gray-500' : 'text-slate-700';
                         return (
                           <div key={hIdx} className="p-2.5 rounded-xl bg-gray-50 border border-gray-200 text-[13.5px]">
                             <div className="flex items-center justify-between gap-2 font-extrabold text-slate-700 mb-0.5">
                               <span>{h.log_date} ({h.shift ? h.shift.split('~')[0] : ''})</span>
-                              <span className="text-indigo-700">{h.tags.join(', ') || '-'}</span>
+                              <span className={statusColor}>{h.tags.join(', ') || '-'}</span>
                             </div>
-                            <div className="text-slate-700 font-medium whitespace-pre-wrap break-words">
+                            <div className={`${memoColor} font-medium whitespace-pre-wrap break-words`}>
                               {memoText || '메모 없음'}
                             </div>
                           </div>
