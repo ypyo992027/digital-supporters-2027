@@ -1008,44 +1008,45 @@ export default function MyWeeklyScheduleApp({
           </div>
 
           <div className="flex-1 overflow-x-auto overflow-y-auto bg-gray-50/50 p-2 sm:p-4">
-            <div className="min-w-[480px] sm:min-w-0 w-full bg-white rounded-xl shadow-sm border-2 border-gray-300 overflow-hidden mx-auto">
+            <div className="min-w-[740px] w-full bg-white rounded-xl shadow-sm border-2 border-gray-300 overflow-hidden mx-auto">
               <table className="w-full table-fixed text-center border-collapse">
                 <thead>
                   <tr className="bg-[#eef2ff] border-b-2 border-gray-300">
-                    <th className="w-[18%] sm:w-[14%] py-2 md:py-3 border-r-2 border-gray-300 font-black text-gray-800 text-[clamp(0.95rem,2.2vw,1.25rem)]">날짜</th>
-                    {timeSlots.map((time, idx) => {
-                      const startTime = (time || '').split('~')[0].trim();
+                    <th className="w-[12%] py-2 md:py-3 border-r-2 border-gray-300 font-black text-gray-800 text-[clamp(1rem,2.2vw,1.3rem)]">수업시간</th>
+                    {currentDays.map((day, i) => {
+                      const dateStr = getLocalDateString(day);
+                      const todayStr = getLocalDateString(new Date());
+                      const isToday = dateStr === todayStr;
+
                       return (
-                        <th key={idx} className="py-2 md:py-3 border-r-2 border-gray-300 last:border-0 font-black text-blue-900 text-[clamp(1rem,2.2vw,1.3rem)] tracking-tight">
-                          {startTime}
+                        <th ref={isToday ? todayColRef : null} key={i} style={{ width: '17.6%' }} className={`py-2 md:py-3 font-black text-[clamp(1rem,2.2vw,1.3rem)] tracking-tight transition-all ${isToday ? 'border-l-4 border-r-4 border-t-4 border-blue-600 text-blue-700 bg-blue-50' : 'border-r-2 border-gray-300 text-blue-900 last:border-0'}`}>
+                          {day.getMonth() + 1}/{day.getDate()} ({weekDays[i]})
                         </th>
                       );
                     })}
                   </tr>
                 </thead>
                 <tbody>
-                  {currentDays.map((day, i) => {
-                    const dateStr = getLocalDateString(day);
-                    const todayStr = getLocalDateString(new Date());
-                    const isToday = dateStr === todayStr;
-                    const specialDayInfo = specialDays && specialDays[dateStr];
-                    const rowTodayBorder = isToday ? 'border-t-[3px] border-b-[3px] border-t-blue-600 border-b-blue-600' : 'border-b-2 border-gray-300 last:border-b-0';
-
-                    return (
-                    <tr key={i} ref={isToday ? todayColRef : null} className={rowTodayBorder}>
-                      <td className={`py-3 md:py-5 px-1 border-r-2 border-gray-300 font-black text-[clamp(0.95rem,2.1vw,1.25rem)] whitespace-pre-line leading-tight ${isToday ? 'bg-blue-50 text-blue-700 border-l-4 border-l-blue-600' : 'bg-[#f8fafc] text-blue-900'}`}>
-                        {`${day.getMonth() + 1}/${day.getDate()}\n(${weekDays[i]})`}
+                  {timeSlots.map((time, idx) => (
+                    <tr key={idx} className="border-b-2 border-gray-300 last:border-0">
+                      <td className="py-3 md:py-5 px-1 border-r-2 border-gray-300 bg-[#f8fafc] font-black text-blue-800 text-[clamp(0.95rem,2.1vw,1.25rem)] whitespace-pre-line leading-tight">
+                        {time.replace('~', '\n~\n')}
                       </td>
-                      {timeSlots.map((time, idx) => {
-                        const isLastCol = idx === timeSlots.length - 1;
-                        const todayCellBorderClass = `${isToday ? `border-t-[3px] border-b-[3px] border-t-blue-600 border-b-blue-600 ${isLastCol ? 'border-r-4 border-r-blue-600' : 'border-r-2 border-r-gray-300'}` : 'border-r-2 border-gray-300 last:border-r-0'}`;
+                      {currentDays.map((day, i) => {
+                        const dateStr = getLocalDateString(day);
+                        const todayStr = getLocalDateString(new Date());
+                        const isToday = dateStr === todayStr;
+                        const specialDayInfo = specialDays && specialDays[dateStr];
+
+                        const isLastSlot = idx === timeSlots.length - 1;
+                        const todayBorderClass = isToday ? `border-l-4 border-r-4 ${isLastSlot ? 'border-b-4' : ''} border-blue-600 z-10` : 'border-r-2 border-gray-300 last:border-0';
 
                         const cellData = scheduleData?.[time]?.[dateStr];
 
                         if (!cellData || (!cellData.student && !cellData.location && !cellData.status)) {
                           return (
-                            <td key={idx} className={`p-0 align-top hover:bg-gray-50 transition-colors overflow-hidden ${todayCellBorderClass} ${specialDayInfo ? 'bg-red-300' : (isToday ? 'bg-blue-50/25' : 'bg-white')}`}>
-                              <div className="flex items-center justify-center h-full min-h-[100px] text-gray-400 font-bold text-[clamp(1rem,2vw,1.2rem)]">
+                            <td key={i} className={`p-0 align-top hover:bg-gray-50 transition-colors overflow-hidden ${todayBorderClass} ${specialDayInfo ? 'bg-red-300' : ''}`}>
+                              <div className="flex items-center justify-center h-full min-h-[110px] text-gray-400 font-bold text-[clamp(1rem,2vw,1.2rem)]">
                               </div>
                             </td>
                           );
@@ -1072,7 +1073,7 @@ export default function MyWeeklyScheduleApp({
 
                         return (
                           <td
-                            key={idx}
+                            key={i}
                             onClick={() => {
                               if (!isHoliday && cellData.student) {
                                 setSelectedClassDetail({
@@ -1088,9 +1089,9 @@ export default function MyWeeklyScheduleApp({
                                 });
                               }
                             }}
-                            className={`${cellBgClass} p-0 align-top transition-all overflow-hidden h-full hover:brightness-95 ${!isHoliday && cellData.student ? 'cursor-pointer' : ''} ${todayCellBorderClass}`}
+                            className={`${cellBgClass} p-0 align-top transition-all overflow-hidden h-full hover:brightness-95 ${!isHoliday && cellData.student ? 'cursor-pointer' : ''} ${todayBorderClass}`}
                           >
-                            <div className={`flex flex-col gap-1 justify-start items-center h-full min-h-[100px] overflow-hidden w-full max-w-full ${isHoliday ? 'px-2 py-2.5 sm:p-3 bg-red-300 text-white' : 'px-1.5 py-2.5 sm:p-3'}`}>
+                            <div className={`flex flex-col gap-1 justify-start items-center h-full min-h-[110px] overflow-hidden w-full max-w-full ${isHoliday ? 'px-2 py-2.5 sm:p-3 bg-red-300 text-white' : 'px-1.5 py-2.5 sm:p-3'}`}>
                               {(showTags || showSessions) && (
                                 <div className="flex flex-wrap gap-1 justify-center items-center w-full mb-1">
                                   {showTags && parsedStatus.tags.map((tag, tIdx) => {
@@ -1140,8 +1141,7 @@ export default function MyWeeklyScheduleApp({
                         );
                       })}
                     </tr>
-                    );
-                  })}
+                  ))}
                 </tbody>
               </table>
             </div>

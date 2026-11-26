@@ -3977,1887 +3977,1888 @@ export default function MainApp({
                 </div>
               )}
 
-                            <div className="pt-0.5 sm:pt-1 flex">
-                              {!isLoginReady ? (
-                                <div className="flex-1 flex items-center justify-center w-full rounded-2xl text-[clamp(17px,4.6vw,21px)] tracking-tight font-extrabold text-slate-400 bg-slate-200/90 border border-slate-300 cursor-not-allowed select-none min-h-[58px] sm:min-h-[64px]">
-                                  {isFetchingSchedule ? <><Clock className="w-6 h-6 sm:w-8 sm:h-8 lg:w-7 lg:h-7 mr-2 animate-spin text-blue-600" /> 데이터 확인 중...</> : <><EditIcon className="w-6 h-6 sm:w-8 sm:h-8 lg:w-7 lg:h-7 mr-2" /> 일지 작성하기</>}
-                                </div>
-                              ) : (
-                                <button onClick={handleLogin} className="flex-1 flex items-center justify-center w-full rounded-2xl text-[clamp(18px,4.8vw,22px)] tracking-tight font-extrabold text-white bg-gradient-to-r from-blue-600 to-indigo-600 ring-1 ring-inset ring-blue-700/20 hover:from-blue-700 hover:to-indigo-700 active:scale-[0.98] transition-all shadow-lg shadow-blue-600/30 touch-manipulation min-h-[58px] sm:min-h-[64px]">
-                                  <EditIcon className="w-6 h-6 sm:w-8 sm:h-8 lg:w-7 lg:h-7 mr-2" /> 일지 작성하기
-                                </button>
-                              )}
-                            </div>
-                          </div>
+              <div className="pt-0.5 sm:pt-1 flex">
+                {!isLoginReady ? (
+                  <div className="flex-1 flex items-center justify-center w-full rounded-2xl text-[clamp(17px,4.6vw,21px)] tracking-tight font-extrabold text-slate-400 bg-slate-200/90 border border-slate-300 cursor-not-allowed select-none min-h-[58px] sm:min-h-[64px]">
+                    {isFetchingSchedule ? <><Clock className="w-6 h-6 sm:w-8 sm:h-8 lg:w-7 lg:h-7 mr-2 animate-spin text-blue-600" /> 데이터 확인 중...</> : <><EditIcon className="w-6 h-6 sm:w-8 sm:h-8 lg:w-7 lg:h-7 mr-2" /> 일지 작성하기</>}
+                  </div>
+                ) : (
+                  <button onClick={handleLogin} className="flex-1 flex items-center justify-center w-full rounded-2xl text-[clamp(18px,4.8vw,22px)] tracking-tight font-extrabold text-white bg-gradient-to-r from-blue-600 to-indigo-600 ring-1 ring-inset ring-blue-700/20 hover:from-blue-700 hover:to-indigo-700 active:scale-[0.98] transition-all shadow-lg shadow-blue-600/30 touch-manipulation min-h-[58px] sm:min-h-[64px]">
+                    <EditIcon className="w-6 h-6 sm:w-8 sm:h-8 lg:w-7 lg:h-7 mr-2" /> 일지 작성하기
+                  </button>
+                )}
+              </div>
+            </div>
           </div>
 
-                      <div className="menu-backdrop flex-1 flex flex-col min-h-[180px] mt-5 sm:mt-6">
-                        <MenuGroup title="일정">
-                          <MenuRow
-                            disabled={!selectedTeam || !currentUser}
-                            onClick={() => {
-                              if (!selectedTeam || !currentUser) {
-                                setErrorMessage("팀과 선생님을 먼저 선택해주세요.");
-                                setTimeout(() => setErrorMessage(""), 3000);
-                                return;
-                              }
-                              onNavigateToMyWeeklySchedule();
-                            }}
-                            icon={<CalendarIcon />}
-                            chipColor="chip-blue"
-                            label="나의 주간 일정"
-                            desc={(!selectedTeam || !currentUser) ? (errorMessage || "팀과 선생님을 먼저 선택하세요") : "이번 주 내 수업 일정"}
-                          />
-                          <MenuRow
-                            onClick={() => { window.sessionStorage.removeItem('sungdong_daily_schedule_date'); onNavigateToDailySchedule(selectedTeam || '1팀'); }}
-                            icon={<CalendarClockIcon />}
-                            chipColor="chip-emerald"
-                            label="팀별 오늘 일정"
-                            desc="팀별 오늘 수업과 출결"
-                          />
-                          <MenuRow
-                            onClick={() => { window.sessionStorage.removeItem('sungdong_daily_schedule_date'); onNavigateToTeamSchedule(selectedTeam || '1팀'); }}
-                            icon={<CalendarDaysIcon />}
-                            chipColor="chip-indigo"
-                            label="전체 일정 보기"
-                            desc="월별 전체 일정 · 엑셀 다운로드"
-                          />
-                        </MenuGroup>
+          <div className="menu-backdrop flex-1 flex flex-col min-h-[180px] mt-5 sm:mt-6">
+            <MenuGroup title="일정">
+              <MenuRow
+                disabled={!selectedTeam || !currentUser}
+                onClick={() => {
+                  if (!selectedTeam || !currentUser) {
+                    setErrorMessage("팀과 선생님을 먼저 선택해주세요.");
+                    setTimeout(() => setErrorMessage(""), 3000);
+                    return;
+                  }
+                  onNavigateToMyWeeklySchedule();
+                }}
+                icon={<CalendarIcon />}
+                chipColor="chip-blue"
+                label="나의 주간 일정"
+                desc={(!selectedTeam || !currentUser) ? (errorMessage || "팀과 선생님을 먼저 선택하세요") : "이번 주 내 수업 일정"}
+              />
+              <MenuRow
+                onClick={() => { window.sessionStorage.removeItem('sungdong_daily_schedule_date'); onNavigateToDailySchedule(selectedTeam || '1팀'); }}
+                icon={<CalendarClockIcon />}
+                chipColor="chip-emerald"
+                label="팀별 오늘 일정"
+                desc="팀별 오늘 수업과 출결"
+              />
+              <MenuRow
+                onClick={() => { window.sessionStorage.removeItem('sungdong_daily_schedule_date'); onNavigateToTeamSchedule(selectedTeam || '1팀'); }}
+                icon={<CalendarDaysIcon />}
+                chipColor="chip-indigo"
+                label="전체 일정 보기"
+                desc="월별 전체 일정 · 엑셀 다운로드"
+              />
+            </MenuGroup>
 
-                        <MenuGroup title="대상자">
-                          <MenuRow
-                            onClick={onNavigateToStudentSearch}
-                            icon={<IconSearchUser />}
-                            chipColor="chip-amber"
-                            label="대상자 검색"
-                            desc="이름·초성으로 수업 기록 찾기"
-                          />
-                          <MenuRow
-                            disabled={!selectedTeam || !currentUser}
-                            onClick={() => {
-                              if (!selectedTeam || !currentUser) {
-                                setErrorMessage("팀과 선생님을 먼저 선택해주세요.");
-                                setTimeout(() => setErrorMessage(""), 3000);
-                                return;
-                              }
-                              onNavigateToStudentFormsAdmin({
-                                team: selectedTeam,
-                                teacher: currentUser,
-                                isAdminMode: false
-                              });
-                            }}
-                            icon={<IconDocumentCheck />}
-                            chipColor="chip-blue"
-                            label="참여자 서류 관리"
-                            desc={(!selectedTeam || !currentUser) ? (errorMessage || "팀과 선생님을 먼저 선택하세요") : "학생별 서류 작성 현황 파악"}
-                          />
-                          <MenuRow
-                            onClick={onNavigateToClassApplicants}
-                            icon={<IconPeople />}
-                            chipColor="chip-teal"
-                            label="수업 희망자 관리"
-                            desc="신규 수업 신청 · 조 배정 현황"
-                          />
-                        </MenuGroup>
+            <MenuGroup title="대상자">
+              <MenuRow
+                onClick={onNavigateToStudentSearch}
+                icon={<IconSearchUser />}
+                chipColor="chip-amber"
+                label="대상자 검색"
+                desc="이름·초성으로 수업 기록 찾기"
+              />
+              <MenuRow
+                disabled={!selectedTeam || !currentUser}
+                onClick={() => {
+                  if (!selectedTeam || !currentUser) {
+                    setErrorMessage("팀과 선생님을 먼저 선택해주세요.");
+                    setTimeout(() => setErrorMessage(""), 3000);
+                    return;
+                  }
+                  onNavigateToStudentFormsAdmin({
+                    team: selectedTeam,
+                    teacher: currentUser,
+                    isAdminMode: false
+                  });
+                }}
+                icon={<IconDocumentCheck />}
+                chipColor="chip-blue"
+                label="참여자 서류 관리"
+                desc={(!selectedTeam || !currentUser) ? (errorMessage || "팀과 선생님을 먼저 선택하세요") : "학생별 서류 작성 현황 파악"}
+              />
+              <MenuRow
+                onClick={onNavigateToClassApplicants}
+                icon={<IconPeople />}
+                chipColor="chip-teal"
+                label="수업 희망자 관리"
+                desc="신규 수업 신청 · 조 배정 현황"
+              />
+            </MenuGroup>
 
-                        <section className="menu-group">
-                          <h3 className="menu-group-title">교육실 현황</h3>
-                          <div className="menu-tiles">
-                            <MenuTile
-                              onClick={() => { handleLogout(); onNavigateToClassroom(); }}
-                              icon={<IconClassroom />}
-                              chipColor="chip-sky"
-                              label="평생교육실2"
-                            />
-                            <MenuTile
-                              onClick={() => { handleLogout(); onNavigateToNangmanStudio(); }}
-                              icon={<IconStudio />}
-                              chipColor="chip-pink"
-                              label="낭만스튜디오"
-                            />
-                          </div>
-                        </section>
+            <section className="menu-group">
+              <h3 className="menu-group-title">교육실 현황</h3>
+              <div className="menu-tiles">
+                <MenuTile
+                  onClick={() => { handleLogout(); onNavigateToClassroom(); }}
+                  icon={<IconClassroom />}
+                  chipColor="chip-sky"
+                  label="평생교육실2"
+                />
+                <MenuTile
+                  onClick={() => { handleLogout(); onNavigateToNangmanStudio(); }}
+                  icon={<IconStudio />}
+                  chipColor="chip-pink"
+                  label="낭만스튜디오"
+                />
+              </div>
+            </section>
 
-                        <MenuGroup title="서포터즈 도구">
-                          <MenuRow
-                            onClick={() => { handleLogout(); onNavigateToNameCard(); }}
-                            icon={<IconNameCard />}
-                            chipColor="chip-indigo"
-                            label="명함 만들기"
-                            desc="디지털교육서포터즈 명함 제작"
-                          />
-                        </MenuGroup>
+            <MenuGroup title="서포터즈 도구">
+              <MenuRow
+                onClick={() => { handleLogout(); onNavigateToNameCard(); }}
+                icon={<IconNameCard />}
+                chipColor="chip-indigo"
+                label="명함 만들기"
+                desc="디지털교육서포터즈 명함 제작"
+              />
+            </MenuGroup>
 
-                        {hasAdminPassword && (
-                          <MenuGroup title="관리자 메뉴">
-                            <MenuRow
-                              variant="admin"
-                              chipColor="chip-emerald"
-                              onClick={() => { handleLogout(); onNavigateToStudentFormsAdmin({ isAdminMode: true }); }}
-                              icon={<IconDocumentCheck />}
-                              label={
-                                <>
-                                  참여자 서류 관리ㆍ인쇄<br />
-                                </>
-                              }
-                            />
-                            <MenuRow
-                              variant="admin"
-                              chipColor="chip-blue"
-                              onClick={() => { handleLogout(); onNavigateToTeacherManagement(); }}
-                              icon={<IconPeople />}
-                              label="선생님 명단 관리"
-                            />
-                            <MenuRow
-                              variant="admin"
-                              chipColor="chip-rose"
-                              onClick={() => { handleLogout(); onNavigateToHolidayManagement(); }}
-                              icon={<IconCalendarStar />}
-                              label="공휴일ㆍ휴무일 관리"
-                            />
-                            <MenuRow
-                              variant="admin"
-                              chipColor="chip-purple"
-                              onClick={() => { handleLogout(); onNavigateToAutoSchedule(); }}
-                              icon={<IconTimetable />}
-                              label="시간표 작성"
-                            />
-                          </MenuGroup>
-                        )}
+            {hasAdminPassword && (
+              <MenuGroup title="관리자 메뉴">
+                <MenuRow
+                  variant="admin"
+                  chipColor="chip-emerald"
+                  onClick={() => { handleLogout(); onNavigateToStudentFormsAdmin({ isAdminMode: true }); }}
+                  icon={<IconDocumentCheck />}
+                  label={
+                    <>
+                      참여자 서류 관리ㆍ인쇄<br />
+                    </>
+                  }
+                />
+                <MenuRow
+                  variant="admin"
+                  chipColor="chip-blue"
+                  onClick={() => { handleLogout(); onNavigateToTeacherManagement(); }}
+                  icon={<IconPeople />}
+                  label="선생님 명단 관리"
+                />
+                <MenuRow
+                  variant="admin"
+                  chipColor="chip-rose"
+                  onClick={() => { handleLogout(); onNavigateToHolidayManagement(); }}
+                  icon={<IconCalendarStar />}
+                  label="공휴일ㆍ휴무일 관리"
+                />
+                <MenuRow
+                  variant="admin"
+                  chipColor="chip-purple"
+                  onClick={() => { handleLogout(); onNavigateToAutoSchedule(); }}
+                  icon={<IconTimetable />}
+                  label="시간표 작성"
+                />
+              </MenuGroup>
+            )}
 
-                        <div className="mt-4 sm:mt-5 text-center text-[12px] text-gray-600 font-semibold tracking-wider select-none" aria-hidden="true">
-                          v261117-rebuild
-                        </div>
+            <div className="mt-4 sm:mt-5 text-center text-[12px] text-gray-600 font-semibold tracking-wider select-none" aria-hidden="true">
+              v261117-rebuild
+            </div>
+          </div>
+        </div>
+
+        {/* 시간·팀 조건별 교육실 사용현황 자동 안내 팝업 */}
+        {roomStatusPopup && (
+          <div
+            className="fixed inset-0 bg-slate-900/50 backdrop-blur-[3px] flex items-center justify-center z-[70] p-3 sm:p-4"
+            onClick={() => closeRoomStatusPopup(false)}
+          >
+            <div
+              className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden flex flex-col max-h-[86vh] animate-fadeIn border border-slate-200"
+              onClick={e => e.stopPropagation()}
+            >
+              <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-4 py-3.5 flex items-center justify-between shrink-0">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-extrabold text-[17px] sm:text-[19px] tracking-tight">오늘의 교육실 사용현황</h3>
+                    <span className="px-2 py-0.5 rounded-full bg-white/20 text-[12px] font-bold whitespace-nowrap">{roomStatusPopup.teamLabel}</span>
+                  </div>
+                  <p className="text-blue-100 text-[13px] sm:text-[14px] font-semibold mt-0.5">{roomStatusPopup.dateLabel}</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => closeRoomStatusPopup(false)}
+                  className="p-1 rounded-lg text-white/90 hover:bg-white/20 active:scale-90 transition"
+                  aria-label="닫기"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+              </div>
+
+              <div className="p-4 overflow-y-auto space-y-4">
+                {roomStatusPopup.holidayName && (
+                  <div className="bg-rose-50 border border-rose-200 text-rose-700 rounded-xl px-3.5 py-2.5 text-[14px] font-bold text-center">
+                    오늘은 <span className="font-extrabold">{roomStatusPopup.holidayName}</span>입니다.
+                  </div>
+                )}
+
+                {roomStatusPopup.showClassroom && (
+                  <div className="border border-slate-200 rounded-xl p-3 bg-slate-50/70 space-y-2.5">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="p-1.5 rounded-lg bg-sky-100 text-sky-800 border border-sky-200">
+                          <IconClassroom className="w-4 h-4" />
+                        </span>
+                        <h4 className="font-extrabold text-[15.5px] sm:text-[16.5px] text-slate-900 flex items-center gap-1.5">
+                          <span>평생교육실2 (지하1층)</span>
+                          <span className="text-[11.5px] font-bold text-sky-700 bg-sky-100 px-1.5 py-0.5 rounded">
+                            {roomStatusPopup.isMorning ? '오전' : '오후'}
+                          </span>
+                        </h4>
                       </div>
+                      <button
+                        type="button"
+                        onClick={() => { closeRoomStatusPopup(); handleLogout(); onNavigateToClassroom(); }}
+                        className="text-[12.5px] font-bold text-blue-600 hover:underline whitespace-nowrap"
+                      >
+                        주간 보기 &rarr;
+                      </button>
                     </div>
-
-                    {/* 시간·팀 조건별 교육실 사용현황 자동 안내 팝업 */}
-                    {roomStatusPopup && (
-                      <div
-                        className="fixed inset-0 bg-slate-900/50 backdrop-blur-[3px] flex items-center justify-center z-[70] p-3 sm:p-4"
-                        onClick={() => closeRoomStatusPopup(false)}
-                      >
+                    <div className="flex flex-col gap-1.5 sm:gap-2">
+                      {roomStatusPopup.classroomSlots.map(item => (
                         <div
-                          className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden flex flex-col max-h-[86vh] animate-fadeIn border border-slate-200"
-                          onClick={e => e.stopPropagation()}
+                          key={item.slot}
+                          className={`rounded-xl border px-3 py-2 sm:px-3.5 sm:py-2.5 flex items-center justify-between gap-2 shadow-sm ${item.isAvailable ? 'bg-emerald-50 border-emerald-300 text-emerald-950' : 'bg-rose-50 border-rose-200 text-rose-950'}`}
                         >
-                          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-4 py-3.5 flex items-center justify-between shrink-0">
-                            <div>
-                              <div className="flex items-center gap-2">
-                                <h3 className="font-extrabold text-[17px] sm:text-[19px] tracking-tight">오늘의 교육실 사용현황</h3>
-                                <span className="px-2 py-0.5 rounded-full bg-white/20 text-[12px] font-bold whitespace-nowrap">{roomStatusPopup.teamLabel}</span>
-                              </div>
-                              <p className="text-blue-100 text-[13px] sm:text-[14px] font-semibold mt-0.5">{roomStatusPopup.dateLabel}</p>
-                            </div>
-                            <button
-                              type="button"
-                              onClick={() => closeRoomStatusPopup(false)}
-                              className="p-1 rounded-lg text-white/90 hover:bg-white/20 active:scale-90 transition"
-                              aria-label="닫기"
-                            >
-                              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M6 18L18 6M6 6l12 12" /></svg>
-                            </button>
-                          </div>
-
-                          <div className="p-4 overflow-y-auto space-y-4">
-                            {roomStatusPopup.holidayName && (
-                              <div className="bg-rose-50 border border-rose-200 text-rose-700 rounded-xl px-3.5 py-2.5 text-[14px] font-bold text-center">
-                                오늘은 <span className="font-extrabold">{roomStatusPopup.holidayName}</span>입니다.
-                              </div>
-                            )}
-
-                            {roomStatusPopup.showClassroom && (
-                              <div className="border border-slate-200 rounded-xl p-3 bg-slate-50/70 space-y-2.5">
-                                <div className="flex items-center justify-between">
-                                  <div className="flex items-center gap-2">
-                                    <span className="p-1.5 rounded-lg bg-sky-100 text-sky-800 border border-sky-200">
-                                      <IconClassroom className="w-4 h-4" />
-                                    </span>
-                                    <h4 className="font-extrabold text-[15.5px] sm:text-[16.5px] text-slate-900 flex items-center gap-1.5">
-                                      <span>평생교육실2 (지하1층)</span>
-                                      <span className="text-[11.5px] font-bold text-sky-700 bg-sky-100 px-1.5 py-0.5 rounded">
-                                        {roomStatusPopup.isMorning ? '오전' : '오후'}
-                                      </span>
-                                    </h4>
-                                  </div>
-                                  <button
-                                    type="button"
-                                    onClick={() => { closeRoomStatusPopup(); handleLogout(); onNavigateToClassroom(); }}
-                                    className="text-[12.5px] font-bold text-blue-600 hover:underline whitespace-nowrap"
-                                  >
-                                    주간 보기 &rarr;
-                                  </button>
-                                </div>
-                                <div className="flex flex-col gap-1.5 sm:gap-2">
-                                  {roomStatusPopup.classroomSlots.map(item => (
-                                    <div
-                                      key={item.slot}
-                                      className={`rounded-xl border px-3 py-2 sm:px-3.5 sm:py-2.5 flex items-center justify-between gap-2 shadow-sm ${item.isAvailable ? 'bg-emerald-50 border-emerald-300 text-emerald-950' : 'bg-rose-50 border-rose-200 text-rose-950'}`}
-                                    >
-                                      <span className="text-[13.5px] sm:text-[14px] font-bold tabular-nums whitespace-nowrap">{item.slot}</span>
-                                      <span className={`text-[12px] sm:text-[12.5px] font-extrabold px-2 py-0.5 rounded whitespace-nowrap ${item.isAvailable ? 'bg-emerald-200 text-emerald-950' : 'bg-rose-200 text-rose-950'}`}>
-                                        {item.label}
-                                      </span>
-                                    </div>
-                                  ))}
-                                </div>
-                                {roomStatusPopup.classroomMemo && (
-                                  <div className="bg-white border border-slate-200 rounded-lg px-2.5 py-2 text-[12.5px] text-slate-700 font-medium whitespace-pre-wrap">
-                                    📢 {roomStatusPopup.classroomMemo}
-                                  </div>
-                                )}
-                              </div>
-                            )}
-
-                            {roomStatusPopup.showNangman && (
-                              <div className="border border-slate-200 rounded-xl p-3 bg-slate-50/70 space-y-2.5">
-                                <div className="flex items-center justify-between">
-                                  <div className="flex items-center gap-2">
-                                    <span className="p-1.5 rounded-lg bg-pink-100 text-pink-800 border border-pink-200">
-                                      <IconStudio className="w-4 h-4" />
-                                    </span>
-                                    <h4 className="font-extrabold text-[15.5px] sm:text-[16.5px] text-slate-900 flex items-center gap-1.5">
-                                      <span>낭만스튜디오</span>
-                                    </h4>
-                                  </div>
-                                  <button
-                                    type="button"
-                                    onClick={() => { closeRoomStatusPopup(); handleLogout(); onNavigateToNangmanStudio(); }}
-                                    className="text-[12.5px] font-bold text-blue-600 hover:underline whitespace-nowrap"
-                                  >
-                                    주간 보기 &rarr;
-                                  </button>
-                                </div>
-                                <div className={`grid ${roomStatusPopup.nangmanSlots.length === 1 ? 'grid-cols-1' : 'grid-cols-2'} gap-2`}>
-                                  {roomStatusPopup.nangmanSlots.map(item => {
-                                    const toneClass = item.tone === 'emerald'
-                                      ? 'bg-emerald-50 border-emerald-300 text-emerald-900'
-                                      : item.tone === 'indigo'
-                                        ? 'bg-indigo-50 border-indigo-300 text-indigo-900'
-                                        : item.tone === 'slate'
-                                          ? 'bg-slate-100 border-slate-300 text-slate-700'
-                                          : 'bg-rose-50 border-rose-200 text-rose-800';
-                                    return (
-                                      <div
-                                        key={item.slot}
-                                        className={`rounded-lg border px-2.5 py-2 flex items-center justify-between gap-1.5 ${toneClass}`}
-                                      >
-                                        <span className="text-[13.5px] font-extrabold whitespace-nowrap">{item.slot}</span>
-                                        <span className="text-[13px] font-bold whitespace-nowrap truncate">{item.label}</span>
-                                      </div>
-                                    );
-                                  })}
-                                </div>
-                                {roomStatusPopup.nangmanMemo && (
-                                  <div className="bg-white border border-slate-200 rounded-lg px-2.5 py-2 text-[12.5px] text-slate-700 font-medium whitespace-pre-wrap">
-                                    📢 {roomStatusPopup.nangmanMemo}
-                                  </div>
-                                )}
-                              </div>
-                            )}
-                          </div>
-
-                          <div className="px-4 py-3 bg-slate-50 border-t border-slate-200 flex items-center justify-between gap-2 shrink-0">
-                            <button
-                              type="button"
-                              onClick={() => closeRoomStatusPopup(true)}
-                              className="px-3.5 py-2 rounded-xl text-[13px] sm:text-[14px] font-bold text-slate-600 hover:text-slate-800 hover:bg-slate-200/70 transition cursor-pointer whitespace-nowrap active:scale-95"
-                            >
-                              오늘 다시 보지 않기
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => closeRoomStatusPopup(false)}
-                              className="px-6 py-2.5 rounded-xl text-[14px] sm:text-[15px] font-extrabold bg-blue-600 hover:bg-blue-700 text-white shadow-sm active:scale-95 transition cursor-pointer text-center"
-                            >
-                              확인
-                            </button>
-                          </div>
+                          <span className="text-[13.5px] sm:text-[14px] font-bold tabular-nums whitespace-nowrap">{item.slot}</span>
+                          <span className={`text-[12px] sm:text-[12.5px] font-extrabold px-2 py-0.5 rounded whitespace-nowrap ${item.isAvailable ? 'bg-emerald-200 text-emerald-950' : 'bg-rose-200 text-rose-950'}`}>
+                            {item.label}
+                          </span>
                         </div>
-                      </div>
-                    )}
-
-                    {/* 앱 설정 모달 */}
-                    {showSettingsModal && (
-                      <div
-                        className="fixed inset-0 bg-slate-900/55 backdrop-blur-[3px] flex items-center justify-center z-[80] p-3 sm:p-4"
-                        onClick={closeSettingsModal}
-                      >
-                        <div
-                          className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden flex flex-col max-h-[88vh] animate-fadeIn border border-slate-200"
-                          onClick={e => e.stopPropagation()}
-                        >
-                          <div className="bg-gradient-to-r from-slate-700 to-slate-800 text-white px-4 py-3.5 flex items-center justify-between shrink-0">
-                            <div className="flex items-center gap-2">
-                              <Settings className="w-5 h-5 text-blue-300" />
-                              <h3 className="font-extrabold text-[17px] sm:text-[18px] tracking-tight">앱 설정</h3>
-                            </div>
-                            <button
-                              type="button"
-                              onClick={closeSettingsModal}
-                              className="p-1 rounded-lg text-white/90 hover:bg-white/20 active:scale-90 transition"
-                              aria-label="설정 닫기"
-                            >
-                              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M6 18L18 6M6 6l12 12" /></svg>
-                            </button>
-                          </div>
-
-                          <div className="p-4 sm:p-5 overflow-y-auto space-y-5 text-left">
-                            {/* 1. 전체 화면 회색 배경 농도 조절 */}
-                            <div>
-                              <div className="flex items-center justify-between gap-2 mb-2">
-                                <label htmlFor="bg-gray-slider" className="text-[14.5px] sm:text-[15.5px] font-extrabold text-slate-900">
-                                  1. 화면 배경 회색 농도
-                                </label>
-                                <div className="flex items-center gap-1.5">
-                                  <span className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-800 text-[13px] font-extrabold tabular-nums">
-                                    {bgGrayLevel}%
-                                  </span>
-                                  <button
-                                    type="button"
-                                    onClick={() => handleChangeBgGrayLevel(DEFAULT_BG_GRAY_LEVEL)}
-                                    disabled={bgGrayLevel === DEFAULT_BG_GRAY_LEVEL}
-                                    className="px-2 py-0.5 rounded-md text-[12px] font-bold border border-slate-200 text-slate-600 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed transition"
-                                  >
-                                    기본값
-                                  </button>
-                                </div>
-                              </div>
-                              <input
-                                id="bg-gray-slider"
-                                type="range"
-                                min={0}
-                                max={100}
-                                step={1}
-                                value={bgGrayLevel}
-                                onChange={(e) => handleChangeBgGrayLevel(Number(e.target.value))}
-                                className="w-full h-2.5 bg-slate-200 rounded-lg accent-blue-600 cursor-pointer"
-                              />
-                              <div className="grid grid-cols-4 gap-1.5 mt-2.5">
-                                {[
-                                  { value: 0, label: '0% 밝게' },
-                                  { value: 20, label: '20% 기본' },
-                                  { value: 50, label: '50% 중간' },
-                                  { value: 85, label: '85% 진하게' }
-                                ].map(preset => (
-                                  <button
-                                    key={preset.value}
-                                    type="button"
-                                    onClick={() => handleChangeBgGrayLevel(preset.value)}
-                                    className={`py-1.5 px-1 rounded-lg border text-[12px] font-bold transition cursor-pointer whitespace-nowrap ${bgGrayLevel === preset.value
-                                      ? 'border-blue-600 bg-blue-50 text-blue-700'
-                                      : 'border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100'
-                                      }`}
-                                  >
-                                    {preset.label}
-                                  </button>
-                                ))}
-                              </div>
-                            </div>
-
-                            {/* 2. 평생교육실2 · 낭만스튜디오 팝업 표시 방식 */}
-                            <div className="pt-4 border-t border-slate-200">
-                              <div className="mb-2">
-                                <span className="block text-[14.5px] sm:text-[15.5px] font-extrabold text-slate-900">
-                                  2. 교육실 현황 팝업 표시
-                                </span>
-                                <span className="block text-[12.5px] text-slate-500 font-medium mt-0.5">
-                                  평생교육실2 · 낭만스튜디오 사용현황 자동 팝업
-                                </span>
-                              </div>
-                              <div className="space-y-2">
-                                <button
-                                  type="button"
-                                  onClick={() => handleChangeRoomPopupMode('once')}
-                                  className={`w-full text-left p-3 rounded-xl border-2 flex items-start gap-2.5 transition cursor-pointer active:scale-[0.99] ${roomPopupMode === 'once'
-                                    ? 'border-blue-600 bg-blue-50/70'
-                                    : 'border-slate-200 bg-white hover:bg-slate-50'
-                                    }`}
-                                >
-                                  <span className={`mt-0.5 w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 ${roomPopupMode === 'once' ? 'border-blue-600' : 'border-slate-400'
-                                    }`}>
-                                    {roomPopupMode === 'once' && <span className="w-2 h-2 rounded-full bg-blue-600" />}
-                                  </span>
-                                  <div className="min-w-0">
-                                    <div className="text-[14px] sm:text-[14.5px] font-extrabold text-slate-900">
-                                      앱 처음 실행 시 한 번만 표시
-                                    </div>
-                                    <div className="text-[12.5px] text-slate-600 font-medium mt-0.5">
-                                      앱 실행 후 처음 메인 화면에서 1회만 팝업을 띄웁니다.
-                                    </div>
-                                  </div>
-                                </button>
-
-                                <button
-                                  type="button"
-                                  onClick={() => handleChangeRoomPopupMode('always')}
-                                  className={`w-full text-left p-3 rounded-xl border-2 flex items-start gap-2.5 transition cursor-pointer active:scale-[0.99] ${roomPopupMode === 'always'
-                                    ? 'border-blue-600 bg-blue-50/70'
-                                    : 'border-slate-200 bg-white hover:bg-slate-50'
-                                    }`}
-                                >
-                                  <span className={`mt-0.5 w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 ${roomPopupMode === 'always' ? 'border-blue-600' : 'border-slate-400'
-                                    }`}>
-                                    {roomPopupMode === 'always' && <span className="w-2 h-2 rounded-full bg-blue-600" />}
-                                  </span>
-                                  <div className="min-w-0">
-                                    <div className="text-[14px] sm:text-[14.5px] font-extrabold text-slate-900">
-                                      항시 표시
-                                    </div>
-                                    <div className="text-[12.5px] text-slate-600 font-medium mt-0.5">
-                                      메인 화면으로 돌아올 때마다 조건에 맞으면 다시 팝업을 띄웁니다.
-                                    </div>
-                                  </div>
-                                </button>
-                              </div>
-                            </div>
-
-                            {/* 3. 전체 글자 크기 설정 */}
-                            <div className="pt-4 border-t border-slate-200">
-                              <div className="mb-2">
-                                <span className="block text-[14.5px] sm:text-[15.5px] font-extrabold text-slate-900">
-                                  3. 전체 글자 크기
-                                </span>
-                                <span className="block text-[12.5px] text-slate-500 font-medium mt-0.5">
-                                  화면의 전반적인 글자 크기를 조절합니다.
-                                </span>
-                              </div>
-                              <div className="grid grid-cols-3 gap-2">
-                                {[
-                                  { value: 'normal', label: '보통' },
-                                  { value: 'large', label: '크게' },
-                                  { value: 'xlarge', label: '아주 크게' }
-                                ].map(opt => (
-                                  <button
-                                    key={opt.value}
-                                    type="button"
-                                    onClick={() => setFontScale(saveFontScale(opt.value))}
-                                    className={`py-2 px-2 rounded-xl border-2 text-[13.5px] font-extrabold transition cursor-pointer ${fontScale === opt.value
-                                      ? 'border-blue-600 bg-blue-50 text-blue-700'
-                                      : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'
-                                      }`}
-                                  >
-                                    {opt.label}
-                                  </button>
-                                ))}
-                              </div>
-                            </div>
-
-                            {/* 4. 관리자 비밀번호 저장 */}
-                            <div className="pt-4 border-t border-slate-200">
-                              <div className="flex items-center justify-between gap-2 mb-1">
-                                <span className="text-[14.5px] sm:text-[15.5px] font-extrabold text-slate-900">
-                                  4. 관리자 비밀번호
-                                </span>
-                                <span className={`px-2 py-0.5 rounded-full text-[11.5px] font-extrabold whitespace-nowrap ${hasAdminPassword
-                                  ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
-                                  : 'bg-slate-100 text-slate-600 border border-slate-200'
-                                  }`}>
-                                  {hasAdminPassword ? '저장됨 · 관리자 활성' : '미저장'}
-                                </span>
-                              </div>
-                              <p className="text-[12.5px] text-slate-500 font-medium mb-2.5 leading-snug">
-                                비밀번호를 저장하면 메인화면에 관리자 메뉴가 표시되고, 공지사항·교육실 담당자 기능도 재입력 없이 바로 사용할 수 있습니다.
-                              </p>
-                              {!hasAdminPassword ? (
-                                <div className="flex items-center gap-2">
-                                  <input
-                                    type="password"
-                                    value={adminPwdInput}
-                                    onChange={(e) => {
-                                      setAdminPwdInput(e.target.value);
-                                      if (adminPwdError) setAdminPwdError('');
-                                    }}
-                                    onKeyDown={(e) => {
-                                      if (e.key === 'Enter') {
-                                        e.preventDefault();
-                                        handleSaveAdminPassword();
-                                      }
-                                    }}
-                                    placeholder="관리자 비밀번호 입력"
-                                    autoComplete="off"
-                                    className="flex-1 min-w-0 px-3 py-2.5 border-2 border-slate-200 rounded-xl text-[14px] font-bold text-slate-900 outline-none focus:border-blue-500 bg-white"
-                                  />
-                                  <button
-                                    type="button"
-                                    onClick={handleSaveAdminPassword}
-                                    className="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-[13.5px] sm:text-[14px] font-extrabold shadow-sm active:scale-95 transition shrink-0 cursor-pointer"
-                                  >
-                                    저장
-                                  </button>
-                                </div>
-                              ) : (
-                                <div className="flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl bg-emerald-50/70 border border-emerald-200">
-                                  <div className="flex items-center gap-2 min-w-0">
-                                    <span className="text-[14px] font-black tracking-widest text-emerald-700 shrink-0">••••</span>
-                                    <span className="text-[13px] font-bold text-emerald-800 truncate">관리자 비밀번호가 저장되어 있습니다.</span>
-                                  </div>
-                                  <button
-                                    type="button"
-                                    onClick={handleClearAdminPassword}
-                                    className="px-3 py-1.5 rounded-lg bg-white hover:bg-rose-50 text-rose-600 border border-rose-200 text-[12.5px] font-extrabold active:scale-95 transition shrink-0 cursor-pointer"
-                                  >
-                                    삭제
-                                  </button>
-                                </div>
-                              )}
-                              {adminPwdError && (
-                                <p className="mt-2 text-[12.5px] font-bold text-rose-600">{adminPwdError}</p>
-                              )}
-                              {adminPwdNotice && !adminPwdError && (
-                                <p className="mt-2 text-[12.5px] font-bold text-emerald-600">{adminPwdNotice}</p>
-                              )}
-                            </div>
-                          </div>
-
-                          <div className="px-4 py-3 bg-slate-50 border-t border-slate-200 flex justify-end shrink-0">
-                            <button
-                              type="button"
-                              onClick={closeSettingsModal}
-                              className="px-6 py-2.5 rounded-xl text-[14px] sm:text-[15px] font-extrabold bg-blue-600 hover:bg-blue-700 text-white shadow-sm active:scale-95 transition cursor-pointer"
-                            >
-                              확인
-                            </button>
-                          </div>
-                        </div>
+                      ))}
+                    </div>
+                    {roomStatusPopup.classroomMemo && (
+                      <div className="bg-white border border-slate-200 rounded-lg px-2.5 py-2 text-[12.5px] text-slate-700 font-medium whitespace-pre-wrap">
+                        📢 {roomStatusPopup.classroomMemo}
                       </div>
                     )}
                   </div>
-                  );
+                )}
+
+                {roomStatusPopup.showNangman && (
+                  <div className="border border-slate-200 rounded-xl p-3 bg-slate-50/70 space-y-2.5">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="p-1.5 rounded-lg bg-pink-100 text-pink-800 border border-pink-200">
+                          <IconStudio className="w-4 h-4" />
+                        </span>
+                        <h4 className="font-extrabold text-[15.5px] sm:text-[16.5px] text-slate-900 flex items-center gap-1.5">
+                          <span>낭만스튜디오</span>
+                        </h4>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => { closeRoomStatusPopup(); handleLogout(); onNavigateToNangmanStudio(); }}
+                        className="text-[12.5px] font-bold text-blue-600 hover:underline whitespace-nowrap"
+                      >
+                        주간 보기 &rarr;
+                      </button>
+                    </div>
+                    <div className={`grid ${roomStatusPopup.nangmanSlots.length === 1 ? 'grid-cols-1' : 'grid-cols-2'} gap-2`}>
+                      {roomStatusPopup.nangmanSlots.map(item => {
+                        const toneClass = item.tone === 'emerald'
+                          ? 'bg-emerald-50 border-emerald-300 text-emerald-900'
+                          : item.tone === 'indigo'
+                            ? 'bg-indigo-50 border-indigo-300 text-indigo-900'
+                            : item.tone === 'slate'
+                              ? 'bg-slate-100 border-slate-300 text-slate-700'
+                              : 'bg-rose-50 border-rose-200 text-rose-800';
+                        return (
+                          <div
+                            key={item.slot}
+                            className={`rounded-lg border px-2.5 py-2 flex items-center justify-between gap-1.5 ${toneClass}`}
+                          >
+                            <span className="text-[13.5px] font-extrabold whitespace-nowrap">{item.slot}</span>
+                            <span className="text-[13px] font-bold whitespace-nowrap truncate">{item.label}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                    {roomStatusPopup.nangmanMemo && (
+                      <div className="bg-white border border-slate-200 rounded-lg px-2.5 py-2 text-[12.5px] text-slate-700 font-medium whitespace-pre-wrap">
+                        📢 {roomStatusPopup.nangmanMemo}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              <div className="px-4 py-3 bg-slate-50 border-t border-slate-200 flex items-center justify-between gap-2 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => closeRoomStatusPopup(true)}
+                  className="px-3.5 py-2 rounded-xl text-[13px] sm:text-[14px] font-bold text-slate-600 hover:text-slate-800 hover:bg-slate-200/70 transition cursor-pointer whitespace-nowrap active:scale-95"
+                >
+                  오늘 다시 보지 않기
+                </button>
+                <button
+                  type="button"
+                  onClick={() => closeRoomStatusPopup(false)}
+                  className="px-6 py-2.5 rounded-xl text-[14px] sm:text-[15px] font-extrabold bg-blue-600 hover:bg-blue-700 text-white shadow-sm active:scale-95 transition cursor-pointer text-center"
+                >
+                  확인
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 앱 설정 모달 */}
+        {showSettingsModal && (
+          <div
+            className="fixed inset-0 bg-slate-900/55 backdrop-blur-[3px] flex items-center justify-center z-[80] p-3 sm:p-4"
+            onClick={closeSettingsModal}
+          >
+            <div
+              className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden flex flex-col max-h-[88vh] animate-fadeIn border border-slate-200"
+              onClick={e => e.stopPropagation()}
+            >
+              <div className="bg-gradient-to-r from-slate-700 to-slate-800 text-white px-4 py-3.5 flex items-center justify-between shrink-0">
+                <div className="flex items-center gap-2">
+                  <Settings className="w-5 h-5 text-blue-300" />
+                  <h3 className="font-extrabold text-[17px] sm:text-[18px] tracking-tight">앱 설정</h3>
+                </div>
+                <button
+                  type="button"
+                  onClick={closeSettingsModal}
+                  className="p-1 rounded-lg text-white/90 hover:bg-white/20 active:scale-90 transition"
+                  aria-label="설정 닫기"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+              </div>
+
+              <div className="p-4 sm:p-5 overflow-y-auto space-y-5 text-left">
+                {/* 1. 전체 화면 회색 배경 농도 조절 */}
+                <div>
+                  <div className="flex items-center justify-between gap-2 mb-2">
+                    <label htmlFor="bg-gray-slider" className="text-[14.5px] sm:text-[15.5px] font-extrabold text-slate-900">
+                      1. 화면 배경 회색 농도
+                    </label>
+                    <div className="flex items-center gap-1.5">
+                      <span className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-800 text-[13px] font-extrabold tabular-nums">
+                        {bgGrayLevel}%
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => handleChangeBgGrayLevel(DEFAULT_BG_GRAY_LEVEL)}
+                        disabled={bgGrayLevel === DEFAULT_BG_GRAY_LEVEL}
+                        className="px-2 py-0.5 rounded-md text-[12px] font-bold border border-slate-200 text-slate-600 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed transition"
+                      >
+                        기본값
+                      </button>
+                    </div>
+                  </div>
+                  <input
+                    id="bg-gray-slider"
+                    type="range"
+                    min={0}
+                    max={100}
+                    step={1}
+                    value={bgGrayLevel}
+                    onChange={(e) => handleChangeBgGrayLevel(Number(e.target.value))}
+                    className="w-full h-2.5 bg-slate-200 rounded-lg accent-blue-600 cursor-pointer"
+                  />
+                  <div className="grid grid-cols-4 gap-1.5 mt-2.5">
+                    {[
+                      { value: 0, label: '0% 밝게' },
+                      { value: 20, label: '20% 기본' },
+                      { value: 50, label: '50% 중간' },
+                      { value: 85, label: '85% 진하게' }
+                    ].map(preset => (
+                      <button
+                        key={preset.value}
+                        type="button"
+                        onClick={() => handleChangeBgGrayLevel(preset.value)}
+                        className={`py-1.5 px-1 rounded-lg border text-[12px] font-bold transition cursor-pointer whitespace-nowrap ${bgGrayLevel === preset.value
+                          ? 'border-blue-600 bg-blue-50 text-blue-700'
+                          : 'border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100'
+                          }`}
+                      >
+                        {preset.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 2. 평생교육실2 · 낭만스튜디오 팝업 표시 방식 */}
+                <div className="pt-4 border-t border-slate-200">
+                  <div className="mb-2">
+                    <span className="block text-[14.5px] sm:text-[15.5px] font-extrabold text-slate-900">
+                      2. 교육실 현황 팝업 표시
+                    </span>
+                    <span className="block text-[12.5px] text-slate-500 font-medium mt-0.5">
+                      평생교육실2 · 낭만스튜디오 사용현황 자동 팝업
+                    </span>
+                  </div>
+                  <div className="space-y-2">
+                    <button
+                      type="button"
+                      onClick={() => handleChangeRoomPopupMode('once')}
+                      className={`w-full text-left p-3 rounded-xl border-2 flex items-start gap-2.5 transition cursor-pointer active:scale-[0.99] ${roomPopupMode === 'once'
+                        ? 'border-blue-600 bg-blue-50/70'
+                        : 'border-slate-200 bg-white hover:bg-slate-50'
+                        }`}
+                    >
+                      <span className={`mt-0.5 w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 ${roomPopupMode === 'once' ? 'border-blue-600' : 'border-slate-400'
+                        }`}>
+                        {roomPopupMode === 'once' && <span className="w-2 h-2 rounded-full bg-blue-600" />}
+                      </span>
+                      <div className="min-w-0">
+                        <div className="text-[14px] sm:text-[14.5px] font-extrabold text-slate-900">
+                          앱 처음 실행 시 한 번만 표시
+                        </div>
+                        <div className="text-[12.5px] text-slate-600 font-medium mt-0.5">
+                          앱 실행 후 처음 메인 화면에서 1회만 팝업을 띄웁니다.
+                        </div>
+                      </div>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => handleChangeRoomPopupMode('always')}
+                      className={`w-full text-left p-3 rounded-xl border-2 flex items-start gap-2.5 transition cursor-pointer active:scale-[0.99] ${roomPopupMode === 'always'
+                        ? 'border-blue-600 bg-blue-50/70'
+                        : 'border-slate-200 bg-white hover:bg-slate-50'
+                        }`}
+                    >
+                      <span className={`mt-0.5 w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 ${roomPopupMode === 'always' ? 'border-blue-600' : 'border-slate-400'
+                        }`}>
+                        {roomPopupMode === 'always' && <span className="w-2 h-2 rounded-full bg-blue-600" />}
+                      </span>
+                      <div className="min-w-0">
+                        <div className="text-[14px] sm:text-[14.5px] font-extrabold text-slate-900">
+                          항시 표시
+                        </div>
+                        <div className="text-[12.5px] text-slate-600 font-medium mt-0.5">
+                          메인 화면으로 돌아올 때마다 조건에 맞으면 다시 팝업을 띄웁니다.
+                        </div>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+
+                {/* 3. 전체 글자 크기 설정 */}
+                <div className="pt-4 border-t border-slate-200">
+                  <div className="mb-2">
+                    <span className="block text-[14.5px] sm:text-[15.5px] font-extrabold text-slate-900">
+                      3. 전체 글자 크기
+                    </span>
+                    <span className="block text-[12.5px] text-slate-500 font-medium mt-0.5">
+                      화면의 전반적인 글자 크기를 조절합니다.
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-3 gap-2">
+                    {[
+                      { value: 'normal', label: '보통' },
+                      { value: 'large', label: '크게' },
+                      { value: 'xlarge', label: '아주 크게' }
+                    ].map(opt => (
+                      <button
+                        key={opt.value}
+                        type="button"
+                        onClick={() => setFontScale(saveFontScale(opt.value))}
+                        className={`py-2 px-2 rounded-xl border-2 text-[13.5px] font-extrabold transition cursor-pointer ${fontScale === opt.value
+                          ? 'border-blue-600 bg-blue-50 text-blue-700'
+                          : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'
+                          }`}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 4. 관리자 비밀번호 저장 */}
+                <div className="pt-4 border-t border-slate-200">
+                  <div className="flex items-center justify-between gap-2 mb-1">
+                    <span className="text-[14.5px] sm:text-[15.5px] font-extrabold text-slate-900">
+                      4. 관리자 비밀번호
+                    </span>
+                    <span className={`px-2 py-0.5 rounded-full text-[11.5px] font-extrabold whitespace-nowrap ${hasAdminPassword
+                      ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
+                      : 'bg-slate-100 text-slate-600 border border-slate-200'
+                      }`}>
+                      {hasAdminPassword ? '저장됨 · 관리자 활성' : '미저장'}
+                    </span>
+                  </div>
+                  <p className="text-[12.5px] text-slate-500 font-medium mb-2.5 leading-snug">
+                    비밀번호를 저장하면 메인화면에 관리자 메뉴가 표시되고, 공지사항·교육실 담당자 기능도 재입력 없이 바로 사용할 수 있습니다.
+                  </p>
+                  {!hasAdminPassword ? (
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="password"
+                        value={adminPwdInput}
+                        onChange={(e) => {
+                          setAdminPwdInput(e.target.value);
+                          if (adminPwdError) setAdminPwdError('');
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault();
+                            handleSaveAdminPassword();
+                          }
+                        }}
+                        placeholder="관리자 비밀번호 입력"
+                        autoComplete="off"
+                        className="flex-1 min-w-0 px-3 py-2.5 border-2 border-slate-200 rounded-xl text-[14px] font-bold text-slate-900 outline-none focus:border-blue-500 bg-white"
+                      />
+                      <button
+                        type="button"
+                        onClick={handleSaveAdminPassword}
+                        className="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-[13.5px] sm:text-[14px] font-extrabold shadow-sm active:scale-95 transition shrink-0 cursor-pointer"
+                      >
+                        저장
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl bg-emerald-50/70 border border-emerald-200">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span className="text-[14px] font-black tracking-widest text-emerald-700 shrink-0">••••</span>
+                        <span className="text-[13px] font-bold text-emerald-800 truncate">관리자 비밀번호가 저장되어 있습니다.</span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={handleClearAdminPassword}
+                        className="px-3 py-1.5 rounded-lg bg-white hover:bg-rose-50 text-rose-600 border border-rose-200 text-[12.5px] font-extrabold active:scale-95 transition shrink-0 cursor-pointer"
+                      >
+                        삭제
+                      </button>
+                    </div>
+                  )}
+                  {adminPwdError && (
+                    <p className="mt-2 text-[12.5px] font-bold text-rose-600">{adminPwdError}</p>
+                  )}
+                  {adminPwdNotice && !adminPwdError && (
+                    <p className="mt-2 text-[12.5px] font-bold text-emerald-600">{adminPwdNotice}</p>
+                  )}
+                </div>
+              </div>
+
+              <div className="px-4 py-3 bg-slate-50 border-t border-slate-200 flex justify-end shrink-0">
+                <button
+                  type="button"
+                  onClick={closeSettingsModal}
+                  className="px-6 py-2.5 rounded-xl text-[14px] sm:text-[15px] font-extrabold bg-blue-600 hover:bg-blue-700 text-white shadow-sm active:scale-95 transition cursor-pointer"
+                >
+                  확인
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    );
   }
 
-                  const [cy, cm, cd] = date.split('-');
-                  const selectedDateObj = new Date(parseInt(cy, 10), parseInt(cm, 10) - 1, parseInt(cd, 10));
+  const [cy, cm, cd] = date.split('-');
+  const selectedDateObj = new Date(parseInt(cy, 10), parseInt(cm, 10) - 1, parseInt(cd, 10));
   const currentSelectedHoliday = holidaysFullList.find(h => {
     if (!h || !h.date) return false;
-                  const rawDate = h.date.trim();
-                  let holidayObj = null;
-                  if (/^\d{4}-\d{1, 2}-\d{1, 2}$/.test(rawDate)) {
+    const rawDate = h.date.trim();
+    let holidayObj = null;
+    if (/^\d{4}-\d{1, 2}-\d{1, 2}$/.test(rawDate)) {
       const [hy, hm, hd] = rawDate.split('-');
-                  holidayObj = new Date(parseInt(hy, 10), parseInt(hm, 10) - 1, parseInt(hd, 10));
+      holidayObj = new Date(parseInt(hy, 10), parseInt(hm, 10) - 1, parseInt(hd, 10));
     } else if (/^\d{4}\/\d{1, 2}\/\d{1, 2}$/.test(rawDate)) {
       const [hy, hm, hd] = rawDate.split('/');
-                  holidayObj = new Date(parseInt(hy, 10), parseInt(hm, 10) - 1, parseInt(hd, 10));
+      holidayObj = new Date(parseInt(hy, 10), parseInt(hm, 10) - 1, parseInt(hd, 10));
     } else if (/^\d{1, 2}-\d{1, 2}$/.test(rawDate)) {
       const [hm, hd] = rawDate.split('-');
-                  holidayObj = new Date(selectedDateObj.getFullYear(), parseInt(hm, 10) - 1, parseInt(hd, 10));
+      holidayObj = new Date(selectedDateObj.getFullYear(), parseInt(hm, 10) - 1, parseInt(hd, 10));
     } else if (/^\d{1, 2}\/\d{1, 2}$/.test(rawDate)) {
       const [hm, hd] = rawDate.split('/');
-                  holidayObj = new Date(selectedDateObj.getFullYear(), parseInt(hm, 10) - 1, parseInt(hd, 10));
+      holidayObj = new Date(selectedDateObj.getFullYear(), parseInt(hm, 10) - 1, parseInt(hd, 10));
     }
-                  if (!holidayObj) return false;
-                  return holidayObj.getTime() === selectedDateObj.getTime();
+    if (!holidayObj) return false;
+    return holidayObj.getTime() === selectedDateObj.getTime();
   }) || (() => {
-    const targetData = allScheduleData[date] || { };
+    const targetData = allScheduleData[date] || {};
     const myItems = Object.keys(targetData).map(shiftTime => getMyOriginalRecord(date, shiftTime)).filter(s => (s?.student || "").trim() !== "");
     if (myItems.length > 0 && myItems.every(s => {
       const student = (s?.student || "").trim();
-                  const location = (s?.location || "").trim();
-                  if (student.includes("팀장간담회")) return false;
-                  const text = student + " " + location;
-                  return /간담회|소양교육|공휴일/.test(text);
+      const location = (s?.location || "").trim();
+      if (student.includes("팀장간담회")) return false;
+      const text = student + " " + location;
+      return /간담회|소양교육|공휴일/.test(text);
     })) {
       const first = myItems[0];
-                  return {
-                    name: first.student || '간담회',
-                  content1: first.location || '소양교육',
-                  content2: first.status || '',
-                  vacation_available: false
+      return {
+        name: first.student || '간담회',
+        content1: first.location || '소양교육',
+        content2: first.status || '',
+        vacation_available: false
       };
     }
-                  return null;
+    return null;
   })();
 
-                  return (
-                  <div className="min-h-[100dvh] app-surface font-sans pb-6">
-                    <div className="shrink-0 app-header text-white z-20 relative">
-                      <div className="max-w-5xl lg:max-w-[1536px] mx-auto px-2.5 sm:px-5 pb-4 pt-safe-4 flex justify-between items-center gap-3">
-                        <div className="flex items-center min-w-0">
-                          <div className="flex flex-col min-w-0">
-                            <div className="flex items-center mb-1">
-                              <img src="/Logo_of_Seoul.jpg" alt="서울시 로고" className="h-7 hdr-logo object-contain mr-2 shrink-0" onError={(e) => e.target.style.display = 'none'} />
-                              <h1 className="font-black text-xl leading-tight">성동노인종합복지관</h1>
-                            </div>
-                            <p className="text-lg font-semibold text-yellow-300">디지털교육 서포터즈</p>
-                            <p className="text-base opacity-95 flex items-center mt-1 font-bold">
-                              <User className="w-4 h-4 mr-1 shrink-0" /> [{selectedTeam}] {currentUser.replace(/\n/g, ' ')} 선생님
-                            </p>
-                          </div>
-                        </div>
+  return (
+    <div className="min-h-[100dvh] app-surface font-sans pb-6">
+      <div className="shrink-0 app-header text-white z-20 relative">
+        <div className="max-w-5xl lg:max-w-[1536px] mx-auto px-2.5 sm:px-5 pb-4 pt-safe-4 flex justify-between items-center gap-3">
+          <div className="flex items-center min-w-0">
+            <div className="flex flex-col min-w-0">
+              <div className="flex items-center mb-1">
+                <img src="/Logo_of_Seoul.jpg" alt="서울시 로고" className="h-7 hdr-logo object-contain mr-2 shrink-0" onError={(e) => e.target.style.display = 'none'} />
+                <h1 className="font-black text-xl leading-tight">성동노인종합복지관</h1>
+              </div>
+              <p className="text-lg font-semibold text-yellow-300">디지털교육 서포터즈</p>
+              <p className="text-base opacity-95 flex items-center mt-1 font-bold">
+                <User className="w-4 h-4 mr-1 shrink-0" /> [{selectedTeam}] {currentUser.replace(/\n/g, ' ')} 선생님
+              </p>
+            </div>
+          </div>
 
+          <button
+            onClick={(e) => {
+              if (isSubmitting) {
+                e.preventDefault();
+                alert("데이터 저장 중입니다. 잠시만 기다려주세요.");
+                return;
+              }
+              handleLogout();
+            }}
+            className={`text-xs flex flex-col items-center font-bold p-2 rounded-lg shadow-md transition-all touch-manipulation shrink-0 ${isSubmitting ? 'hdr-btn opacity-50 cursor-not-allowed' : 'hdr-btn'}`}
+          >
+            <Home className="w-5 h-5 mb-1" /> 처음으로
+          </button>
+        </div>
+      </div>
+
+      <main
+        className="w-full max-w-5xl lg:max-w-[1536px] mx-auto flex flex-col px-2.5 sm:px-5 pt-2 mt-1 pb-36"
+      >
+        <section className="flex flex-col h-auto">
+          <div className="contents">
+            <h2 className="text-[19px] sm:text-xl font-bold text-gray-800 pt-2 pb-1 px-1 flex items-center justify-between tracking-tight">
+              <span className="flex items-center"><MainCalendarIcon className="w-5 h-5 mr-2 text-blue-600" /> 근무기록 입력</span>
+
+              <div className="flex items-center gap-1.5">
+                {(isDataLoading) ? (
+                  <span className="text-sm sm:text-lg text-red-600 font-bold flex items-center animate-pulse tracking-tight">
+                    <Clock className="w-4 h-4 sm:w-5 sm:h-5 mr-1 animate-spin" />
+                    <span className="hidden sm:inline">{isSubmitting ? '자동 저장 중...' : isSyncing ? '최신 데이터 확인 중...' : '데이터 로딩 중...'}</span>
+                    <span className="inline sm:hidden">{isSubmitting ? '저장중...' : '로딩중...'}</span>
+                  </span>
+                ) : (
+                  <>
+                    {Object.values(logs || {}).some(log => {
+                      const stu = (log?.student || '').trim();
+                      const loc = (log?.location || '').trim();
+                      return Boolean(stu && loc && loc !== '복지관' && loc !== '공휴일' && loc !== '휴무일');
+                    }) && (
                         <button
-                          onClick={(e) => {
-                            if (isSubmitting) {
-                              e.preventDefault();
-                              alert("데이터 저장 중입니다. 잠시만 기다려주세요.");
-                              return;
-                            }
-                            handleLogout();
-                          }}
-                          className={`text-xs flex flex-col items-center font-bold p-2 rounded-lg shadow-md transition-all touch-manipulation shrink-0 ${isSubmitting ? 'hdr-btn opacity-50 cursor-not-allowed' : 'hdr-btn'}`}
+                          type="button"
+                          onClick={() => showAlert('출퇴근 기능은 추후 구현될 예정입니다.')}
+                          title="외부기관 출퇴근 (추후 구현 예정)"
+                          className="bg-slate-100 hover:bg-slate-200 text-slate-800 ring-1 ring-inset ring-slate-300 text-[14px] sm:text-[15px] px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-xl font-bold flex items-center gap-1.5 whitespace-nowrap transition-all cursor-pointer active:scale-95 shadow-sm touch-manipulation"
+                          aria-label="출퇴근"
                         >
-                          <Home className="w-5 h-5 mb-1" /> 처음으로
+                          <svg className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                            <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
+                            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+                            <path d="m9 14 2 2 4-4" />
+                          </svg>
+                          <span>출퇴근</span>
                         </button>
+                      )}
+                    {logsDate === date && date >= getLocalDateString(new Date()) && !noNewScheduleToRepeat && (!currentSelectedHoliday || currentSelectedHoliday.vacation_available) && !Object.values(logs || {}).some(log => (log?.student || '').includes('직무교육') || (log?.student || '').includes('안전교육') || (log?.student || '').includes('간담회')) && (
+                      <button
+                        type="button"
+                        onClick={handleRepeatSchedule}
+                        className="text-[15px] sm:text-[16px] px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl font-bold flex items-center whitespace-nowrap transition-all bg-orange-50 hover:bg-orange-100 text-orange-700 ring-1 ring-inset ring-orange-200 active:scale-95 touch-manipulation"
+                        title="현재의 학생이름과 장소를 이후의 동일 요일들에 복제합니다."
+                      >
+                        <RefreshCw className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5" /> 일정 복제
+                      </button>
+                    )}
+                  </>
+                )}
+              </div>
+            </h2>
+            <div className="contents">
+              <div className="sticky top-0 z-30 -mx-2.5 sm:-mx-5 px-2.5 sm:px-5 py-2 app-surface">
+                <div className="flex items-center gap-1.5 sm:gap-2 w-full">
+                  <button type="button" onClick={handlePrevDay} disabled={isDataLoading} aria-label="이전 날" className="w-11 sm:w-12 h-11 sm:h-12 flex items-center justify-center rounded-xl bg-white ring-1 ring-gray-200 shadow-sm hover:bg-gray-50 active:bg-gray-100 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation text-gray-600 shrink-0 transition-all">
+                    <svg className="w-6 h-6 sm:w-7 sm:h-7" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z" /></svg>
+                  </button>
+
+                  <div className={`flex-1 h-11 sm:h-12 relative flex items-center justify-center ring-1 ring-blue-200 bg-white rounded-xl text-center shadow-sm overflow-hidden transition-all hover:ring-blue-300`}>
+                    <input
+                      type="date"
+                      value={date}
+                      onChange={handleDateChange}
+                      disabled={isDataLoading}
+                      onClick={(e) => {
+                        try {
+                          if (!isDataLoading && e.target.showPicker) e.target.showPicker();
+                        } catch (err) { }
+                      }}
+                      min={minDate || undefined}
+                      max={maxDate || undefined}
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10 disabled:cursor-not-allowed"
+                      title="달력 열기"
+                    />
+                    <div className={`flex items-center justify-center pointer-events-none relative z-0 ${isDataLoading ? 'opacity-50' : ''} -translate-y-[1px] whitespace-nowrap px-1`}>
+                      <span className={`font-extrabold text-[#1e3a8a] text-[15px] min-[360px]:text-[17px] sm:text-[20px] tracking-tighter whitespace-nowrap`}>{parseInt(date.substring(5, 7), 10)}/{parseInt(date.substring(8, 10), 10)}</span>
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#1e3a8a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="mx-1 sm:mx-1.5 w-4 h-4 sm:w-5 sm:h-5 shrink-0">
+                        <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
+                        <line x1="16" x2="16" y1="2" y2="6" />
+                        <line x1="8" x2="8" y1="2" y2="6" />
+                        <line x1="3" x2="21" y1="10" y2="10" />
+                      </svg>
+                      <span className={`font-extrabold text-[#1e3a8a] text-[15px] min-[360px]:text-[17px] sm:text-[20px] tracking-tighter whitespace-nowrap shrink-0`}>({getDayName(date)})</span>
+                    </div>
+                  </div>
+
+                  <button type="button" onClick={handleTodayClick} disabled={isDataLoading} className="text-[14px] sm:text-[15px] px-3 sm:px-4 h-11 sm:h-12 rounded-xl font-bold flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white shadow-sm shadow-blue-600/30 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation whitespace-nowrap shrink-0 transition-all">오늘</button>
+                  <button type="button" onClick={handleNextDay} disabled={isDataLoading} aria-label="다음 날" className="w-11 sm:w-12 h-11 sm:h-12 flex items-center justify-center rounded-xl bg-white ring-1 ring-gray-200 shadow-sm hover:bg-gray-50 active:bg-gray-100 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation text-gray-600 shrink-0 transition-all">
+                    <svg className="w-6 h-6 sm:w-7 sm:h-7" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" /></svg>
+                  </button>
+                </div>
+              </div>
+              {errorMessage && <div className="text-red-600 font-bold text-base text-center pb-2">{errorMessage}</div>}
+
+
+              {isMissingHeadcount && !isDataLoading && (
+                <div className="mt-2 animate-fadeIn">
+                  <div className="bg-rose-50 ring-1 ring-rose-200 rounded-2xl p-3 sm:p-4 text-rose-800 shadow-sm flex items-center justify-center">
+                    <svg className="w-5 h-5 sm:w-6 sm:h-6 text-red-600 mr-2 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                    <p className="font-extrabold text-[15px] sm:text-[18px] text-red-700">
+                      교육 참석인원을 입력하세요.
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {specialAlerts.length > 0 && (
+                <div className="mt-2 animate-fadeIn">
+                  <div className="bg-white ring-1 ring-amber-200 rounded-2xl px-3 sm:px-4 py-3 sm:py-3.5 text-gray-800 shadow-sm overflow-hidden relative">
+                    <span className="absolute left-0 top-0 bottom-0 w-1 bg-amber-400" aria-hidden="true" />
+                    <div className="flex items-start gap-2.5 sm:gap-3 w-full">
+                      <div className="bg-amber-100 text-amber-600 p-1.5 rounded-lg shrink-0">
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <rect x="3" y="4.5" width="18" height="16.5" rx="2" strokeWidth="2.2" /><path strokeLinecap="round" strokeWidth="2.2" d="M8 2.5v4M16 2.5v4M3 9.5h18" />
+                        </svg>
+                      </div>
+                      <div className="flex flex-col gap-0.5 sm:gap-1 w-full min-w-0">
+                        <h4 className="font-bold text-[16px] min-[360px]:text-[17px] sm:text-[19px] leading-tight text-gray-900 tracking-tight">
+                          주요 일정 안내
+                        </h4>
+                        <div className="space-y-1 sm:space-y-1.5 mt-0.5 sm:mt-1">
+                          {specialAlerts.map((alert, idx) => {
+                            // 3일 이내인 일정인지 확인합니다
+                            const isClose = alert.diffDays <= 3;
+                            // 오늘과 같은 요일인지 확인합니다
+                            const isSameDayOfWeek = alert.dayOfWeek === new Date().getDay();
+
+                            const textClass = (isSameDayOfWeek || isClose) ? 'text-rose-600' : 'text-blue-700';
+
+                            return (
+                              <p key={idx} className={`font-bold text-[13.5px] min-[360px]:text-[14.5px] min-[380px]:text-[15.5px] sm:text-[18px] leading-tight tracking-tighter whitespace-nowrap overflow-x-auto pb-0.5 scrollbar-hide w-full block ${textClass}`}>
+                                <span>
+                                  • {alert.msg}
+                                </span>
+                              </p>
+                            );
+                          })}
+                        </div>
                       </div>
                     </div>
+                  </div>
+                </div>
+              )}
 
-                    <main
-                      className="w-full max-w-5xl lg:max-w-[1536px] mx-auto flex flex-col px-2.5 sm:px-5 pt-2 mt-1 pb-36"
-                    >
-                      <section className="flex flex-col h-auto">
-                        <div className="contents">
-                          <h2 className="text-[19px] sm:text-xl font-bold text-gray-800 pt-2 pb-1 px-1 flex items-center justify-between tracking-tight">
-                            <span className="flex items-center"><MainCalendarIcon className="w-5 h-5 mr-2 text-blue-600" /> 근무기록 입력</span>
+              {!isDataLoading && isCurrentUser20DaysFalse && (
+                <div className="mt-2 animate-fadeIn">
+                  <div className="bg-sky-50 ring-1 ring-sky-200 rounded-2xl p-3.5 sm:p-4 text-sky-900 shadow-sm">
+                    <div className="flex items-start gap-3">
+                      <div className="bg-sky-100 p-1.5 rounded-lg shrink-0">
+                        <svg className="w-5 h-5 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </div>
+                      <p className="font-semibold text-[15px] sm:text-[17px] leading-snug break-keep text-sky-900">
+                        대체근무인 경우, 대상자 이름과 장소를 입력하고 화면 하단의 <span className="text-blue-700 font-extrabold">'데이터베이스에 저장하기'</span> 버튼을 누르면 수업을 추가할 수 있습니다.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
 
-                            <div className="flex items-center gap-1.5">
-                              {(isDataLoading) ? (
-                                <span className="text-sm sm:text-lg text-red-600 font-bold flex items-center animate-pulse tracking-tight">
-                                  <Clock className="w-4 h-4 sm:w-5 sm:h-5 mr-1 animate-spin" />
-                                  <span className="hidden sm:inline">{isSubmitting ? '자동 저장 중...' : isSyncing ? '최신 데이터 확인 중...' : '데이터 로딩 중...'}</span>
-                                  <span className="inline sm:hidden">{isSubmitting ? '저장중...' : '로딩중...'}</span>
-                                </span>
-                              ) : (
-                                <>
-                                  {Object.values(logs || {}).some(log => {
-                                    const stu = (log?.student || '').trim();
-                                    const loc = (log?.location || '').trim();
-                                    return Boolean(stu && loc && loc !== '복지관' && loc !== '공휴일' && loc !== '휴무일');
-                                  }) && (
-                                      <button
-                                        type="button"
-                                        onClick={() => showAlert('출퇴근 기능은 추후 구현될 예정입니다.')}
-                                        title="외부기관 출퇴근 (추후 구현 예정)"
-                                        className="bg-slate-100 hover:bg-slate-200 text-slate-800 ring-1 ring-inset ring-slate-300 text-[14px] sm:text-[15px] px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-xl font-bold flex items-center gap-1.5 whitespace-nowrap transition-all cursor-pointer active:scale-95 shadow-sm touch-manipulation"
-                                        aria-label="출퇴근"
-                                      >
-                                        <svg className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                                          <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
-                                          <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
-                                          <path d="m9 14 2 2 4-4" />
-                                        </svg>
-                                        <span>출퇴근</span>
-                                      </button>
-                                    )}
-                                  {logsDate === date && date >= getLocalDateString(new Date()) && !noNewScheduleToRepeat && (!currentSelectedHoliday || currentSelectedHoliday.vacation_available) && !Object.values(logs || {}).some(log => (log?.student || '').includes('직무교육') || (log?.student || '').includes('안전교육') || (log?.student || '').includes('간담회')) && (
-                                    <button
-                                      type="button"
-                                      onClick={handleRepeatSchedule}
-                                      className="text-[15px] sm:text-[16px] px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl font-bold flex items-center whitespace-nowrap transition-all bg-orange-50 hover:bg-orange-100 text-orange-700 ring-1 ring-inset ring-orange-200 active:scale-95 touch-manipulation"
-                                      title="현재의 학생이름과 장소를 이후의 동일 요일들에 복제합니다."
-                                    >
-                                      <RefreshCw className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5" /> 일정 복제
-                                    </button>
-                                  )}
-                                </>
-                              )}
-                            </div>
-                          </h2>
-                          <div className="contents">
-                            <div className="sticky top-0 z-30 -mx-2.5 sm:-mx-5 px-2.5 sm:px-5 py-2 app-surface">
-                              <div className="flex items-center gap-1.5 sm:gap-2 w-full">
-                                <button type="button" onClick={handlePrevDay} disabled={isDataLoading} aria-label="이전 날" className="w-11 sm:w-12 h-11 sm:h-12 flex items-center justify-center rounded-xl bg-white ring-1 ring-gray-200 shadow-sm hover:bg-gray-50 active:bg-gray-100 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation text-gray-600 shrink-0 transition-all">
-                                  <svg className="w-6 h-6 sm:w-7 sm:h-7" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z" /></svg>
-                                </button>
+          <div className="pb-5 pt-3">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {(() => {
+                const holidayBanner = currentSelectedHoliday ? (
+                  <div className={`bg-gradient-to-b from-rose-50 to-white ring-1 ring-rose-200 rounded-2xl text-center shadow-md animate-fadeIn ${currentSelectedHoliday.vacation_available ? 'p-4 sm:p-5 mb-6' : 'p-6 sm:p-8 my-4'}`}>
+                    <div className={`flex justify-center ${currentSelectedHoliday.vacation_available ? 'mb-2 sm:mb-4' : 'mb-4'}`}>
+                      <div className={`bg-red-100 rounded-full ${currentSelectedHoliday.vacation_available ? 'p-2 sm:p-3' : 'p-3'}`}>
+                        <span className={`${currentSelectedHoliday.vacation_available ? 'text-3xl sm:text-5xl' : 'text-4xl sm:text-5xl'}`}>
+                          {(() => {
+                            const text = `${currentSelectedHoliday.name || ''} ${currentSelectedHoliday.content1 || ''} ${currentSelectedHoliday.content2 || ''}`;
+                            if (/설날|추석|명절|한가위|설 연휴/.test(text)) return '🌕';
+                            if (/광복절|삼일절|3\.1절|개천절|제헌절|한글날/.test(text)) return <img src="/korea_flag.png" alt="태극기" className="h-[1em] w-auto inline-block align-middle drop-shadow-sm rounded-[2px]" />;
+                            if (/어린이날/.test(text)) return '🎈';
+                            if (/부처님|석가탄신일|초파일/.test(text)) return '🪷';
+                            if (/성탄절|크리스마스/.test(text)) return '🎄';
+                            if (/선거|투표/.test(text)) return '🗳️';
+                            if (/현충일/.test(text)) return '🕯️';
+                            if (/근로자의|노동절/.test(text)) return '💪';
+                            if (/간담회|회의/.test(text)) return '☕';
+                            if (/교육|워크숍/.test(text)) return '💡';
+                            if (/대체공휴일|임시공휴일|휴일|휴무/.test(text)) return '🏖️';
+                            return '💡';
+                          })()}
+                        </span>
+                      </div>
+                    </div>
+                    <h3 className={`${currentSelectedHoliday.vacation_available ? 'text-xl sm:text-3xl' : 'text-2xl sm:text-3xl'} font-black text-red-700 tracking-tight ${currentSelectedHoliday.vacation_available ? 'mb-2 sm:mb-3' : 'mb-3'}`}>
+                      {currentSelectedHoliday.name}
+                    </h3>
+                    {currentSelectedHoliday.content1 && (
+                      <p className={`${currentSelectedHoliday.vacation_available ? 'text-base sm:text-xl mb-1 sm:mb-2' : 'text-lg sm:text-xl mb-2'} font-bold text-red-600 whitespace-pre-wrap`}>
+                        {currentSelectedHoliday.content1}
+                      </p>
+                    )}
+                    {currentSelectedHoliday.content2 && (
+                      <p className={`font-medium text-red-500 bg-white/50 inline-block rounded-xl border border-red-100 whitespace-pre-wrap break-keep leading-snug ${currentSelectedHoliday.vacation_available ? 'text-[14px] sm:text-lg px-3 py-1.5 sm:px-4 sm:py-2 mt-1 sm:mt-2' : 'text-[15px] sm:text-lg px-4 py-2 mt-2'}`}>
+                        {currentSelectedHoliday.content2}
+                      </p>
+                    )}
+                    {currentSelectedHoliday.vacation_available && (
+                      <div className="mt-4 flex justify-center w-full">
+                        <button
+                          type="button"
+                          onClick={() => setShowDetailedSchedule(!showDetailedSchedule)}
+                          className="bg-white ring-1 ring-rose-300 text-rose-700 font-bold px-4 py-2 rounded-xl shadow-sm active:scale-95 transition-all text-[15px] sm:text-lg hover:bg-rose-50"
+                        >
+                          {showDetailedSchedule ? '상세 일정 감추기' : '상세 일정 보기'}
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ) : null;
 
-                                <div className={`flex-1 h-11 sm:h-12 relative flex items-center justify-center ring-1 ring-blue-200 bg-white rounded-xl text-center shadow-sm overflow-hidden transition-all hover:ring-blue-300`}>
-                                  <input
-                                    type="date"
-                                    value={date}
-                                    onChange={handleDateChange}
-                                    disabled={isDataLoading}
-                                    onClick={(e) => {
-                                      try {
-                                        if (!isDataLoading && e.target.showPicker) e.target.showPicker();
-                                      } catch (err) { }
-                                    }}
-                                    min={minDate || undefined}
-                                    max={maxDate || undefined}
-                                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10 disabled:cursor-not-allowed"
-                                    title="달력 열기"
-                                  />
-                                  <div className={`flex items-center justify-center pointer-events-none relative z-0 ${isDataLoading ? 'opacity-50' : ''} -translate-y-[1px] whitespace-nowrap px-1`}>
-                                    <span className={`font-extrabold text-[#1e3a8a] text-[15px] min-[360px]:text-[17px] sm:text-[20px] tracking-tighter whitespace-nowrap`}>{parseInt(date.substring(5, 7), 10)}/{parseInt(date.substring(8, 10), 10)}</span>
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#1e3a8a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="mx-1 sm:mx-1.5 w-4 h-4 sm:w-5 sm:h-5 shrink-0">
-                                      <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
-                                      <line x1="16" x2="16" y1="2" y2="6" />
-                                      <line x1="8" x2="8" y1="2" y2="6" />
-                                      <line x1="3" x2="21" y1="10" y2="10" />
-                                    </svg>
-                                    <span className={`font-extrabold text-[#1e3a8a] text-[15px] min-[360px]:text-[17px] sm:text-[20px] tracking-tighter whitespace-nowrap shrink-0`}>({getDayName(date)})</span>
-                                  </div>
-                                </div>
+                if (currentSelectedHoliday && !currentSelectedHoliday.vacation_available) {
+                  return holidayBanner;
+                }
 
-                                <button type="button" onClick={handleTodayClick} disabled={isDataLoading} className="text-[14px] sm:text-[15px] px-3 sm:px-4 h-11 sm:h-12 rounded-xl font-bold flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white shadow-sm shadow-blue-600/30 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation whitespace-nowrap shrink-0 transition-all">오늘</button>
-                                <button type="button" onClick={handleNextDay} disabled={isDataLoading} aria-label="다음 날" className="w-11 sm:w-12 h-11 sm:h-12 flex items-center justify-center rounded-xl bg-white ring-1 ring-gray-200 shadow-sm hover:bg-gray-50 active:bg-gray-100 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation text-gray-600 shrink-0 transition-all">
-                                  <svg className="w-6 h-6 sm:w-7 sm:h-7" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" /></svg>
-                                </button>
-                              </div>
-                            </div>
-                            {errorMessage && <div className="text-red-600 font-bold text-base text-center pb-2">{errorMessage}</div>}
+                return (
+                  <>
+                    {holidayBanner}
+                    {(!currentSelectedHoliday || !currentSelectedHoliday.vacation_available || showDetailedSchedule) && (
+                      <>
+                        <div className="space-y-4 sm:space-y-5">
+                          {shifts.map((shift, index) => {
+                            const isInfoMissing = logs[index] ? (!logs[index].student || !logs[index].student.trim() || (selectedTeam !== '취업팀' && (!logs[index].location || !logs[index].location.trim()))) : true;
+                            const locLen = logs[index] && logs[index].location ? logs[index].location.length : 0;
 
+                            const locTextSize = locLen >= 9 ? "text-[15px] sm:text-[15px] md:text-[16px] landscape:text-[17px] md:landscape:text-[18px]" : locLen >= 8 ? "text-[16px] sm:text-[16px] md:text-[18px] landscape:text-[18px] md:landscape:text-[20px]" : locLen >= 7 ? "text-[17px] sm:text-[17px] md:text-[20px] landscape:text-[20px] md:landscape:text-[22px]" : locLen >= 6 ? "text-[18px] sm:text-[19px] md:text-[22px] landscape:text-[22px] md:landscape:text-[24px]" : "text-[18px] min-[360px]:text-[20px] sm:text-xl md:text-2xl landscape:text-[22px] md:landscape:text-[26px]";
 
-                            {isMissingHeadcount && !isDataLoading && (
-                              <div className="mt-2 animate-fadeIn">
-                                <div className="bg-rose-50 ring-1 ring-rose-200 rounded-2xl p-3 sm:p-4 text-rose-800 shadow-sm flex items-center justify-center">
-                                  <svg className="w-5 h-5 sm:w-6 sm:h-6 text-red-600 mr-2 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                                  </svg>
-                                  <p className="font-extrabold text-[15px] sm:text-[18px] text-red-700">
-                                    교육 참석인원을 입력하세요.
-                                  </p>
-                                </div>
-                              </div>
-                            )}
+                            const counts = studentCounts[index];
+                            const studentNames = logs[index] ? (logs[index].student || "").split(/[/,]/).map(s => s.trim()).filter(s => s.length > 0) : [];
+                            const displayRowsCount = Math.max(1, studentNames.length);
+                            const isMultipleStudents = studentNames.length >= 2;
 
-                            {specialAlerts.length > 0 && (
-                              <div className="mt-2 animate-fadeIn">
-                                <div className="bg-white ring-1 ring-amber-200 rounded-2xl px-3 sm:px-4 py-3 sm:py-3.5 text-gray-800 shadow-sm overflow-hidden relative">
-                                  <span className="absolute left-0 top-0 bottom-0 w-1 bg-amber-400" aria-hidden="true" />
-                                  <div className="flex items-start gap-2.5 sm:gap-3 w-full">
-                                    <div className="bg-amber-100 text-amber-600 p-1.5 rounded-lg shrink-0">
-                                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <rect x="3" y="4.5" width="18" height="16.5" rx="2" strokeWidth="2.2" /><path strokeLinecap="round" strokeWidth="2.2" d="M8 2.5v4M16 2.5v4M3 9.5h18" />
-                                      </svg>
-                                    </div>
-                                    <div className="flex flex-col gap-0.5 sm:gap-1 w-full min-w-0">
-                                      <h4 className="font-bold text-[16px] min-[360px]:text-[17px] sm:text-[19px] leading-tight text-gray-900 tracking-tight">
-                                        주요 일정 안내
-                                      </h4>
-                                      <div className="space-y-1 sm:space-y-1.5 mt-0.5 sm:mt-1">
-                                        {specialAlerts.map((alert, idx) => {
-                                          // 3일 이내인 일정인지 확인합니다
-                                          const isClose = alert.diffDays <= 3;
-                                          // 오늘과 같은 요일인지 확인합니다
-                                          const isSameDayOfWeek = alert.dayOfWeek === new Date().getDay();
+                            const combinedText = logs[index] ? ((logs[index].student || "") + " " + (logs[index].location || "")) : "";
+                            const isKyungrodang = combinedText.includes("경로당");
+                            const isShowHeadcount = logs[index] ? ((logs[index].student || "").includes("보조강사") || isKyungrodang) : false;
+                            const isSpecialDay = logs[index] ? ((logs[index].student || "").includes("공휴일") || (logs[index].location || "").includes("공휴일") || (logs[index].student || "").includes("간담회") || (logs[index].location || "").includes("간담회")) : false;
+                            const cardColorClass = isSpecialDay ? 'bg-rose-50 border-rose-300 log-accent-rose' : isKyungrodang ? 'bg-orange-50 border-orange-300 log-accent-orange' : isMultipleStudents ? 'bg-emerald-50 border-emerald-300 log-accent-emerald' : 'bg-white border-blue-300 log-accent-blue';
 
-                                          const textClass = (isSameDayOfWeek || isClose) ? 'text-rose-600' : 'text-blue-700';
+                            const isFutureOrToday = date >= getLocalDateString(new Date());
+                            const hasAttendance = logs[index].selectedTags && logs[index].selectedTags.some(tArray => tArray && tArray.length > 0);
 
-                                          return (
-                                            <p key={idx} className={`font-bold text-[13.5px] min-[360px]:text-[14.5px] min-[380px]:text-[15.5px] sm:text-[18px] leading-tight tracking-tighter whitespace-nowrap overflow-x-auto pb-0.5 scrollbar-hide w-full block ${textClass}`}>
-                                              <span>
-                                                • {alert.msg}
-                                              </span>
-                                            </p>
-                                          );
-                                        })}
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            )}
+                            const allSelectedTags = (logs[index]?.selectedTags || []).flat().filter(Boolean);
+                            const hasPresentTag = allSelectedTags.includes("출석") || allSelectedTags.includes("1");
+                            const hasAbsenceTag = allSelectedTags.includes("결석");
+                            const hasRedTag = allSelectedTags.includes("종료") || allSelectedTags.includes("취소");
+                            const hasGrayTag = allSelectedTags.includes("선생님휴가");
+                            let memoTextColorClass = "text-gray-900";
+                            if (hasAbsenceTag) {
+                              memoTextColorClass = "text-red-600";
+                            } else if ((hasRedTag || hasGrayTag) && !hasPresentTag) {
+                              memoTextColorClass = "text-gray-500";
+                            }
 
-                            {!isDataLoading && isCurrentUser20DaysFalse && (
-                              <div className="mt-2 animate-fadeIn">
-                                <div className="bg-sky-50 ring-1 ring-sky-200 rounded-2xl p-3.5 sm:p-4 text-sky-900 shadow-sm">
-                                  <div className="flex items-start gap-3">
-                                    <div className="bg-sky-100 p-1.5 rounded-lg shrink-0">
-                                      <svg className="w-5 h-5 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                      </svg>
-                                    </div>
-                                    <p className="font-semibold text-[15px] sm:text-[17px] leading-snug break-keep text-sky-900">
-                                      대체근무인 경우, 대상자 이름과 장소를 입력하고 화면 하단의 <span className="text-blue-700 font-extrabold">'데이터베이스에 저장하기'</span> 버튼을 누르면 수업을 추가할 수 있습니다.
-                                    </p>
-                                  </div>
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        </div>
+                            const hasCardContent = Boolean(
+                              logs[index]?.student?.trim() ||
+                              logs[index]?.location?.trim() ||
+                              logs[index]?.memo?.trim() ||
+                              logs[index]?.headcount?.trim() ||
+                              logs[index]?.selectedTags?.some(t => t?.length > 0)
+                            );
+                            const canUndoCard = Boolean(
+                              undoLogs[index] && JSON.stringify(undoLogs[index]) !== JSON.stringify(logs[index])
+                            );
+                            const resetOrUndoButton = (!hasCardContent && canUndoCard) ? (
+                              <button
+                                type="button"
+                                onClick={() => handleUndoCard(index)}
+                                disabled={isDataLoading}
+                                title="방금 초기화한 내용을 이전 상태로 되돌리기"
+                                className="bg-amber-50 hover:bg-amber-100 text-amber-800 ring-1 ring-inset ring-amber-300 h-[32px] sm:h-[36px] px-2.5 sm:px-3 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap shrink-0 transition-all cursor-pointer active:scale-95 font-bold shadow-sm flex items-center justify-center"
+                              >
+                                <span>되돌리기</span>
+                              </button>
+                            ) : hasCardContent ? (
+                              <button
+                                type="button"
+                                onClick={() => setClearConfirmIndex(index)}
+                                disabled={isDataLoading}
+                                title="이 시간대 수업 내용(이름·장소·출결·메모) 모두 비우기"
+                                className="bg-rose-50 hover:bg-rose-100 text-rose-700 ring-1 ring-inset ring-rose-200 h-[32px] sm:h-[36px] px-2.5 sm:px-3 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap shrink-0 transition-all cursor-pointer active:scale-95 font-bold shadow-sm flex items-center justify-center"
+                              >
+                                <span>초기화</span>
+                              </button>
+                            ) : null;
 
-                        <div className="pb-5 pt-3">
-                          <form onSubmit={handleSubmit} className="space-y-6">
-                            {(() => {
-                              const holidayBanner = currentSelectedHoliday ? (
-                                <div className={`bg-gradient-to-b from-rose-50 to-white ring-1 ring-rose-200 rounded-2xl text-center shadow-md animate-fadeIn ${currentSelectedHoliday.vacation_available ? 'p-4 sm:p-5 mb-6' : 'p-6 sm:p-8 my-4'}`}>
-                                  <div className={`flex justify-center ${currentSelectedHoliday.vacation_available ? 'mb-2 sm:mb-4' : 'mb-4'}`}>
-                                    <div className={`bg-red-100 rounded-full ${currentSelectedHoliday.vacation_available ? 'p-2 sm:p-3' : 'p-3'}`}>
-                                      <span className={`${currentSelectedHoliday.vacation_available ? 'text-3xl sm:text-5xl' : 'text-4xl sm:text-5xl'}`}>
-                                        {(() => {
-                                          const text = `${currentSelectedHoliday.name || ''} ${currentSelectedHoliday.content1 || ''} ${currentSelectedHoliday.content2 || ''}`;
-                                          if (/설날|추석|명절|한가위|설 연휴/.test(text)) return '🌕';
-                                          if (/광복절|삼일절|3\.1절|개천절|제헌절|한글날/.test(text)) return <img src="/korea_flag.png" alt="태극기" className="h-[1em] w-auto inline-block align-middle drop-shadow-sm rounded-[2px]" />;
-                                          if (/어린이날/.test(text)) return '🎈';
-                                          if (/부처님|석가탄신일|초파일/.test(text)) return '🪷';
-                                          if (/성탄절|크리스마스/.test(text)) return '🎄';
-                                          if (/선거|투표/.test(text)) return '🗳️';
-                                          if (/현충일/.test(text)) return '🕯️';
-                                          if (/근로자의|노동절/.test(text)) return '💪';
-                                          if (/간담회|회의/.test(text)) return '☕';
-                                          if (/교육|워크숍/.test(text)) return '💡';
-                                          if (/대체공휴일|임시공휴일|휴일|휴무/.test(text)) return '🏖️';
-                                          return '💡';
-                                        })()}
-                                      </span>
-                                    </div>
-                                  </div>
-                                  <h3 className={`${currentSelectedHoliday.vacation_available ? 'text-xl sm:text-3xl' : 'text-2xl sm:text-3xl'} font-black text-red-700 tracking-tight ${currentSelectedHoliday.vacation_available ? 'mb-2 sm:mb-3' : 'mb-3'}`}>
-                                    {currentSelectedHoliday.name}
-                                  </h3>
-                                  {currentSelectedHoliday.content1 && (
-                                    <p className={`${currentSelectedHoliday.vacation_available ? 'text-base sm:text-xl mb-1 sm:mb-2' : 'text-lg sm:text-xl mb-2'} font-bold text-red-600 whitespace-pre-wrap`}>
-                                      {currentSelectedHoliday.content1}
-                                    </p>
-                                  )}
-                                  {currentSelectedHoliday.content2 && (
-                                    <p className={`font-medium text-red-500 bg-white/50 inline-block rounded-xl border border-red-100 whitespace-pre-wrap break-keep leading-snug ${currentSelectedHoliday.vacation_available ? 'text-[14px] sm:text-lg px-3 py-1.5 sm:px-4 sm:py-2 mt-1 sm:mt-2' : 'text-[15px] sm:text-lg px-4 py-2 mt-2'}`}>
-                                      {currentSelectedHoliday.content2}
-                                    </p>
-                                  )}
-                                  {currentSelectedHoliday.vacation_available && (
-                                    <div className="mt-4 flex justify-center w-full">
-                                      <button
-                                        type="button"
-                                        onClick={() => setShowDetailedSchedule(!showDetailedSchedule)}
-                                        className="bg-white ring-1 ring-rose-300 text-rose-700 font-bold px-4 py-2 rounded-xl shadow-sm active:scale-95 transition-all text-[15px] sm:text-lg hover:bg-rose-50"
-                                      >
-                                        {showDetailedSchedule ? '상세 일정 감추기' : '상세 일정 보기'}
-                                      </button>
-                                    </div>
-                                  )}
-                                </div>
-                              ) : null;
+                            return (
+                              <div key={index} id={`log-card-${index}`} className={`log-card p-4 sm:p-5 md:p-6 border-[1.5px] rounded-2xl ${cardColorClass}`}>
+                                <div className={`flex justify-between items-center w-full min-h-[32px] sm:min-h-[36px] mb-3 transition-opacity flex-nowrap gap-2 ${(isDataLoading) ? 'opacity-50' : ''}`}>
+                                  <div className="flex items-center text-gray-900 font-extrabold text-base sm:text-lg tracking-tight flex-nowrap min-w-0">
+                                    <span className="shrink-0 whitespace-nowrap">
+                                      {(() => {
+                                        const d = new Date(date);
+                                        const day = ['일', '월', '화', '수', '목', '금', '토'][d.getDay()];
+                                        let displayShift = shift;
+                                        if (selectedTeam === '취업팀' && day === '금') {
+                                          const mapping = { "13:00~14:00": "9:30~10:30", "14:00~15:00": "10:30~11:30", "15:00~16:00": "11:30~12:30" };
+                                          displayShift = mapping[shift] || shift;
+                                        }
+                                        if (!displayShift) return displayShift;
+                                        const startTime = displayShift.split('~')[0].trim();
+                                        return /^\d:\d{2}$/.test(startTime) ? `0${startTime}` : startTime;
+                                      })()}
+                                    </span>
 
-                              if (currentSelectedHoliday && !currentSelectedHoliday.vacation_available) {
-                                return holidayBanner;
-                              }
-
-                              return (
-                                <>
-                                  {holidayBanner}
-                                  {(!currentSelectedHoliday || !currentSelectedHoliday.vacation_available || showDetailedSchedule) && (
-                                    <>
-                                      <div className="space-y-4 sm:space-y-5">
-                                        {shifts.map((shift, index) => {
-                                          const isInfoMissing = logs[index] ? (!logs[index].student || !logs[index].student.trim() || (selectedTeam !== '취업팀' && (!logs[index].location || !logs[index].location.trim()))) : true;
-                                          const locLen = logs[index] && logs[index].location ? logs[index].location.length : 0;
-
-                                          const locTextSize = locLen >= 9 ? "text-[15px] sm:text-[15px] md:text-[16px] landscape:text-[17px] md:landscape:text-[18px]" : locLen >= 8 ? "text-[16px] sm:text-[16px] md:text-[18px] landscape:text-[18px] md:landscape:text-[20px]" : locLen >= 7 ? "text-[17px] sm:text-[17px] md:text-[20px] landscape:text-[20px] md:landscape:text-[22px]" : locLen >= 6 ? "text-[18px] sm:text-[19px] md:text-[22px] landscape:text-[22px] md:landscape:text-[24px]" : "text-[18px] min-[360px]:text-[20px] sm:text-xl md:text-2xl landscape:text-[22px] md:landscape:text-[26px]";
-
-                                          const counts = studentCounts[index];
-                                          const studentNames = logs[index] ? (logs[index].student || "").split(/[/,]/).map(s => s.trim()).filter(s => s.length > 0) : [];
-                                          const displayRowsCount = Math.max(1, studentNames.length);
-                                          const isMultipleStudents = studentNames.length >= 2;
-
-                                          const combinedText = logs[index] ? ((logs[index].student || "") + " " + (logs[index].location || "")) : "";
-                                          const isKyungrodang = combinedText.includes("경로당");
-                                          const isShowHeadcount = logs[index] ? ((logs[index].student || "").includes("보조강사") || isKyungrodang) : false;
-                                          const isSpecialDay = logs[index] ? ((logs[index].student || "").includes("공휴일") || (logs[index].location || "").includes("공휴일") || (logs[index].student || "").includes("간담회") || (logs[index].location || "").includes("간담회")) : false;
-                                          const cardColorClass = isSpecialDay ? 'bg-rose-50 border-rose-300 log-accent-rose' : isKyungrodang ? 'bg-orange-50 border-orange-300 log-accent-orange' : isMultipleStudents ? 'bg-emerald-50 border-emerald-300 log-accent-emerald' : 'bg-white border-blue-300 log-accent-blue';
-
-                                          const isFutureOrToday = date >= getLocalDateString(new Date());
-                                          const hasAttendance = logs[index].selectedTags && logs[index].selectedTags.some(tArray => tArray && tArray.length > 0);
-
-                                          const allSelectedTags = (logs[index]?.selectedTags || []).flat().filter(Boolean);
-                                          const hasPresentTag = allSelectedTags.includes("출석") || allSelectedTags.includes("1");
-                                          const hasAbsenceTag = allSelectedTags.includes("결석");
-                                          const hasRedTag = allSelectedTags.includes("종료") || allSelectedTags.includes("취소");
-                                          const hasGrayTag = allSelectedTags.includes("선생님휴가");
-                                          let memoTextColorClass = "text-gray-900";
-                                          if (hasAbsenceTag) {
-                                            memoTextColorClass = "text-red-600";
-                                          } else if ((hasRedTag || hasGrayTag) && !hasPresentTag) {
-                                            memoTextColorClass = "text-gray-500";
+                                    {counts && counts.length > 0 && (!currentSelectedHoliday || currentSelectedHoliday.vacation_available) && !logs[index].student?.includes("간담회") && !logs[index].student?.includes("안전교육") && !logs[index].student?.includes("직무교육") ? (
+                                      <div className="flex items-center ml-1.5 sm:ml-2.5 gap-1 sm:gap-1.5 flex-nowrap shrink-0 overflow-x-auto scrollbar-none">
+                                        {counts.map((c, cIdx) => {
+                                          let sessionColorClass = "bg-slate-50 hover:bg-slate-100 text-slate-700 ring-1 ring-inset ring-slate-200 font-bold";
+                                          if (c.count >= 15) {
+                                            sessionColorClass = "bg-orange-50 hover:bg-orange-100 text-orange-700 ring-1 ring-inset ring-orange-300 font-extrabold";
+                                          } else if (c.count >= 10) {
+                                            sessionColorClass = "bg-purple-50 hover:bg-purple-100 text-purple-700 ring-1 ring-inset ring-purple-300 font-extrabold";
+                                          } else if (c.count >= 7) {
+                                            sessionColorClass = "bg-purple-50 hover:bg-purple-100 text-purple-600 ring-1 ring-inset ring-purple-200 font-bold";
                                           }
 
-                                          const hasCardContent = Boolean(
-                                            logs[index]?.student?.trim() ||
-                                            logs[index]?.location?.trim() ||
-                                            logs[index]?.memo?.trim() ||
-                                            logs[index]?.headcount?.trim() ||
-                                            logs[index]?.selectedTags?.some(t => t?.length > 0)
-                                          );
-                                          const canUndoCard = Boolean(
-                                            undoLogs[index] && JSON.stringify(undoLogs[index]) !== JSON.stringify(logs[index])
-                                          );
-                                          const resetOrUndoButton = (!hasCardContent && canUndoCard) ? (
-                                            <button
-                                              type="button"
-                                              onClick={() => handleUndoCard(index)}
-                                              disabled={isDataLoading}
-                                              title="방금 초기화한 내용을 이전 상태로 되돌리기"
-                                              className="bg-amber-50 hover:bg-amber-100 text-amber-800 ring-1 ring-inset ring-amber-300 h-[32px] sm:h-[36px] px-2.5 sm:px-3 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap shrink-0 transition-all cursor-pointer active:scale-95 font-bold shadow-sm flex items-center justify-center"
-                                            >
-                                              <span>되돌리기</span>
-                                            </button>
-                                          ) : hasCardContent ? (
-                                            <button
-                                              type="button"
-                                              onClick={() => setClearConfirmIndex(index)}
-                                              disabled={isDataLoading}
-                                              title="이 시간대 수업 내용(이름·장소·출결·메모) 모두 비우기"
-                                              className="bg-rose-50 hover:bg-rose-100 text-rose-700 ring-1 ring-inset ring-rose-200 h-[32px] sm:h-[36px] px-2.5 sm:px-3 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap shrink-0 transition-all cursor-pointer active:scale-95 font-bold shadow-sm flex items-center justify-center"
-                                            >
-                                              <span>초기화</span>
-                                            </button>
-                                          ) : null;
-
                                           return (
-                                            <div key={index} id={`log-card-${index}`} className={`log-card p-4 sm:p-5 md:p-6 border-[1.5px] rounded-2xl ${cardColorClass}`}>
-                                              <div className={`flex justify-between items-center w-full min-h-[32px] sm:min-h-[36px] mb-3 transition-opacity flex-nowrap gap-2 ${(isDataLoading) ? 'opacity-50' : ''}`}>
-                                                <div className="flex items-center text-gray-900 font-extrabold text-base sm:text-lg tracking-tight flex-nowrap min-w-0">
-                                                  <span className="shrink-0 whitespace-nowrap">
-                                                    {(() => {
-                                                      const d = new Date(date);
-                                                      const day = ['일', '월', '화', '수', '목', '금', '토'][d.getDay()];
-                                                      let displayShift = shift;
-                                                      if (selectedTeam === '취업팀' && day === '금') {
-                                                        const mapping = { "13:00~14:00": "9:30~10:30", "14:00~15:00": "10:30~11:30", "15:00~16:00": "11:30~12:30" };
-                                                        displayShift = mapping[shift] || shift;
-                                                      }
-                                                      if (!displayShift) return displayShift;
-                                                      const startTime = displayShift.split('~')[0].trim();
-                                                      return /^\d:\d{2}$/.test(startTime) ? `0${startTime}` : startTime;
-                                                    })()}
-                                                  </span>
-
-                                                  {counts && counts.length > 0 && (!currentSelectedHoliday || currentSelectedHoliday.vacation_available) && !logs[index].student?.includes("간담회") && !logs[index].student?.includes("안전교육") && !logs[index].student?.includes("직무교육") ? (
-                                                    <div className="flex items-center ml-1.5 sm:ml-2.5 gap-1 sm:gap-1.5 flex-nowrap shrink-0 overflow-x-auto scrollbar-none">
-                                                      {counts.map((c, cIdx) => {
-                                                        let sessionColorClass = "bg-slate-50 hover:bg-slate-100 text-slate-700 ring-1 ring-inset ring-slate-200 font-bold";
-                                                        if (c.count >= 15) {
-                                                          sessionColorClass = "bg-orange-50 hover:bg-orange-100 text-orange-700 ring-1 ring-inset ring-orange-300 font-extrabold";
-                                                        } else if (c.count >= 10) {
-                                                          sessionColorClass = "bg-purple-50 hover:bg-purple-100 text-purple-700 ring-1 ring-inset ring-purple-300 font-extrabold";
-                                                        } else if (c.count >= 7) {
-                                                          sessionColorClass = "bg-purple-50 hover:bg-purple-100 text-purple-600 ring-1 ring-inset ring-purple-200 font-bold";
-                                                        }
-
-                                                        return (
-                                                          <div key={cIdx} className="flex items-center gap-1.5 shrink-0 flex-nowrap">
-                                                            <button
-                                                              type="button"
-                                                              onClick={() => setSelectedStudentDates(c)}
-                                                              title={`${c.student ? `${c.student} 님의 ` : ''}수업 진행 날짜 목록 열기`}
-                                                              className={`${sessionColorClass} h-[32px] sm:h-[36px] px-2.5 py-1 sm:px-3 sm:py-1 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap transition-all cursor-pointer active:scale-95 flex items-center justify-center shadow-sm shrink-0`}
-                                                            >
-                                                              <span>{c.count}회차</span>
-                                                            </button>
-                                                            <button
-                                                              type="button"
-                                                              onClick={() => setSelectedStudentHistory({ ...c, shiftIndex: index })}
-                                                              title={`${c.student ? `${c.student} 님의 ` : ''}이전 교육 기록 보기`}
-                                                              className="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 ring-1 ring-inset ring-emerald-200 h-[32px] sm:h-[36px] px-2.5 py-1 sm:px-3 sm:py-1 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap transition-all cursor-pointer active:scale-95 font-bold flex items-center justify-center shadow-sm shrink-0"
-                                                            >
-                                                              <span>이전교육</span>
-                                                            </button>
-                                                          </div>
-                                                        );
-                                                      })}
-                                                    </div>
-                                                  ) : null}
-                                                </div>
-
-                                                <div className="ml-auto flex items-center gap-1.5 shrink-0">
-                                                  {shouldRepeatPerShift[index] && !noNewScheduleToRepeat && logsDate === date && isFutureOrToday && (!currentSelectedHoliday || currentSelectedHoliday.vacation_available) && !logs[index].student?.includes("안전교육") && !logs[index].student?.includes("직무교육") && !logs[index].student?.includes("간담회") && (
-                                                    <button
-                                                      type="button"
-                                                      onClick={() => handleRepeatScheduleForShift(index)}
-                                                      className="bg-orange-50 hover:bg-orange-100 text-orange-700 ring-1 ring-inset ring-orange-200 h-[32px] sm:h-[36px] px-2.5 py-1 sm:px-3 sm:py-1 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap shrink-0 transition-colors cursor-pointer active:scale-95 font-bold shadow-sm flex items-center justify-center"
-                                                    >
-                                                      복제
-                                                    </button>
-                                                  )}
-                                                  {resetOrUndoButton}
-                                                </div>
-                                              </div>
-
-                                              <div className="space-y-2 sm:space-y-2.5">
-                                                {(() => {
-
-                                                  if (studentNames.length > 1) {
-                                                    const validStudents = studentNames.filter(s => s.trim() && !s.trim().includes("보조강사") && !s.trim().includes("도선복지관"));
-                                                    if (validStudents.length === 0) {
-                                                      return resetOrUndoButton ? (
-                                                        <div className="flex items-center gap-1.5 w-full">{resetOrUndoButton}</div>
-                                                      ) : null;
-                                                    }
-                                                    return (
-                                                      <div className="flex items-center gap-1.5 flex-wrap w-full">
-                                                        {validStudents.map((sName, sIdx) => {
-                                                          const clean = sName.trim();
-                                                          const isAppSubmitted = checkFormSubmitted(submittedForms.apps, clean);
-                                                          const isPreSubmitted = checkFormSubmitted(submittedForms.preSurveys, clean);
-                                                          const isPostSubmitted = checkFormSubmitted(submittedForms.postSurveys, clean);
-
-                                                          return (
-                                                            <React.Fragment key={sIdx}>
-                                                              <button
-                                                                type="button"
-                                                                onClick={() => {
-                                                                  const url = `/application_form.html${clean ? `?name=${encodeURIComponent(clean)}` : ''}`;
-                                                                  window.open(url, '_blank');
-                                                                }}
-                                                                title={`${sName} 님의 2027년 프로그램 참여 신청서 열기${isAppSubmitted ? ' (작성완료)' : ''}`}
-                                                                className={`${isAppSubmitted
-                                                                  ? 'bg-blue-600 hover:bg-blue-700 text-white ring-1 ring-inset ring-blue-700'
-                                                                  : 'bg-blue-50 hover:bg-blue-100 text-blue-700 ring-1 ring-inset ring-blue-200'
-                                                                  } h-[32px] sm:h-[36px] px-2.5 sm:px-3 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap transition-all cursor-pointer active:scale-95 font-bold flex items-center justify-center shadow-sm`}
-                                                              >
-                                                                <span>신청서 ({sName})</span>
-                                                              </button>
-                                                              <button
-                                                                type="button"
-                                                                onClick={() => {
-                                                                  const surveyor = currentUser || "";
-                                                                  const url = `/survey_form.html?type=pre${clean ? `&name=${encodeURIComponent(clean)}` : ''}${surveyor ? `&surveyor=${encodeURIComponent(surveyor)}` : ''}`;
-                                                                  window.open(url, '_blank');
-                                                                }}
-                                                                title={`${sName} 님의 2027년 1:1 디지털 교육 사전설문지 열기${isPreSubmitted ? ' (작성완료)' : ''}`}
-                                                                className={`${isPreSubmitted
-                                                                  ? 'bg-indigo-600 hover:bg-indigo-700 text-white ring-1 ring-inset ring-indigo-700'
-                                                                  : 'bg-indigo-50 hover:bg-indigo-100 text-indigo-700 ring-1 ring-inset ring-indigo-200'
-                                                                  } h-[32px] sm:h-[36px] px-2.5 sm:px-3 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap transition-all cursor-pointer active:scale-95 font-bold flex items-center justify-center shadow-sm`}
-                                                              >
-                                                                <span>사전설문지 ({sName})</span>
-                                                              </button>
-                                                              <button
-                                                                type="button"
-                                                                onClick={() => {
-                                                                  const surveyor = currentUser || "";
-                                                                  const url = `/survey_form.html?type=post${clean ? `&name=${encodeURIComponent(clean)}` : ''}${surveyor ? `&surveyor=${encodeURIComponent(surveyor)}` : ''}`;
-                                                                  window.open(url, '_blank');
-                                                                }}
-                                                                title={`${sName} 님의 2027년 1:1 디지털 교육 사후설문지 열기${isPostSubmitted ? ' (작성완료)' : ''}`}
-                                                                className={`${isPostSubmitted
-                                                                  ? 'bg-purple-700 hover:bg-purple-800 text-white ring-1 ring-inset ring-purple-800'
-                                                                  : 'bg-purple-50 hover:bg-purple-100 text-purple-700 ring-1 ring-inset ring-purple-200'
-                                                                  } h-[32px] sm:h-[36px] px-2.5 sm:px-3 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap transition-all cursor-pointer active:scale-95 font-bold flex items-center justify-center shadow-sm`}
-                                                              >
-                                                                <span>사후설문지 ({sName})</span>
-                                                              </button>
-                                                            </React.Fragment>
-                                                          );
-                                                        })}
-                                                      </div>
-                                                    );
-                                                  }
-
-                                                  const singleStudent = (studentNames[0] || logs[index]?.student || "").trim();
-                                                  if (!singleStudent || singleStudent.includes("보조강사") || singleStudent.includes("도선복지관")) {
-                                                    return null;
-                                                  }
-
-                                                  const isAppSubmitted = checkFormSubmitted(submittedForms.apps, singleStudent);
-                                                  const isPreSubmitted = checkFormSubmitted(submittedForms.preSurveys, singleStudent);
-                                                  const isPostSubmitted = checkFormSubmitted(submittedForms.postSurveys, singleStudent);
-                                                  const maxStudentCount = (counts || []).reduce((mx, c) => Math.max(mx, c.count || 0), 0);
-                                                  const needPostSurvey = !isPostSubmitted && (allSelectedTags.includes('종료') || maxStudentCount >= 15);
-                                                  const locVal = (logs[index]?.location || "").trim();
-                                                  const isExternalLocation = Boolean(locVal && locVal !== "복지관" && locVal !== "공휴일" && locVal !== "휴무일");
-                                                  const photoDateKey = `${normalizeStudentPhotoKey(singleStudent)}__${date}`;
-                                                  const hasPhotoForSession = Boolean(studentPhotoDateCounts[photoDateKey]);
-
-                                                  return (
-                                                    <div className="flex items-center justify-between gap-1.5 flex-wrap w-full">
-                                                      {isExternalLocation && (
-                                                        <div className="flex items-center gap-1.5 shrink-0">
-                                                          <button
-                                                            type="button"
-                                                            onClick={() => setPhotoModalTarget({
-                                                              studentName: singleStudent,
-                                                              date,
-                                                              shift: shifts[index] || '',
-                                                              teacher: currentUser || '',
-                                                              location: locVal
-                                                            })}
-                                                            title={hasPhotoForSession ? `${singleStudent} 님 수업 사진 촬영 완료 (클릭하여 보기/삭제)` : `${singleStudent} 님 수업 모습 촬영하기`}
-                                                            className={`${hasPhotoForSession
-                                                              ? 'bg-blue-600 hover:bg-blue-700 text-white ring-1 ring-inset ring-blue-700'
-                                                              : 'bg-gray-200 hover:bg-gray-300 text-gray-700 ring-1 ring-inset ring-gray-300'
-                                                              } h-[32px] sm:h-[36px] px-2.5 sm:px-3 rounded-lg transition-all cursor-pointer active:scale-95 flex items-center justify-center shadow-sm`}
-                                                            aria-label="수업 사진 촬영"
-                                                          >
-                                                            <svg className="w-4 h-4 sm:w-[18px] sm:h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                                                              <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" />
-                                                              <circle cx="12" cy="13" r="3" />
-                                                            </svg>
-                                                          </button>
-                                                        </div>
-                                                      )}
-                                                      <div className="ml-auto flex items-center gap-1.5 flex-wrap">
-                                                        <button
-                                                          type="button"
-                                                          onClick={() => {
-                                                            const url = `/application_form.html${singleStudent ? `?name=${encodeURIComponent(singleStudent)}` : ''}`;
-                                                            window.open(url, '_blank');
-                                                          }}
-                                                          title={`2027년 프로그램 참여 신청서 열기${isAppSubmitted ? ' (작성완료)' : ' (미작성)'}`}
-                                                          className={`${isAppSubmitted
-                                                            ? 'bg-blue-600 hover:bg-blue-700 text-white ring-1 ring-inset ring-blue-700'
-                                                            : 'bg-blue-50 hover:bg-blue-100 text-blue-700 ring-1 ring-inset ring-blue-200'
-                                                            } h-[32px] sm:h-[36px] px-2.5 sm:px-3 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap transition-all cursor-pointer active:scale-95 font-bold flex items-center justify-center shadow-sm`}
-                                                        >
-                                                          <span>신청서</span>
-                                                          {!isAppSubmitted && <span className="ml-1 w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" aria-hidden="true" />}
-                                                        </button>
-                                                        <button
-                                                          type="button"
-                                                          onClick={() => {
-                                                            const surveyor = currentUser || "";
-                                                            const url = `/survey_form.html?type=pre${singleStudent ? `&name=${encodeURIComponent(singleStudent)}` : ''}${surveyor ? `&surveyor=${encodeURIComponent(surveyor)}` : ''}`;
-                                                            window.open(url, '_blank');
-                                                          }}
-                                                          title={`2027년 1:1 디지털 교육 사전설문지 열기${isPreSubmitted ? ' (작성완료)' : ' (미작성)'}`}
-                                                          className={`${isPreSubmitted
-                                                            ? 'bg-indigo-600 hover:bg-indigo-700 text-white ring-1 ring-inset ring-indigo-700'
-                                                            : 'bg-indigo-50 hover:bg-indigo-100 text-indigo-700 ring-1 ring-inset ring-indigo-200'
-                                                            } h-[32px] sm:h-[36px] px-2.5 sm:px-3 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap transition-all cursor-pointer active:scale-95 font-bold flex items-center justify-center shadow-sm`}
-                                                        >
-                                                          <span>사전설문지</span>
-                                                          {!isPreSubmitted && <span className="ml-1 w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" aria-hidden="true" />}
-                                                        </button>
-                                                        <button
-                                                          type="button"
-                                                          onClick={() => {
-                                                            const surveyor = currentUser || "";
-                                                            const url = `/survey_form.html?type=post${singleStudent ? `&name=${encodeURIComponent(singleStudent)}` : ''}${surveyor ? `&surveyor=${encodeURIComponent(surveyor)}` : ''}`;
-                                                            window.open(url, '_blank');
-                                                          }}
-                                                          title={`2027년 1:1 디지털 교육 사후설문지 열기${isPostSubmitted ? ' (작성완료)' : needPostSurvey ? ' (작성 필요)' : ''}`}
-                                                          className={`${isPostSubmitted
-                                                            ? 'bg-purple-700 hover:bg-purple-800 text-white ring-1 ring-inset ring-purple-800'
-                                                            : 'bg-purple-50 hover:bg-purple-100 text-purple-700 ring-1 ring-inset ring-purple-200'
-                                                            } h-[32px] sm:h-[36px] px-2.5 sm:px-3 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap transition-all cursor-pointer active:scale-95 font-bold flex items-center justify-center shadow-sm`}
-                                                        >
-                                                          <span>사후설문지</span>
-                                                          {needPostSurvey && <span className="ml-1 w-2 h-2 rounded-full bg-rose-500 animate-pulse shrink-0" aria-hidden="true" />}
-                                                        </button>
-                                                      </div>
-                                                    </div>
-                                                  );
-                                                })()}
-
-                                                <div className="flex gap-1.5 sm:gap-3 lg:gap-4 items-stretch">
-                                                  <input
-                                                    type="text"
-                                                    placeholder="대상자 이름"
-                                                    value={logs[index].student}
-                                                    onChange={(e) => {
-                                                      const newVal = e.target.value;
-                                                      const prevStudent = logs[index]?.student || "";
-                                                      const prevLocation = logs[index]?.location || "";
-                                                      handleLogChange(index, 'student', newVal);
-                                                      // 학생이름과 장소가 모두 블랭크인 상태에서 학생이름을 새로 입력할 때 장소를 '복지관'으로 자동 입력
-                                                      if (!prevStudent.trim() && !prevLocation.trim() && newVal.trim()) {
-                                                        handleLogChange(index, 'location', '복지관');
-                                                      }
-                                                      // 다른 선생님의 기록에서 출결/메모 동기화
-                                                      if (newVal.trim() !== "") {
-                                                        syncSiblingStatus(index, newVal);
-                                                      }
-                                                    }}
-                                                    onBlur={handleInputBlur}
-                                                    onTouchStart={(e) => startStudentLongPress(e, index)}
-                                                    onTouchMove={handleStudentLongPressMove}
-                                                    onTouchEnd={cancelStudentLongPress}
-                                                    onTouchCancel={cancelStudentLongPress}
-                                                    onMouseDown={(e) => startStudentLongPress(e, index)}
-                                                    onMouseUp={cancelStudentLongPress}
-                                                    onMouseLeave={cancelStudentLongPress}
-                                                    title="길게 누르면 학생 사진 촬영 및 조회/삭제"
-                                                    disabled={isDataLoading}
-                                                    className={`flex-[1.5] min-w-0 h-12 sm:h-[52px] md:h-14 px-3 md:px-4 border-[1.5px] rounded-xl outline-none font-bold disabled:opacity-50 disabled:cursor-not-allowed transition-all text-[18px] min-[360px]:text-[20px] sm:text-xl md:text-2xl landscape:text-[22px] md:landscape:text-[26px] leading-tight tracking-tight caret-blue-600 focus:ring-4 focus:ring-blue-500/15 ${!logs[index].student ? 'bg-gray-50 text-gray-800 placeholder-gray-400 border-dashed border-gray-300 focus:border-blue-400' : (logs[index].location === '공휴일' || logs[index].location === '휴무일' ? 'bg-rose-100 text-rose-800 placeholder-rose-300 border-rose-200 focus:border-rose-400' : (logs[index].student || '').includes('보조강사') ? 'bg-amber-200 text-amber-950 placeholder-gray-500 border-amber-300 focus:border-amber-500' : 'bg-blue-50 text-blue-900 placeholder-blue-300 border-blue-200 focus:border-blue-500')}`}
-                                                  />
-                                                  <input
-                                                    type="text"
-                                                    placeholder="장소"
-                                                    value={logs[index].location}
-                                                    onChange={(e) => handleLogChange(index, 'location', e.target.value)}
-                                                    onBlur={handleInputBlur}
-                                                    disabled={isDataLoading}
-                                                    className={`flex-1 min-w-0 h-12 sm:h-[52px] md:h-14 px-3 md:px-4 border-[1.5px] rounded-xl outline-none font-bold disabled:opacity-50 disabled:cursor-not-allowed transition-all ${locTextSize} leading-tight tracking-tight caret-blue-600 focus:ring-4 focus:ring-blue-500/15 ${!logs[index].location ? 'bg-gray-50 text-gray-800 placeholder-gray-400 border-dashed border-gray-300 focus:border-blue-400' : (logs[index].location === '공휴일' || logs[index].location === '휴무일' ? 'bg-rose-100 text-rose-800 placeholder-rose-300 border-rose-200 focus:border-rose-400' : 'bg-blue-50 text-blue-900 placeholder-blue-300 border-blue-200 focus:border-blue-500')}`}
-                                                  />
-                                                </div>
-
-
-
-
-                                                <div className="space-y-1.5 !mt-3">
-                                                  {Array.from({ length: displayRowsCount }).map((_, sIdx) => {
-                                                    return (
-                                                      <div key={sIdx} className={`flex flex-col w-full ${sIdx > 0 ? 'mt-2 pt-2 border-t border-dashed border-gray-200' : ''}`}>
-                                                        <div className={`flex w-full justify-between gap-0.5 min-[350px]:gap-1 min-[380px]:gap-1.5 sm:gap-2 md:gap-3 ${sIdx === displayRowsCount - 1 ? 'pb-0' : 'pb-1'}`}>
-                                                          {RENDER_TAGS.map(tag => {
-                                                            const fontSizeClass = 'text-[13px] min-[340px]:text-[14px] min-[360px]:text-[15px] min-[380px]:text-[17px] sm:text-[18px] md:text-[20px] lg:text-[21px]';
-
-                                                            const isKyungrodangIncluded = combinedText.includes("경로당") || combinedText.includes("도선복지관");
-                                                            const currentStudentName = studentNames[sIdx] || "";
-                                                            const hasRealName = currentStudentName.length > 0 && !currentStudentName.includes("경로당") && !currentStudentName.includes("복지관");
-                                                            const isBlurTarget = isShowHeadcount && (isKyungrodangIncluded ? (!hasRealName && tag === '출석') : ['출석', '결석', '종료'].includes(tag));
-
-                                                            const isTagSelected = Boolean(logs[index]?.selectedTags?.[sIdx]?.includes(tag));
-                                                            const isSiblingTagSparkle = Boolean(logs[index]?.isFromSibling && !isBlurTarget && isTagSelected);
-
-                                                            return (
-                                                              <button
-                                                                key={tag}
-                                                                type="button"
-                                                                onClick={() => toggleTag(index, sIdx, tag)}
-                                                                disabled={isDataLoading || isInfoMissing || isBlurTarget}
-                                                                className={
-                                                                  "flex-1 flex flex-col items-center justify-center px-0 sm:px-2 min-h-[40px] sm:min-h-[44px] rounded-xl " +
-                                                                  fontSizeClass +
-                                                                  " leading-[1.15] tracking-tighter sm:tracking-normal transition-all touch-manipulation break-keep whitespace-nowrap " +
-                                                                  (isBlurTarget
-                                                                    ? "bg-gray-100 text-gray-400 border-[1.5px] border-gray-200 blur-[1px] opacity-90 cursor-not-allowed"
-                                                                    : "disabled:opacity-50 disabled:cursor-not-allowed " + getTagClass(index, sIdx, tag)) +
-                                                                  (isSiblingTagSparkle ? " animate-sibling-sparkle" : "")
-                                                                }
-                                                              >
-                                                                {tag}
-                                                              </button>
-                                                            );
-                                                          })}
-                                                        </div>
-                                                      </div>
-                                                    );
-                                                  })}
-                                                </div>
-
-                                                <div className="flex gap-1.5 w-full !mt-[10px] items-stretch">
-                                                  {isShowHeadcount && (() => {
-                                                    const isHeadcountEmpty = !(logs[index]?.headcount || "").trim();
-                                                    const hasMemo = (logs[index]?.memo || "").trim() !== "";
-                                                    const hasExcusedAttendance = studentNames.some((_, sIdx) => {
-                                                      const tags = (logs[index]?.selectedTags && logs[index].selectedTags[sIdx]) ? logs[index].selectedTags[sIdx] : [];
-                                                      return tags.includes("결석") || (tags.includes("선생님휴가") && !tags.includes("1")) || tags.includes("종료");
-                                                    });
-                                                    const isSparkling = (validationErrorIndex === index) || (hasMemo && isHeadcountEmpty && !hasExcusedAttendance);
-
-                                                    return (
-                                                      <input
-                                                        type="text"
-                                                        inputMode="numeric"
-                                                        maxLength="2"
-                                                        placeholder="인원"
-                                                        value={logs[index]?.headcount || ""}
-                                                        onChange={(e) => {
-                                                          const val = e.target.value.replace(/[^0-9]/g, '');
-                                                          handleLogChange(index, 'headcount', val);
-                                                        }}
-                                                        onBlur={handleInputBlur}
-                                                        disabled={isDataLoading || isInfoMissing}
-                                                        className={`w-12 md:w-14 px-0.5 text-center border-[1.5px] border-sky-400 rounded-xl outline-none font-bold text-sky-950 placeholder-sky-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all text-[18px] md:text-[22px] leading-tight shrink-0 caret-blue-600 focus:ring-4 focus:ring-sky-500/15 ${isSparkling ? 'animate-sparkle border-red-500 shadow-md' : 'bg-sky-50'}`}
-                                                      />
-                                                    );
-                                                  })()}
-                                                  <div className="relative flex-1 min-w-0 flex flex-col group">
-                                                    <div
-                                                      className={`absolute inset-0 py-2 sm:py-2.5 md:py-3 px-3 md:px-4 border-[1.5px] ${logs[index]?.isFromSibling && (logs[index]?.memo || "").trim() ? 'border-amber-400 animate-sibling-sparkle' : 'border-gray-200'} rounded-xl bg-gray-50 font-semibold ${memoTextColorClass} transition-all group-focus-within:bg-white group-focus-within:border-blue-400 group-focus-within:ring-4 group-focus-within:ring-blue-500/15 text-[18px] md:text-[22px] leading-tight whitespace-pre-wrap overflow-y-auto break-words z-0 pointer-events-none ${(isDataLoading || isInfoMissing) ? 'opacity-50' : ''}`}
-                                                      aria-hidden="true"
-                                                    >
-                                                      {!logs[index]?.memo ? (
-                                                        <span className="text-gray-400 font-medium">메모</span>
-                                                      ) : (
-                                                        logs[index].memo.split(/(\d+회차)/g).map((part, i) =>
-                                                          /^\d+회차$/.test(part) ? <span key={i} className="text-[#3366ff]">{part}</span> : part
-                                                        )
-                                                      )}
-                                                      {logs[index]?.memo?.endsWith('\n') && <br />}
-                                                    </div>
-                                                    <textarea
-                                                      rows="3"
-                                                      value={logs[index]?.memo || ""}
-                                                      onChange={(e) => handleLogChange(index, 'memo', e.target.value)}
-                                                      onFocus={() => setFocusedMemoIndex(index)}
-                                                      onBlur={() => {
-                                                        handleInputBlur();
-                                                        setTimeout(() => {
-                                                          setFocusedMemoIndex((prev) => (prev === index ? null : prev));
-                                                        }, 150);
-                                                      }}
-                                                      onScroll={(e) => {
-                                                        if (e.target.previousSibling) {
-                                                          e.target.previousSibling.scrollTop = e.target.scrollTop;
-                                                        }
-                                                      }}
-                                                      disabled={isDataLoading || isInfoMissing}
-                                                      className={`block flex-1 w-full py-2 sm:py-2.5 md:py-3 px-3 md:px-4 border-[1.5px] border-transparent rounded-xl bg-transparent outline-none font-semibold text-transparent placeholder-transparent shadow-none disabled:cursor-not-allowed transition-all text-[18px] md:text-[22px] leading-tight resize-none caret-black z-10 relative m-0`}
-                                                      spellCheck="false"
-                                                    />
-                                                  </div>
-                                                </div>
-                                                {focusedMemoIndex === index && !isSpecialDay && (logs[index]?.student || "").trim() && !((logs[index]?.selectedTags || []).flat().includes('선생님휴가')) && (
-                                                  <div className="flex items-center flex-wrap gap-1.5 pt-1.5">
-                                                    {['스마트폰 기본', '전화', '문자', '카카오톡', '사진/갤러리', '지도', '택시 부르기', '제미나이', '챗GPT', '유튜브', '키오스크', '보이스피싱 예방'].map((chip) => {
-                                                      const curMemo = logs[index]?.memo || "";
-                                                      const lines = curMemo.split('\n');
-                                                      const isSelected = lines.some(line => {
-                                                        const t = line.trim();
-                                                        return t === chip || t.startsWith(`${chip}:`);
-                                                      });
-                                                      return (
-                                                        <button
-                                                          key={chip}
-                                                          type="button"
-                                                          disabled={isDataLoading || isInfoMissing}
-                                                          onMouseDown={(e) => e.preventDefault()}
-                                                          onClick={() => {
-                                                            if (isSelected) {
-                                                              const remaining = lines.filter(line => line.trim() !== chip && line.trim() !== `${chip}:`);
-                                                              if (remaining.length !== lines.length) {
-                                                                handleLogChange(index, 'memo', remaining.join('\n'));
-                                                              }
-                                                            } else {
-                                                              const trimmedRight = curMemo.replace(/\s+$/, '');
-                                                              const next = trimmedRight ? `${trimmedRight}\n${chip}: ` : `${chip}: `;
-                                                              handleLogChange(index, 'memo', next);
-                                                            }
-                                                          }}
-                                                          className={`px-2.5 py-1 rounded-full border text-[12.5px] sm:text-[13px] font-bold whitespace-nowrap shrink-0 active:scale-95 transition disabled:opacity-40 shadow-2xs ${isSelected
-                                                            ? 'bg-blue-600 text-white border-blue-600'
-                                                            : 'bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 border-slate-300 hover:border-blue-400'
-                                                            }`}
-                                                        >
-                                                          {isSelected ? `✓ ${chip}` : `+ ${chip}`}
-                                                        </button>
-                                                      );
-                                                    })}
-                                                  </div>
-                                                )}
-                                              </div>
+                                            <div key={cIdx} className="flex items-center gap-1.5 shrink-0 flex-nowrap">
+                                              <button
+                                                type="button"
+                                                onClick={() => setSelectedStudentDates(c)}
+                                                title={`${c.student ? `${c.student} 님의 ` : ''}수업 진행 날짜 목록 열기`}
+                                                className={`${sessionColorClass} h-[32px] sm:h-[36px] px-2.5 py-1 sm:px-3 sm:py-1 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap transition-all cursor-pointer active:scale-95 flex items-center justify-center shadow-sm shrink-0`}
+                                              >
+                                                <span>{c.count}회차</span>
+                                              </button>
+                                              <button
+                                                type="button"
+                                                onClick={() => setSelectedStudentHistory({ ...c, shiftIndex: index })}
+                                                title={`${c.student ? `${c.student} 님의 ` : ''}이전 교육 기록 보기`}
+                                                className="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 ring-1 ring-inset ring-emerald-200 h-[32px] sm:h-[36px] px-2.5 py-1 sm:px-3 sm:py-1 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap transition-all cursor-pointer active:scale-95 font-bold flex items-center justify-center shadow-sm shrink-0"
+                                              >
+                                                <span>이전교육</span>
+                                              </button>
                                             </div>
                                           );
                                         })}
                                       </div>
-                                      <div className="save-bar sticky bottom-[62px] z-20 -mx-4 sm:-mx-6 md:-mx-8 px-4 sm:px-6 md:px-8 pt-6 mt-2 mb-2">
-                                        <button
-                                          type="submit"
-                                          disabled={isDataLoading || !hasChanges}
-                                          onMouseDown={(e) => e.preventDefault()}
-                                          className={`w-full h-14 md:h-16 font-bold rounded-2xl text-[21px] md:text-[26px] tracking-tight transition-all duration-150 active:scale-[0.98] flex items-center justify-center touch-manipulation ${(isDataLoading || !hasChanges) ? 'bg-gray-200 text-gray-400 ring-1 ring-inset ring-gray-300/60 cursor-not-allowed' : 'text-white bg-gradient-to-b from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 ring-1 ring-inset ring-blue-700/20 shadow-lg shadow-blue-600/30'}`}
-                                        >
-                                          {isSubmitting ? <><Clock className="w-6 h-6 mr-2 animate-spin" />저장 중...</> : <><SaveIcon className="w-6 h-6 mr-2" />{isDataLoading ? '데이터 불러오는 중...' : hasChanges ? `저장 (${changedShiftCount}건 변경)` : '저장할 변경 사항 없음'}</>}
-                                        </button>
-                                      </div>
-                                    </>
-                                  )}
-                                </>
-                              );
-                            })()}
-                          </form>
-                        </div>
-                      </section>
-                    </main>
-
-                    {showValidationError && (
-                      <div className="fixed inset-0 bg-slate-900/45 backdrop-blur-[3px] flex items-center justify-center z-[70] px-4 animate-fadeIn">
-                        <div className="bg-white rounded-2xl shadow-2xl flex flex-col max-w-sm w-full overflow-hidden">
-                          <div className="bg-red-500 py-4 px-6 text-center flex items-center justify-center gap-2">
-                            <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-                            <h3 className="text-xl font-bold text-white tracking-wide">입력 확인</h3>
-                          </div>
-                          <div className="p-6">
-                            <p className="text-gray-800 font-bold text-[17px] sm:text-[19px] mb-6 text-center leading-relaxed whitespace-pre-line">
-                              {validationErrorMsg}
-                            </p>
-                            <button
-                              onClick={() => {
-                                setShowValidationError(false);
-                                if (validationErrorIndex !== null) {
-                                  setTimeout(() => {
-                                    const el = document.getElementById(`log-card-${validationErrorIndex}`);
-                                    if (el) {
-                                      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                                    }
-                                  }, 100);
-                                }
-                              }}
-                              className="w-full py-3 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-xl font-bold text-[18px] shadow-sm active:scale-95 touch-manipulation transition-colors"
-                            >
-                              확인
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-
-                    {showSavePopup && (
-                      <div className="fixed inset-0 bg-slate-900/45 backdrop-blur-[3px] flex items-center justify-center z-50 px-4">
-                        <div className="bg-white rounded-2xl shadow-2xl flex flex-col max-w-sm w-full animate-fadeIn overflow-hidden">
-                          <div className="bg-blue-600 py-4 px-6 text-center">
-                            <h3 className="text-2xl font-bold text-white tracking-wide">
-                              {isSaveComplete ? "데이터 저장 완료" : "데이터베이스에 저장 중..."}
-                            </h3>
-                          </div>
-                          <div className="p-6">
-                            <div className="flex flex-col gap-4 mb-6 max-h-[50vh] overflow-y-auto pr-2">
-                              {saveProgress.map((prog, idx) => {
-                                if (prog.isRepeat) {
-                                  return (
-                                    <div key={idx} className="flex justify-between items-center w-full pb-4 border-b border-dashed border-gray-200 last:border-0 last:pb-0">
-                                      <div className="flex flex-col gap-1.5 flex-1 pr-2">
-                                        <span className="text-blue-800 font-extrabold text-[19px] tracking-tight">
-                                          <span className="text-gray-500 mr-1.5 font-bold text-[19px]">{prog.dateDisplay}</span>
-                                          {prog.student}
-                                        </span>
-                                        <span className="text-indigo-600 font-bold text-lg leading-relaxed">
-                                          {prog.timeDisplay}
-                                        </span>
-                                      </div>
-                                      <span className={`text-base w-[100px] text-center font-bold py-1.5 rounded-md whitespace-nowrap shrink-0 border shadow-sm ${prog.status === '저장 완료' ? 'bg-green-600 border-green-700 text-white' : prog.status === '저장 실패' ? 'bg-red-50 border-red-200 text-red-700' : prog.status === '변경 없음' ? 'bg-gray-50 border-gray-200 text-gray-500' : 'bg-orange-50 border-orange-200 text-orange-700 animate-pulse'}`}>
-                                        {prog.status}
-                                      </span>
-                                    </div>
-                                  );
-                                }
-
-                                const att = prog.attendance || "";
-                                let attColor = "text-gray-700";
-
-                                // 출결 텍스트 색상을 설정할 때도, "쿠팡 취소" 등의 문구에 반응하지 않고 
-                                // 콤마나 슬래시로 명확히 분리된 상태일 때만 빨간색 등으로 표시되게 합니다.
-                                const isPresent = hasIndependentKeyword(att, ["출석", "1"]);
-                                const isAbsent = hasIndependentKeyword(att, ["결석"]);
-                                const isEndOrCancel = hasIndependentKeyword(att, ["종료", "취소"]);
-                                const isVacation = hasIndependentKeyword(att, ["선생님휴가"]);
-
-                                if (isPresent) {
-                                  attColor = "text-gray-900";
-                                } else if (isAbsent) {
-                                  attColor = "text-red-600 font-bold";
-                                } else if (isEndOrCancel || isVacation) {
-                                  attColor = "text-gray-500 font-bold";
-                                }
-
-                                return (
-                                  <div key={idx} className="flex justify-between items-center w-full pb-4 border-b border-dashed border-gray-200 last:border-0 last:pb-0">
-                                    <div className="flex flex-col gap-1.5 flex-1 pr-2">
-                                      <span className="text-blue-800 font-extrabold text-[19px] tracking-tight">
-                                        {prog.student}
-                                      </span>
-                                      <span className={`text-lg font-bold break-all leading-relaxed ${attColor}`}>
-                                        {prog.attendance}
-                                      </span>
-
-                                    </div>
-                                    <span className={`text-base w-[100px] text-center font-bold py-1.5 rounded-md whitespace-nowrap shrink-0 border shadow-sm ${prog.status === '저장 완료' ? 'bg-green-600 border-green-700 text-white' : prog.status === '저장 실패' ? 'bg-red-50 border-red-200 text-red-700' : prog.status === '변경 없음' ? 'bg-gray-50 border-gray-200 text-gray-500' : 'bg-orange-50 border-orange-200 text-orange-700 animate-pulse'}`}>
-                                      {prog.status}
-                                    </span>
+                                    ) : null}
                                   </div>
-                                );
-                              })}
-                            </div>
-                            <button
-                              onClick={() => setShowSavePopup(false)}
-                              disabled={!isSaveComplete}
-                              className={`w-full py-3 rounded-xl font-bold text-xl shadow-md transition-colors touch-manipulation ${isSaveComplete ? 'bg-blue-600 text-white hover:bg-blue-700 active:scale-95' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
-                            >
-                              {isSaveComplete ? "확인" : "잠시만 기다려주세요..."}
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    )}
 
-                    {showAssistantConflictModal && (
-                      <div className="fixed inset-0 bg-slate-900/45 backdrop-blur-[3px] flex items-center justify-center z-[55] px-4">
-                        <div className="bg-white rounded-2xl shadow-2xl flex flex-col max-w-sm w-full animate-fadeIn overflow-hidden">
-                          <div className="bg-blue-500 py-4 px-6 text-center">
-                            <h3 className="text-xl font-bold text-white tracking-wide">보조강사 일정 덮어쓰기 주의</h3>
-                          </div>
-                          <div className="p-6">
-                            <p className="text-gray-800 font-bold text-[18px] sm:text-[20px] mb-6 text-center leading-relaxed">
-                              현재 일정을 복제할 미래 날짜에<br />
-                              <span className="bg-amber-200 text-black px-1.5 py-0.5 rounded mx-1 whitespace-nowrap">보조강사</span><br />
-                              일정이 있습니다. 복제하시겠습니까?
-                            </p>
-                            <div className="flex gap-3">
-                              <button
-                                onClick={handleAssistantConflictProceed}
-                                className="flex-1 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-xl font-bold text-[18px] sm:text-[20px] shadow-md active:scale-95 touch-manipulation transition-colors"
-                              >
-                                예
-                              </button>
-                              <button
-                                onClick={() => setShowAssistantConflictModal(false)}
-                                className="flex-1 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-xl font-bold text-[18px] sm:text-[20px] shadow-sm active:scale-95 touch-manipulation transition-colors"
-                              >
-                                아니오
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-
-                    {clearConfirmIndex !== null && (
-                      <div className="fixed inset-0 bg-slate-900/45 backdrop-blur-[3px] flex items-center justify-center z-50 px-4" onClick={() => setClearConfirmIndex(null)}>
-                        <div className="bg-white rounded-2xl shadow-2xl flex flex-col max-w-sm w-full animate-fadeIn overflow-hidden" onClick={e => e.stopPropagation()}>
-                          <div className="bg-rose-600 py-4 px-6 text-center">
-                            <h3 className="text-xl font-bold text-white tracking-wide">수업 내용 초기화</h3>
-                          </div>
-                          <div className="p-6">
-                            <p className="text-gray-800 font-bold text-[17px] sm:text-[19px] mb-2 text-center leading-relaxed">
-                              <span className="text-rose-600">
-                                {shifts[clearConfirmIndex] ? shifts[clearConfirmIndex].split('~')[0].trim() : ''}
-                              </span>{' '}
-                              시간대의<br />
-                              대상자 이름, 장소, 출결, 메모를<br />
-                              모두 비울까요?
-                            </p>
-                            <p className="text-slate-500 text-sm font-medium mb-6 text-center">
-                              (초기화 후에도 &apos;되돌리기&apos; 버튼으로 복구할 수 있습니다.)
-                            </p>
-                            <div className="flex gap-3">
-                              <button
-                                type="button"
-                                onClick={() => setClearConfirmIndex(null)}
-                                className="flex-1 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-xl font-bold text-[17px] sm:text-[18px] shadow-sm active:scale-95 touch-manipulation transition-colors cursor-pointer"
-                              >
-                                취소
-                              </button>
-                              <button
-                                type="button"
-                                onClick={handleConfirmClearCard}
-                                className="flex-1 py-3 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-[17px] sm:text-[18px] shadow-md active:scale-95 touch-manipulation transition-colors cursor-pointer"
-                              >
-                                초기화
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-
-                    {showRepeatConfirm && (
-                      <div className="fixed inset-0 bg-slate-900/45 backdrop-blur-[3px] flex items-center justify-center z-50 px-4">
-                        <div className="bg-white rounded-2xl shadow-2xl flex flex-col max-w-sm w-full animate-fadeIn overflow-hidden">
-                          <div className="bg-indigo-600 py-4 px-6 text-center">
-                            <h3 className="text-xl font-bold text-white tracking-wide">확인해 주세요!</h3>
-                          </div>
-                          <div className="p-6">
-                            <p className="text-gray-800 font-bold text-[18px] sm:text-[20px] mb-3 text-center leading-relaxed">
-                              아래 <span className="text-indigo-600 text-[18px] sm:text-[20px]">{repeatTargetDates.length}</span>일 동안의 스케줄에<br />
-                              {repeatMode === 'shift' && <span className="text-blue-600">해당 시간대({shifts[repeatShiftIndex] ? shifts[repeatShiftIndex].split('~')[0].trim() : ''})의<br /></span>}
-                              [학생이름]과 [장소]를<br />정말 복제할까요?
-                            </p>
-                            <div className="bg-gray-50 border border-gray-200 rounded-lg p-3 mb-4 max-h-[25vh] overflow-y-auto">
-                              {repeatTargetDates.map(obj => (
-                                <div key={obj.date} className="text-[16px] sm:text-[18px] font-bold text-blue-600 text-center py-2 border-b last:border-0 border-gray-200">
-                                  <div className="text-indigo-800">- {obj.date} ({getDayName(obj.date)})</div>
-                                  <div className="text-sm text-gray-500 font-normal mt-1">{obj.times.map(t => t.split('~')[0].trim()).join(', ')}</div>
+                                  <div className="ml-auto flex items-center gap-1.5 shrink-0">
+                                    {shouldRepeatPerShift[index] && !noNewScheduleToRepeat && logsDate === date && isFutureOrToday && (!currentSelectedHoliday || currentSelectedHoliday.vacation_available) && !logs[index].student?.includes("안전교육") && !logs[index].student?.includes("직무교육") && !logs[index].student?.includes("간담회") && (
+                                      <button
+                                        type="button"
+                                        onClick={() => handleRepeatScheduleForShift(index)}
+                                        className="bg-orange-50 hover:bg-orange-100 text-orange-700 ring-1 ring-inset ring-orange-200 h-[32px] sm:h-[36px] px-2.5 py-1 sm:px-3 sm:py-1 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap shrink-0 transition-colors cursor-pointer active:scale-95 font-bold shadow-sm flex items-center justify-center"
+                                      >
+                                        복제
+                                      </button>
+                                    )}
+                                    {resetOrUndoButton}
+                                  </div>
                                 </div>
-                              ))}
-                            </div>
-                            <p className="text-red-600 text-[18px] sm:text-[20px] font-bold mb-6 text-center leading-tight">
-                              ※ 주의: 기존의 출결기록과 메모는<br /> 모두 지워집니다.
-                            </p>
-                            <div className="flex gap-3">
-                              <button
-                                onClick={() => setShowRepeatConfirm(false)}
-                                className="flex-1 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-xl font-bold text-[18px] sm:text-[20px] shadow-sm active:scale-95 touch-manipulation transition-colors"
-                              >
-                                취소
-                              </button>
-                              <button
-                                onClick={repeatMode === 'shift' ? executeRepeatScheduleForShiftFromModal : executeRepeatSchedule}
-                                className="flex-1 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-[18px] sm:text-[20px] shadow-md active:scale-95 touch-manipulation transition-colors"
-                              >
-                                일정 복제 시작
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    )}
 
-                    {selectedStudentHistory && (() => {
-                      const history = [];
-                      const realToday = new Date();
-                      const realTodayStr = `${realToday.getFullYear()}-${String(realToday.getMonth() + 1).padStart(2, '0')}-${String(realToday.getDate()).padStart(2, '0')}`;
+                                <div className="space-y-2 sm:space-y-2.5">
+                                  {(() => {
 
-                      // dateStr -> shiftTime -> records 형태로 그룹핑
-                      const groupedByDateAndShift = {};
-                      studentHistoryLogs.forEach(row => {
-                        const dateStr = row.log_date;
-                        if (dateStr > realTodayStr) return;
-
-                        const shiftTime = row.shift || "";
-                        if (!groupedByDateAndShift[dateStr]) {
-                          groupedByDateAndShift[dateStr] = {};
-                        }
-                        if (!groupedByDateAndShift[dateStr][shiftTime]) {
-                          groupedByDateAndShift[dateStr][shiftTime] = [];
-                        }
-                        groupedByDateAndShift[dateStr][shiftTime].push(row);
-                      });
-
-                      Object.keys(groupedByDateAndShift).forEach(dateStr => {
-                        const dayData = groupedByDateAndShift[dateStr];
-                        Object.keys(dayData).forEach(shiftTime => {
-                          const records = dayData[shiftTime] || [];
-
-                          if (records.length > 0) {
-                            const teacherNames = Array.from(new Set(records.map(r => r.teacher).filter(Boolean))).join(', ');
-
-                            const memoGroups = {};
-                            records.forEach(r => {
-                              let statusStr = formatStatusIfDate(r.status) || "";
-                              let memo = statusStr.replace(/\u200B/g, '').trim();
-                              memo = memo.replace(/\r\n/g, '\n').split('\n').map(l => l.trimEnd()).join('\n').trim();
-
-                              if (memo === "1" || memo === "출석") memo = "출석 (메모 없음)";
-                              else if (!memo) memo = "내용 없음";
-
-                              if (!memoGroups[memo]) memoGroups[memo] = [];
-                              if (r.teacher) memoGroups[memo].push(r.teacher);
-                            });
-
-
-                            const uniqueMemos = Object.keys(memoGroups);
-                            let mergedMemo = "";
-                            const isAbsent = (() => {
-                              let hasInd = false;
-                              uniqueMemos.forEach(memo => {
-                                memo.split(/(결석)/g).forEach((subPart, j, arr) => {
-                                  if (subPart === '결석') {
-                                    const prevChar = arr[j - 1]?.slice(-1) || '';
-                                    const nextChar = arr[j + 1]?.[0] || '';
-                                    if (!/[가-힣a-zA-Z0-9]/.test(prevChar) && !/[가-힣a-zA-Z0-9]/.test(nextChar)) hasInd = true;
-                                  }
-                                });
-                              });
-                              return hasInd;
-                            })();
-
-                            if (isAbsent) {
-                              mergedMemo = uniqueMemos.find(memo => {
-                                let found = false;
-                                memo.split(/(결석)/g).forEach((subPart, j, arr) => {
-                                  if (subPart === '결석') {
-                                    const prevChar = arr[j - 1]?.slice(-1) || '';
-                                    const nextChar = arr[j + 1]?.[0] || '';
-                                    if (!/[가-힣a-zA-Z0-9]/.test(prevChar) && !/[가-힣a-zA-Z0-9]/.test(nextChar)) found = true;
-                                  }
-                                });
-                                return found;
-                              });
-                            } else if (uniqueMemos.length === 1) {
-                              mergedMemo = uniqueMemos[0];
-                            } else {
-                              mergedMemo = uniqueMemos.map(memo => {
-                                const tNames = Array.from(new Set(memoGroups[memo])).join(', ');
-                                return `[${tNames}] ${memo}`;
-                              }).join('\n');
-                            }
-
-                            history.push({
-                              date: dateStr,
-                              dayOfWeek: getDayName(dateStr),
-                              shift: shiftTime,
-                              memo: mergedMemo,
-                              teacher: teacherNames
-                            });
-                          }
-                        });
-                      });
-
-                      history.sort((a, b) => {
-                        if (b.date !== a.date) return b.date.localeCompare(a.date);
-                        const getT = (s) => {
-                          const match = s.match(/(\d+):(\d+)/);
-                          return match ? parseInt(match[1]) * 60 + parseInt(match[2]) : 0;
-                        };
-                        return getT(a.shift) - getT(b.shift);
-                      });
-
-                      return (
-                        <div className="fixed inset-0 bg-slate-900/45 backdrop-blur-[3px] flex items-center justify-center z-[60] px-2 sm:px-4" onClick={() => setSelectedStudentHistory(null)}>
-                          <div className="bg-white rounded-2xl shadow-xl w-full max-w-xl overflow-hidden flex flex-col max-h-[80vh] animate-fadeIn" onClick={e => e.stopPropagation()}>
-                            <div className="bg-green-600 text-white py-3 px-4 flex justify-between items-center shrink-0">
-                              <h3 className="font-bold text-[18px] sm:text-[20px]">{selectedStudentHistory.name}님의 이전 교육 기록</h3>
-                              <button onClick={() => setSelectedStudentHistory(null)} className="text-white hover:text-gray-200 active:scale-90 transition-transform">
-                                <svg className="w-6 h-6 sm:w-7 sm:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                              </button>
-                            </div>
-                            <div className="p-3 sm:p-4 overflow-y-auto space-y-3">
-                              {isFetchingHistory ? (
-                                <div className="text-center text-gray-500 py-8 font-bold text-[16px] sm:text-[18px] flex flex-col items-center justify-center gap-2">
-                                  <svg className="animate-spin h-8 w-8 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                  </svg>
-                                  <span>기록을 불러오는 중입니다...</span>
-                                </div>
-                              ) : (
-                                <>
-                                  {history.map((h, idx) => {
-                                    let cleanMemo = h.memo;
-
-                                    let isAbsent = false;
-                                    cleanMemo.split(/(결석)/g).forEach((subPart, j, arr) => {
-                                      if (subPart === '결석') {
-                                        const prevChar = arr[j - 1]?.slice(-1) || '';
-                                        const nextChar = arr[j + 1]?.[0] || '';
-                                        if (!/[가-힣a-zA-Z0-9]/.test(prevChar) && !/[가-힣a-zA-Z0-9]/.test(nextChar)) isAbsent = true;
+                                    if (studentNames.length > 1) {
+                                      const validStudents = studentNames.filter(s => s.trim() && !s.trim().includes("보조강사") && !s.trim().includes("도선복지관"));
+                                      if (validStudents.length === 0) {
+                                        return resetOrUndoButton ? (
+                                          <div className="flex items-center gap-1.5 w-full">{resetOrUndoButton}</div>
+                                        ) : null;
                                       }
-                                    });
-                                    const textColorClass = isAbsent ? "text-red-600" : "text-gray-800";
+                                      return (
+                                        <div className="flex items-center gap-1.5 flex-wrap w-full">
+                                          {validStudents.map((sName, sIdx) => {
+                                            const clean = sName.trim();
+                                            const isAppSubmitted = checkFormSubmitted(submittedForms.apps, clean);
+                                            const isPreSubmitted = checkFormSubmitted(submittedForms.preSurveys, clean);
+                                            const isPostSubmitted = checkFormSubmitted(submittedForms.postSurveys, clean);
+
+                                            return (
+                                              <React.Fragment key={sIdx}>
+                                                <button
+                                                  type="button"
+                                                  onClick={() => {
+                                                    const url = `/application_form.html${clean ? `?name=${encodeURIComponent(clean)}` : ''}`;
+                                                    window.open(url, '_blank');
+                                                  }}
+                                                  title={`${sName} 님의 2027년 프로그램 참여 신청서 열기${isAppSubmitted ? ' (작성완료)' : ''}`}
+                                                  className={`${isAppSubmitted
+                                                    ? 'bg-blue-600 hover:bg-blue-700 text-white ring-1 ring-inset ring-blue-700'
+                                                    : 'bg-blue-50 hover:bg-blue-100 text-blue-700 ring-1 ring-inset ring-blue-200'
+                                                    } h-[32px] sm:h-[36px] px-2.5 sm:px-3 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap transition-all cursor-pointer active:scale-95 font-bold flex items-center justify-center shadow-sm`}
+                                                >
+                                                  <span>신청서 ({sName})</span>
+                                                </button>
+                                                <button
+                                                  type="button"
+                                                  onClick={() => {
+                                                    const surveyor = currentUser || "";
+                                                    const url = `/survey_form.html?type=pre${clean ? `&name=${encodeURIComponent(clean)}` : ''}${surveyor ? `&surveyor=${encodeURIComponent(surveyor)}` : ''}`;
+                                                    window.open(url, '_blank');
+                                                  }}
+                                                  title={`${sName} 님의 2027년 1:1 디지털 교육 사전설문지 열기${isPreSubmitted ? ' (작성완료)' : ''}`}
+                                                  className={`${isPreSubmitted
+                                                    ? 'bg-indigo-600 hover:bg-indigo-700 text-white ring-1 ring-inset ring-indigo-700'
+                                                    : 'bg-indigo-50 hover:bg-indigo-100 text-indigo-700 ring-1 ring-inset ring-indigo-200'
+                                                    } h-[32px] sm:h-[36px] px-2.5 sm:px-3 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap transition-all cursor-pointer active:scale-95 font-bold flex items-center justify-center shadow-sm`}
+                                                >
+                                                  <span>사전설문지 ({sName})</span>
+                                                </button>
+                                                <button
+                                                  type="button"
+                                                  onClick={() => {
+                                                    const surveyor = currentUser || "";
+                                                    const url = `/survey_form.html?type=post${clean ? `&name=${encodeURIComponent(clean)}` : ''}${surveyor ? `&surveyor=${encodeURIComponent(surveyor)}` : ''}`;
+                                                    window.open(url, '_blank');
+                                                  }}
+                                                  title={`${sName} 님의 2027년 1:1 디지털 교육 사후설문지 열기${isPostSubmitted ? ' (작성완료)' : ''}`}
+                                                  className={`${isPostSubmitted
+                                                    ? 'bg-purple-700 hover:bg-purple-800 text-white ring-1 ring-inset ring-purple-800'
+                                                    : 'bg-purple-50 hover:bg-purple-100 text-purple-700 ring-1 ring-inset ring-purple-200'
+                                                    } h-[32px] sm:h-[36px] px-2.5 sm:px-3 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap transition-all cursor-pointer active:scale-95 font-bold flex items-center justify-center shadow-sm`}
+                                                >
+                                                  <span>사후설문지 ({sName})</span>
+                                                </button>
+                                              </React.Fragment>
+                                            );
+                                          })}
+                                        </div>
+                                      );
+                                    }
+
+                                    const singleStudent = (studentNames[0] || logs[index]?.student || "").trim();
+                                    if (!singleStudent || singleStudent.includes("보조강사") || singleStudent.includes("도선복지관")) {
+                                      return null;
+                                    }
+
+                                    const isAppSubmitted = checkFormSubmitted(submittedForms.apps, singleStudent);
+                                    const isPreSubmitted = checkFormSubmitted(submittedForms.preSurveys, singleStudent);
+                                    const isPostSubmitted = checkFormSubmitted(submittedForms.postSurveys, singleStudent);
+                                    const maxStudentCount = (counts || []).reduce((mx, c) => Math.max(mx, c.count || 0), 0);
+                                    const needPostSurvey = !isPostSubmitted && (allSelectedTags.includes('종료') || maxStudentCount >= 15);
+                                    const locVal = (logs[index]?.location || "").trim();
+                                    const isExternalLocation = Boolean(locVal && locVal !== "복지관" && locVal !== "공휴일" && locVal !== "휴무일");
+                                    const photoDateKey = `${normalizeStudentPhotoKey(singleStudent)}__${date}`;
+                                    const hasPhotoForSession = Boolean(studentPhotoDateCounts[photoDateKey]);
 
                                     return (
-                                      <div key={idx} className="bg-gray-50 border border-gray-200 rounded-lg p-3 shadow-sm">
-                                        <div className="flex items-center justify-between gap-2 mb-1">
-                                          <div className="text-sm font-bold text-gray-500">
-                                            {h.date} ({h.dayOfWeek}) <span className="text-gray-400 ml-1">{h.shift ? h.shift.split('~')[0].trim() : ''}</span>
-                                            {h.teacher && <span className="text-indigo-600 ml-2 font-extrabold tracking-tight">[{h.teacher}]</span>}
-                                          </div>
-                                          {selectedStudentHistory.shiftIndex !== undefined && cleanMemo && cleanMemo !== "내용 없음" && cleanMemo !== "출석 (메모 없음)" && !isAbsent && (
+                                      <div className="flex items-center justify-between gap-1.5 flex-wrap w-full">
+                                        {isExternalLocation && (
+                                          <div className="flex items-center gap-1.5 shrink-0">
                                             <button
                                               type="button"
-                                              onClick={() => {
-                                                const sIdx = selectedStudentHistory.shiftIndex;
-                                                const cur = (logs[sIdx]?.memo || "").trim();
-                                                const next = cur ? `${cur}\n${cleanMemo}` : cleanMemo;
-                                                handleLogChange(sIdx, 'memo', next);
-                                                setSelectedStudentHistory(null);
-                                              }}
-                                              className="px-2 py-0.5 rounded-md bg-emerald-100 hover:bg-emerald-200 text-emerald-800 border border-emerald-300 text-[12px] font-extrabold whitespace-nowrap active:scale-95 transition"
+                                              onClick={() => setPhotoModalTarget({
+                                                studentName: singleStudent,
+                                                date,
+                                                shift: shifts[index] || '',
+                                                teacher: currentUser || '',
+                                                location: locVal
+                                              })}
+                                              title={hasPhotoForSession ? `${singleStudent} 님 수업 사진 촬영 완료 (클릭하여 보기/삭제)` : `${singleStudent} 님 수업 모습 촬영하기`}
+                                              className={`${hasPhotoForSession
+                                                ? 'bg-blue-600 hover:bg-blue-700 text-white ring-1 ring-inset ring-blue-700'
+                                                : 'bg-gray-200 hover:bg-gray-300 text-gray-700 ring-1 ring-inset ring-gray-300'
+                                                } h-[32px] sm:h-[36px] px-2.5 sm:px-3 rounded-lg transition-all cursor-pointer active:scale-95 flex items-center justify-center shadow-sm`}
+                                              aria-label="수업 사진 촬영"
                                             >
-                                              메모에 이어쓰기
+                                              <svg className="w-4 h-4 sm:w-[18px] sm:h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                                                <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" />
+                                                <circle cx="12" cy="13" r="3" />
+                                              </svg>
                                             </button>
-                                          )}
+                                          </div>
+                                        )}
+                                        <div className="ml-auto flex items-center gap-1.5 flex-wrap">
+                                          <button
+                                            type="button"
+                                            onClick={() => {
+                                              const url = `/application_form.html${singleStudent ? `?name=${encodeURIComponent(singleStudent)}` : ''}`;
+                                              window.open(url, '_blank');
+                                            }}
+                                            title={`2027년 프로그램 참여 신청서 열기${isAppSubmitted ? ' (작성완료)' : ' (미작성)'}`}
+                                            className={`${isAppSubmitted
+                                              ? 'bg-blue-600 hover:bg-blue-700 text-white ring-1 ring-inset ring-blue-700'
+                                              : 'bg-blue-50 hover:bg-blue-100 text-blue-700 ring-1 ring-inset ring-blue-200'
+                                              } h-[32px] sm:h-[36px] px-2.5 sm:px-3 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap transition-all cursor-pointer active:scale-95 font-bold flex items-center justify-center shadow-sm`}
+                                          >
+                                            <span>신청서</span>
+                                            {!isAppSubmitted && <span className="ml-1 w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" aria-hidden="true" />}
+                                          </button>
+                                          <button
+                                            type="button"
+                                            onClick={() => {
+                                              const surveyor = currentUser || "";
+                                              const url = `/survey_form.html?type=pre${singleStudent ? `&name=${encodeURIComponent(singleStudent)}` : ''}${surveyor ? `&surveyor=${encodeURIComponent(surveyor)}` : ''}`;
+                                              window.open(url, '_blank');
+                                            }}
+                                            title={`2027년 1:1 디지털 교육 사전설문지 열기${isPreSubmitted ? ' (작성완료)' : ' (미작성)'}`}
+                                            className={`${isPreSubmitted
+                                              ? 'bg-indigo-600 hover:bg-indigo-700 text-white ring-1 ring-inset ring-indigo-700'
+                                              : 'bg-indigo-50 hover:bg-indigo-100 text-indigo-700 ring-1 ring-inset ring-indigo-200'
+                                              } h-[32px] sm:h-[36px] px-2.5 sm:px-3 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap transition-all cursor-pointer active:scale-95 font-bold flex items-center justify-center shadow-sm`}
+                                          >
+                                            <span>사전설문지</span>
+                                            {!isPreSubmitted && <span className="ml-1 w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" aria-hidden="true" />}
+                                          </button>
+                                          <button
+                                            type="button"
+                                            onClick={() => {
+                                              const surveyor = currentUser || "";
+                                              const url = `/survey_form.html?type=post${singleStudent ? `&name=${encodeURIComponent(singleStudent)}` : ''}${surveyor ? `&surveyor=${encodeURIComponent(surveyor)}` : ''}`;
+                                              window.open(url, '_blank');
+                                            }}
+                                            title={`2027년 1:1 디지털 교육 사후설문지 열기${isPostSubmitted ? ' (작성완료)' : needPostSurvey ? ' (작성 필요)' : ''}`}
+                                            className={`${isPostSubmitted
+                                              ? 'bg-purple-700 hover:bg-purple-800 text-white ring-1 ring-inset ring-purple-800'
+                                              : 'bg-purple-50 hover:bg-purple-100 text-purple-700 ring-1 ring-inset ring-purple-200'
+                                              } h-[32px] sm:h-[36px] px-2.5 sm:px-3 rounded-lg text-[12px] sm:text-[13px] md:text-[14px] tracking-tight whitespace-nowrap transition-all cursor-pointer active:scale-95 font-bold flex items-center justify-center shadow-sm`}
+                                          >
+                                            <span>사후설문지</span>
+                                            {needPostSurvey && <span className="ml-1 w-2 h-2 rounded-full bg-rose-500 animate-pulse shrink-0" aria-hidden="true" />}
+                                          </button>
                                         </div>
-                                        <div className={`text-base sm:text-lg font-bold ${textColorClass} break-words whitespace-pre-wrap`}>{cleanMemo}</div>
                                       </div>
                                     );
-                                  })}
-                                  {history.length === 0 && (
-                                    <div className="text-center text-gray-500 py-4 font-bold text-[16px] sm:text-[18px]">이전 교육 기록이 없습니다.</div>
-                                  )}
-                                </>
-                              )}
-                            </div>
-                            <div className="p-3 bg-gray-50 border-t flex justify-end shrink-0">
-                              <button onClick={() => setSelectedStudentHistory(null)} className="px-4 py-2 bg-gray-200 text-gray-800 font-bold rounded-lg hover:bg-gray-300 transition-colors active:scale-95 shadow-sm">닫기</button>
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })()}
+                                  })()}
 
-                    {selectedStudentDates && (
-                      <div className="fixed inset-0 bg-slate-900/45 backdrop-blur-[3px] flex items-center justify-center z-[60] px-2 sm:px-4" onClick={() => setSelectedStudentDates(null)}>
-                        <div className="bg-white rounded-2xl shadow-xl w-full max-w-xl overflow-hidden flex flex-col max-h-[80vh] animate-fadeIn" onClick={e => e.stopPropagation()}>
-                          <div className="bg-purple-600 text-white py-3 px-4 flex justify-between items-center shrink-0">
-                            <h3 className="font-bold text-[18px] sm:text-[20px]">{selectedStudentDates.name}님의 출석 일자 <span className="text-purple-200 text-[15px] sm:text-[16px]">({selectedStudentDates.count}회)</span></h3>
-                            <button onClick={() => setSelectedStudentDates(null)} className="text-white hover:text-gray-200 active:scale-90 transition-transform">
-                              <svg className="w-6 h-6 sm:w-7 sm:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                            </button>
-                          </div>
-                          <div className="p-3 sm:p-4 overflow-y-auto">
-                            <div className="grid grid-cols-4 gap-2 sm:gap-3">
-                              {selectedStudentDates.dates.map((d, idx) => {
-                                const today = new Date();
-                                const isToday = d.date.getFullYear() === today.getFullYear() && d.date.getMonth() === today.getMonth() && d.date.getDate() === today.getDate();
-                                const isAbsentDay = !!d.isAbsent;
-                                const isVacationDay = !!d.isVacation;
-                                const isEndDay = !!d.isEnd;
-                                let cellClass = '';
-                                if (isEndDay || isVacationDay) {
-                                  cellClass = 'bg-gray-100 border-gray-300 shadow-sm text-gray-700';
-                                } else if (isAbsentDay) {
-                                  cellClass = 'bg-orange-50 border-orange-200 shadow-sm text-orange-900';
-                                } else if (isToday) {
-                                  cellClass = 'bg-purple-300 border-purple-500 shadow-md text-purple-950';
-                                } else {
-                                  cellClass = 'bg-purple-50 border-purple-200 shadow-sm text-purple-900';
-                                }
-                                return (
-                                  <div key={idx} className={`${cellClass} border rounded-lg py-2 sm:py-2.5 px-0.5 sm:px-1 text-center text-[13.5px] min-[360px]:text-[15.5px] sm:text-[18px] font-bold flex justify-center items-center whitespace-nowrap tracking-tighter sm:tracking-normal relative`}>
-                                    <span className="absolute top-0.5 left-1 text-[11px] sm:text-[13px] font-normal leading-none opacity-90 flex items-center gap-0.5">
-                                      {d.excludeFromCount ? (
-                                        <span>{isVacationDay ? '휴가' : '결석'}</span>
-                                      ) : (
-                                        <>
-                                          {d.sessionNum !== undefined ? d.sessionNum : (idx + 1)}
-                                          {(isAbsentDay || isEndDay) && (
-                                            <span className="text-[9px] sm:text-[10px] font-normal opacity-90 ml-0.5">
-                                              {isEndDay ? '종료' : '결석'}
-                                            </span>
-                                          )}
-                                        </>
-                                      )}
-                                    </span>
-                                    {d.date.getMonth() + 1}/{d.date.getDate()} ({['일', '월', '화', '수', '목', '금', '토'][d.date.getDay()]})
+                                  <div className="flex gap-1.5 sm:gap-3 lg:gap-4 items-stretch">
+                                    <input
+                                      type="text"
+                                      placeholder="대상자 이름"
+                                      value={logs[index].student}
+                                      onChange={(e) => {
+                                        const newVal = e.target.value;
+                                        const prevStudent = logs[index]?.student || "";
+                                        const prevLocation = logs[index]?.location || "";
+                                        handleLogChange(index, 'student', newVal);
+                                        // 학생이름과 장소가 모두 블랭크인 상태에서 학생이름을 새로 입력할 때 장소를 '복지관'으로 자동 입력
+                                        if (!prevStudent.trim() && !prevLocation.trim() && newVal.trim()) {
+                                          handleLogChange(index, 'location', '복지관');
+                                        }
+                                        // 다른 선생님의 기록에서 출결/메모 동기화
+                                        if (newVal.trim() !== "") {
+                                          syncSiblingStatus(index, newVal);
+                                        }
+                                      }}
+                                      onBlur={handleInputBlur}
+                                      onTouchStart={(e) => startStudentLongPress(e, index)}
+                                      onTouchMove={handleStudentLongPressMove}
+                                      onTouchEnd={cancelStudentLongPress}
+                                      onTouchCancel={cancelStudentLongPress}
+                                      onMouseDown={(e) => startStudentLongPress(e, index)}
+                                      onMouseUp={cancelStudentLongPress}
+                                      onMouseLeave={cancelStudentLongPress}
+                                      title="길게 누르면 학생 사진 촬영 및 조회/삭제"
+                                      disabled={isDataLoading}
+                                      className={`flex-[1.5] min-w-0 h-12 sm:h-[52px] md:h-14 px-3 md:px-4 border-[1.5px] rounded-xl outline-none font-bold disabled:opacity-50 disabled:cursor-not-allowed transition-all text-[18px] min-[360px]:text-[20px] sm:text-xl md:text-2xl landscape:text-[22px] md:landscape:text-[26px] leading-tight tracking-tight caret-blue-600 focus:ring-4 focus:ring-blue-500/15 ${!logs[index].student ? 'bg-gray-50 text-gray-800 placeholder-gray-400 border-dashed border-gray-300 focus:border-blue-400' : (logs[index].location === '공휴일' || logs[index].location === '휴무일' ? 'bg-rose-100 text-rose-800 placeholder-rose-300 border-rose-200 focus:border-rose-400' : (logs[index].student || '').includes('보조강사') ? 'bg-amber-200 text-amber-950 placeholder-gray-500 border-amber-300 focus:border-amber-500' : 'bg-blue-50 text-blue-900 placeholder-blue-300 border-blue-200 focus:border-blue-500')}`}
+                                    />
+                                    <input
+                                      type="text"
+                                      placeholder="장소"
+                                      value={logs[index].location}
+                                      onChange={(e) => handleLogChange(index, 'location', e.target.value)}
+                                      onBlur={handleInputBlur}
+                                      disabled={isDataLoading}
+                                      className={`flex-1 min-w-0 h-12 sm:h-[52px] md:h-14 px-3 md:px-4 border-[1.5px] rounded-xl outline-none font-bold disabled:opacity-50 disabled:cursor-not-allowed transition-all ${locTextSize} leading-tight tracking-tight caret-blue-600 focus:ring-4 focus:ring-blue-500/15 ${!logs[index].location ? 'bg-gray-50 text-gray-800 placeholder-gray-400 border-dashed border-gray-300 focus:border-blue-400' : (logs[index].location === '공휴일' || logs[index].location === '휴무일' ? 'bg-rose-100 text-rose-800 placeholder-rose-300 border-rose-200 focus:border-rose-400' : 'bg-blue-50 text-blue-900 placeholder-blue-300 border-blue-200 focus:border-blue-500')}`}
+                                    />
                                   </div>
-                                );
-                              })}
+
+
+
+
+                                  <div className="space-y-1.5 !mt-3">
+                                    {Array.from({ length: displayRowsCount }).map((_, sIdx) => {
+                                      return (
+                                        <div key={sIdx} className={`flex flex-col w-full ${sIdx > 0 ? 'mt-2 pt-2 border-t border-dashed border-gray-200' : ''}`}>
+                                          <div className={`flex w-full justify-between gap-0.5 min-[350px]:gap-1 min-[380px]:gap-1.5 sm:gap-2 md:gap-3 ${sIdx === displayRowsCount - 1 ? 'pb-0' : 'pb-1'}`}>
+                                            {RENDER_TAGS.map(tag => {
+                                              const fontSizeClass = 'text-[13px] min-[340px]:text-[14px] min-[360px]:text-[15px] min-[380px]:text-[17px] sm:text-[18px] md:text-[20px] lg:text-[21px]';
+
+                                              const isKyungrodangIncluded = combinedText.includes("경로당") || combinedText.includes("도선복지관");
+                                              const currentStudentName = studentNames[sIdx] || "";
+                                              const hasRealName = currentStudentName.length > 0 && !currentStudentName.includes("경로당") && !currentStudentName.includes("복지관");
+                                              const isBlurTarget = isShowHeadcount && (isKyungrodangIncluded ? (!hasRealName && tag === '출석') : ['출석', '결석', '종료'].includes(tag));
+
+                                              const isTagSelected = Boolean(logs[index]?.selectedTags?.[sIdx]?.includes(tag));
+                                              const isSiblingTagSparkle = Boolean(logs[index]?.isFromSibling && !isBlurTarget && isTagSelected);
+
+                                              return (
+                                                <button
+                                                  key={tag}
+                                                  type="button"
+                                                  onClick={() => toggleTag(index, sIdx, tag)}
+                                                  disabled={isDataLoading || isInfoMissing || isBlurTarget}
+                                                  className={
+                                                    "flex-1 flex flex-col items-center justify-center px-0 sm:px-2 min-h-[40px] sm:min-h-[44px] rounded-xl " +
+                                                    fontSizeClass +
+                                                    " leading-[1.15] tracking-tighter sm:tracking-normal transition-all touch-manipulation break-keep whitespace-nowrap " +
+                                                    (isBlurTarget
+                                                      ? "bg-gray-100 text-gray-400 border-[1.5px] border-gray-200 blur-[1px] opacity-90 cursor-not-allowed"
+                                                      : "disabled:opacity-50 disabled:cursor-not-allowed " + getTagClass(index, sIdx, tag)) +
+                                                    (isSiblingTagSparkle ? " animate-sibling-sparkle" : "")
+                                                  }
+                                                >
+                                                  {tag}
+                                                </button>
+                                              );
+                                            })}
+                                          </div>
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+
+                                  <div className="flex gap-1.5 w-full !mt-[10px] items-stretch">
+                                    {isShowHeadcount && (() => {
+                                      const isHeadcountEmpty = !(logs[index]?.headcount || "").trim();
+                                      const hasMemo = (logs[index]?.memo || "").trim() !== "";
+                                      const hasExcusedAttendance = studentNames.some((_, sIdx) => {
+                                        const tags = (logs[index]?.selectedTags && logs[index].selectedTags[sIdx]) ? logs[index].selectedTags[sIdx] : [];
+                                        return tags.includes("결석") || (tags.includes("선생님휴가") && !tags.includes("1")) || tags.includes("종료");
+                                      });
+                                      const isSparkling = (validationErrorIndex === index) || (hasMemo && isHeadcountEmpty && !hasExcusedAttendance);
+
+                                      return (
+                                        <input
+                                          type="text"
+                                          inputMode="numeric"
+                                          maxLength="2"
+                                          placeholder="인원"
+                                          value={logs[index]?.headcount || ""}
+                                          onChange={(e) => {
+                                            const val = e.target.value.replace(/[^0-9]/g, '');
+                                            handleLogChange(index, 'headcount', val);
+                                          }}
+                                          onBlur={handleInputBlur}
+                                          disabled={isDataLoading || isInfoMissing}
+                                          className={`w-12 md:w-14 px-0.5 text-center border-[1.5px] border-sky-400 rounded-xl outline-none font-bold text-sky-950 placeholder-sky-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all text-[18px] md:text-[22px] leading-tight shrink-0 caret-blue-600 focus:ring-4 focus:ring-sky-500/15 ${isSparkling ? 'animate-sparkle border-red-500 shadow-md' : 'bg-sky-50'}`}
+                                        />
+                                      );
+                                    })()}
+                                    <div className="relative flex-1 min-w-0 flex flex-col group">
+                                      <div
+                                        className={`absolute inset-0 py-2 sm:py-2.5 md:py-3 px-3 md:px-4 border-[1.5px] ${logs[index]?.isFromSibling && (logs[index]?.memo || "").trim() ? 'border-amber-400 animate-sibling-sparkle' : 'border-gray-200'} rounded-xl bg-gray-50 font-semibold ${memoTextColorClass} transition-all group-focus-within:bg-white group-focus-within:border-blue-400 group-focus-within:ring-4 group-focus-within:ring-blue-500/15 text-[18px] md:text-[22px] leading-tight whitespace-pre-wrap overflow-y-auto break-words z-0 pointer-events-none ${(isDataLoading || isInfoMissing) ? 'opacity-50' : ''}`}
+                                        aria-hidden="true"
+                                      >
+                                        {!logs[index]?.memo ? (
+                                          <span className="text-gray-400 font-medium">메모</span>
+                                        ) : (
+                                          logs[index].memo.split(/(\d+회차)/g).map((part, i) =>
+                                            /^\d+회차$/.test(part) ? <span key={i} className="text-[#3366ff]">{part}</span> : part
+                                          )
+                                        )}
+                                        {logs[index]?.memo?.endsWith('\n') && <br />}
+                                      </div>
+                                      <textarea
+                                        rows="3"
+                                        value={logs[index]?.memo || ""}
+                                        onChange={(e) => handleLogChange(index, 'memo', e.target.value)}
+                                        onFocus={() => setFocusedMemoIndex(index)}
+                                        onBlur={() => {
+                                          handleInputBlur();
+                                          setTimeout(() => {
+                                            setFocusedMemoIndex((prev) => (prev === index ? null : prev));
+                                          }, 150);
+                                        }}
+                                        onScroll={(e) => {
+                                          if (e.target.previousSibling) {
+                                            e.target.previousSibling.scrollTop = e.target.scrollTop;
+                                          }
+                                        }}
+                                        disabled={isDataLoading || isInfoMissing}
+                                        className={`block flex-1 w-full py-2 sm:py-2.5 md:py-3 px-3 md:px-4 border-[1.5px] border-transparent rounded-xl bg-transparent outline-none font-semibold text-transparent placeholder-transparent shadow-none disabled:cursor-not-allowed transition-all text-[18px] md:text-[22px] leading-tight resize-none caret-black z-10 relative m-0`}
+                                        spellCheck="false"
+                                      />
+                                    </div>
+                                  </div>
+                                  {focusedMemoIndex === index && !isSpecialDay && (logs[index]?.student || "").trim() && !((logs[index]?.selectedTags || []).flat().includes('선생님휴가')) && (
+                                    <div className="flex items-center flex-wrap gap-1.5 pt-1.5">
+                                      {['스마트폰 기본', '전화', '문자', '카카오톡', '사진/갤러리', '지도', '택시 부르기', '제미나이', '챗GPT', '유튜브', '키오스크', '보이스피싱 예방'].map((chip) => {
+                                        const curMemo = logs[index]?.memo || "";
+                                        const lines = curMemo.split('\n');
+                                        const isSelected = lines.some(line => {
+                                          const t = line.trim();
+                                          return t === chip || t.startsWith(`${chip}:`);
+                                        });
+                                        return (
+                                          <button
+                                            key={chip}
+                                            type="button"
+                                            disabled={isDataLoading || isInfoMissing}
+                                            onMouseDown={(e) => e.preventDefault()}
+                                            onClick={() => {
+                                              if (isSelected) {
+                                                const remaining = lines.filter(line => line.trim() !== chip && line.trim() !== `${chip}:`);
+                                                if (remaining.length !== lines.length) {
+                                                  handleLogChange(index, 'memo', remaining.join('\n'));
+                                                }
+                                              } else {
+                                                const trimmedRight = curMemo.replace(/\s+$/, '');
+                                                const next = trimmedRight ? `${trimmedRight}\n${chip}: ` : `${chip}: `;
+                                                handleLogChange(index, 'memo', next);
+                                              }
+                                            }}
+                                            className={`px-2.5 py-1 rounded-full border text-[12.5px] sm:text-[13px] font-bold whitespace-nowrap shrink-0 active:scale-95 transition disabled:opacity-40 shadow-2xs ${isSelected
+                                              ? 'bg-blue-600 text-white border-blue-600'
+                                              : 'bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 border-slate-300 hover:border-blue-400'
+                                              }`}
+                                          >
+                                            {isSelected ? `✓ ${chip}` : `+ ${chip}`}
+                                          </button>
+                                        );
+                                      })}
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                        <div className="save-bar sticky bottom-[62px] z-20 -mx-4 sm:-mx-6 md:-mx-8 px-4 sm:px-6 md:px-8 pt-6 mt-2 mb-2">
+                          <button
+                            type="submit"
+                            disabled={isDataLoading || !hasChanges}
+                            onMouseDown={(e) => e.preventDefault()}
+                            className={`w-full h-14 md:h-16 font-bold rounded-2xl text-[21px] md:text-[26px] tracking-tight transition-all duration-150 active:scale-[0.98] flex items-center justify-center touch-manipulation ${(isDataLoading || !hasChanges) ? 'bg-gray-200 text-gray-400 ring-1 ring-inset ring-gray-300/60 cursor-not-allowed' : 'text-white bg-gradient-to-b from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 ring-1 ring-inset ring-blue-700/20 shadow-lg shadow-blue-600/30'}`}
+                          >
+                            {isSubmitting ? <><Clock className="w-6 h-6 mr-2 animate-spin" />저장 중...</> : <><SaveIcon className="w-6 h-6 mr-2" />{isDataLoading ? '데이터 불러오는 중...' : hasChanges ? `데이터베이스에 저장 (${changedShiftCount}건 변경)` : '저장할 변경 사항 없음'}</>}
+                            {isSubmitting ? <><Clock className="w-6 h-6 mr-2 animate-spin" />저장 중...</> : <><SaveIcon className="w-6 h-6 mr-2" />{isDataLoading ? '데이터 불러오는 중...' : hasChanges ? `저장 (${changedShiftCount}건 변경)` : '저장할 변경 사항 없음'}</>}
+                          </button>
+                        </div>
+                      </>
+                    )}
+                  </>
+                );
+              })()}
+            </form>
+          </div>
+        </section>
+      </main>
+
+      {showValidationError && (
+        <div className="fixed inset-0 bg-slate-900/45 backdrop-blur-[3px] flex items-center justify-center z-[70] px-4 animate-fadeIn">
+          <div className="bg-white rounded-2xl shadow-2xl flex flex-col max-w-sm w-full overflow-hidden">
+            <div className="bg-red-500 py-4 px-6 text-center flex items-center justify-center gap-2">
+              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+              <h3 className="text-xl font-bold text-white tracking-wide">입력 확인</h3>
+            </div>
+            <div className="p-6">
+              <p className="text-gray-800 font-bold text-[17px] sm:text-[19px] mb-6 text-center leading-relaxed whitespace-pre-line">
+                {validationErrorMsg}
+              </p>
+              <button
+                onClick={() => {
+                  setShowValidationError(false);
+                  if (validationErrorIndex !== null) {
+                    setTimeout(() => {
+                      const el = document.getElementById(`log-card-${validationErrorIndex}`);
+                      if (el) {
+                        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                      }
+                    }, 100);
+                  }
+                }}
+                className="w-full py-3 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-xl font-bold text-[18px] shadow-sm active:scale-95 touch-manipulation transition-colors"
+              >
+                확인
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showSavePopup && (
+        <div className="fixed inset-0 bg-slate-900/45 backdrop-blur-[3px] flex items-center justify-center z-50 px-4">
+          <div className="bg-white rounded-2xl shadow-2xl flex flex-col max-w-sm w-full animate-fadeIn overflow-hidden">
+            <div className="bg-blue-600 py-4 px-6 text-center">
+              <h3 className="text-2xl font-bold text-white tracking-wide">
+                {isSaveComplete ? "데이터 저장 완료" : "데이터베이스에 저장 중..."}
+              </h3>
+            </div>
+            <div className="p-6">
+              <div className="flex flex-col gap-4 mb-6 max-h-[50vh] overflow-y-auto pr-2">
+                {saveProgress.map((prog, idx) => {
+                  if (prog.isRepeat) {
+                    return (
+                      <div key={idx} className="flex justify-between items-center w-full pb-4 border-b border-dashed border-gray-200 last:border-0 last:pb-0">
+                        <div className="flex flex-col gap-1.5 flex-1 pr-2">
+                          <span className="text-blue-800 font-extrabold text-[19px] tracking-tight">
+                            <span className="text-gray-500 mr-1.5 font-bold text-[19px]">{prog.dateDisplay}</span>
+                            {prog.student}
+                          </span>
+                          <span className="text-indigo-600 font-bold text-lg leading-relaxed">
+                            {prog.timeDisplay}
+                          </span>
+                        </div>
+                        <span className={`text-base w-[100px] text-center font-bold py-1.5 rounded-md whitespace-nowrap shrink-0 border shadow-sm ${prog.status === '저장 완료' ? 'bg-green-600 border-green-700 text-white' : prog.status === '저장 실패' ? 'bg-red-50 border-red-200 text-red-700' : prog.status === '변경 없음' ? 'bg-gray-50 border-gray-200 text-gray-500' : 'bg-orange-50 border-orange-200 text-orange-700 animate-pulse'}`}>
+                          {prog.status}
+                        </span>
+                      </div>
+                    );
+                  }
+
+                  const att = prog.attendance || "";
+                  let attColor = "text-gray-700";
+
+                  // 출결 텍스트 색상을 설정할 때도, "쿠팡 취소" 등의 문구에 반응하지 않고 
+                  // 콤마나 슬래시로 명확히 분리된 상태일 때만 빨간색 등으로 표시되게 합니다.
+                  const isPresent = hasIndependentKeyword(att, ["출석", "1"]);
+                  const isAbsent = hasIndependentKeyword(att, ["결석"]);
+                  const isEndOrCancel = hasIndependentKeyword(att, ["종료", "취소"]);
+                  const isVacation = hasIndependentKeyword(att, ["선생님휴가"]);
+
+                  if (isPresent) {
+                    attColor = "text-gray-900";
+                  } else if (isAbsent) {
+                    attColor = "text-red-600 font-bold";
+                  } else if (isEndOrCancel || isVacation) {
+                    attColor = "text-gray-500 font-bold";
+                  }
+
+                  return (
+                    <div key={idx} className="flex justify-between items-center w-full pb-4 border-b border-dashed border-gray-200 last:border-0 last:pb-0">
+                      <div className="flex flex-col gap-1.5 flex-1 pr-2">
+                        <span className="text-blue-800 font-extrabold text-[19px] tracking-tight">
+                          {prog.student}
+                        </span>
+                        <span className={`text-lg font-bold break-all leading-relaxed ${attColor}`}>
+                          {prog.attendance}
+                        </span>
+
+                      </div>
+                      <span className={`text-base w-[100px] text-center font-bold py-1.5 rounded-md whitespace-nowrap shrink-0 border shadow-sm ${prog.status === '저장 완료' ? 'bg-green-600 border-green-700 text-white' : prog.status === '저장 실패' ? 'bg-red-50 border-red-200 text-red-700' : prog.status === '변경 없음' ? 'bg-gray-50 border-gray-200 text-gray-500' : 'bg-orange-50 border-orange-200 text-orange-700 animate-pulse'}`}>
+                        {prog.status}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+              <button
+                onClick={() => setShowSavePopup(false)}
+                disabled={!isSaveComplete}
+                className={`w-full py-3 rounded-xl font-bold text-xl shadow-md transition-colors touch-manipulation ${isSaveComplete ? 'bg-blue-600 text-white hover:bg-blue-700 active:scale-95' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
+              >
+                {isSaveComplete ? "확인" : "잠시만 기다려주세요..."}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showAssistantConflictModal && (
+        <div className="fixed inset-0 bg-slate-900/45 backdrop-blur-[3px] flex items-center justify-center z-[55] px-4">
+          <div className="bg-white rounded-2xl shadow-2xl flex flex-col max-w-sm w-full animate-fadeIn overflow-hidden">
+            <div className="bg-blue-500 py-4 px-6 text-center">
+              <h3 className="text-xl font-bold text-white tracking-wide">보조강사 일정 덮어쓰기 주의</h3>
+            </div>
+            <div className="p-6">
+              <p className="text-gray-800 font-bold text-[18px] sm:text-[20px] mb-6 text-center leading-relaxed">
+                현재 일정을 복제할 미래 날짜에<br />
+                <span className="bg-amber-200 text-black px-1.5 py-0.5 rounded mx-1 whitespace-nowrap">보조강사</span><br />
+                일정이 있습니다. 복제하시겠습니까?
+              </p>
+              <div className="flex gap-3">
+                <button
+                  onClick={handleAssistantConflictProceed}
+                  className="flex-1 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-xl font-bold text-[18px] sm:text-[20px] shadow-md active:scale-95 touch-manipulation transition-colors"
+                >
+                  예
+                </button>
+                <button
+                  onClick={() => setShowAssistantConflictModal(false)}
+                  className="flex-1 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-xl font-bold text-[18px] sm:text-[20px] shadow-sm active:scale-95 touch-manipulation transition-colors"
+                >
+                  아니오
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {clearConfirmIndex !== null && (
+        <div className="fixed inset-0 bg-slate-900/45 backdrop-blur-[3px] flex items-center justify-center z-50 px-4" onClick={() => setClearConfirmIndex(null)}>
+          <div className="bg-white rounded-2xl shadow-2xl flex flex-col max-w-sm w-full animate-fadeIn overflow-hidden" onClick={e => e.stopPropagation()}>
+            <div className="bg-rose-600 py-4 px-6 text-center">
+              <h3 className="text-xl font-bold text-white tracking-wide">수업 내용 초기화</h3>
+            </div>
+            <div className="p-6">
+              <p className="text-gray-800 font-bold text-[17px] sm:text-[19px] mb-2 text-center leading-relaxed">
+                <span className="text-rose-600">
+                  {shifts[clearConfirmIndex] ? shifts[clearConfirmIndex].split('~')[0].trim() : ''}
+                </span>{' '}
+                시간대의<br />
+                대상자 이름, 장소, 출결, 메모를<br />
+                모두 비울까요?
+              </p>
+              <p className="text-slate-500 text-sm font-medium mb-6 text-center">
+                (초기화 후에도 &apos;되돌리기&apos; 버튼으로 복구할 수 있습니다.)
+              </p>
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => setClearConfirmIndex(null)}
+                  className="flex-1 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-xl font-bold text-[17px] sm:text-[18px] shadow-sm active:scale-95 touch-manipulation transition-colors cursor-pointer"
+                >
+                  취소
+                </button>
+                <button
+                  type="button"
+                  onClick={handleConfirmClearCard}
+                  className="flex-1 py-3 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-[17px] sm:text-[18px] shadow-md active:scale-95 touch-manipulation transition-colors cursor-pointer"
+                >
+                  초기화
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showRepeatConfirm && (
+        <div className="fixed inset-0 bg-slate-900/45 backdrop-blur-[3px] flex items-center justify-center z-50 px-4">
+          <div className="bg-white rounded-2xl shadow-2xl flex flex-col max-w-sm w-full animate-fadeIn overflow-hidden">
+            <div className="bg-indigo-600 py-4 px-6 text-center">
+              <h3 className="text-xl font-bold text-white tracking-wide">확인해 주세요!</h3>
+            </div>
+            <div className="p-6">
+              <p className="text-gray-800 font-bold text-[18px] sm:text-[20px] mb-3 text-center leading-relaxed">
+                아래 <span className="text-indigo-600 text-[18px] sm:text-[20px]">{repeatTargetDates.length}</span>일 동안의 스케줄에<br />
+                {repeatMode === 'shift' && <span className="text-blue-600">해당 시간대({shifts[repeatShiftIndex] ? shifts[repeatShiftIndex].split('~')[0].trim() : ''})의<br /></span>}
+                [학생이름]과 [장소]를<br />정말 복제할까요?
+              </p>
+              <div className="bg-gray-50 border border-gray-200 rounded-lg p-3 mb-4 max-h-[25vh] overflow-y-auto">
+                {repeatTargetDates.map(obj => (
+                  <div key={obj.date} className="text-[16px] sm:text-[18px] font-bold text-blue-600 text-center py-2 border-b last:border-0 border-gray-200">
+                    <div className="text-indigo-800">- {obj.date} ({getDayName(obj.date)})</div>
+                    <div className="text-sm text-gray-500 font-normal mt-1">{obj.times.map(t => t.split('~')[0].trim()).join(', ')}</div>
+                  </div>
+                ))}
+              </div>
+              <p className="text-red-600 text-[18px] sm:text-[20px] font-bold mb-6 text-center leading-tight">
+                ※ 주의: 기존의 출결기록과 메모는<br /> 모두 지워집니다.
+              </p>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setShowRepeatConfirm(false)}
+                  className="flex-1 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-xl font-bold text-[18px] sm:text-[20px] shadow-sm active:scale-95 touch-manipulation transition-colors"
+                >
+                  취소
+                </button>
+                <button
+                  onClick={repeatMode === 'shift' ? executeRepeatScheduleForShiftFromModal : executeRepeatSchedule}
+                  className="flex-1 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-[18px] sm:text-[20px] shadow-md active:scale-95 touch-manipulation transition-colors"
+                >
+                  일정 복제 시작
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {selectedStudentHistory && (() => {
+        const history = [];
+        const realToday = new Date();
+        const realTodayStr = `${realToday.getFullYear()}-${String(realToday.getMonth() + 1).padStart(2, '0')}-${String(realToday.getDate()).padStart(2, '0')}`;
+
+        // dateStr -> shiftTime -> records 형태로 그룹핑
+        const groupedByDateAndShift = {};
+        studentHistoryLogs.forEach(row => {
+          const dateStr = row.log_date;
+          if (dateStr > realTodayStr) return;
+
+          const shiftTime = row.shift || "";
+          if (!groupedByDateAndShift[dateStr]) {
+            groupedByDateAndShift[dateStr] = {};
+          }
+          if (!groupedByDateAndShift[dateStr][shiftTime]) {
+            groupedByDateAndShift[dateStr][shiftTime] = [];
+          }
+          groupedByDateAndShift[dateStr][shiftTime].push(row);
+        });
+
+        Object.keys(groupedByDateAndShift).forEach(dateStr => {
+          const dayData = groupedByDateAndShift[dateStr];
+          Object.keys(dayData).forEach(shiftTime => {
+            const records = dayData[shiftTime] || [];
+
+            if (records.length > 0) {
+              const teacherNames = Array.from(new Set(records.map(r => r.teacher).filter(Boolean))).join(', ');
+
+              const memoGroups = {};
+              records.forEach(r => {
+                let statusStr = formatStatusIfDate(r.status) || "";
+                let memo = statusStr.replace(/\u200B/g, '').trim();
+                memo = memo.replace(/\r\n/g, '\n').split('\n').map(l => l.trimEnd()).join('\n').trim();
+
+                if (memo === "1" || memo === "출석") memo = "출석 (메모 없음)";
+                else if (!memo) memo = "내용 없음";
+
+                if (!memoGroups[memo]) memoGroups[memo] = [];
+                if (r.teacher) memoGroups[memo].push(r.teacher);
+              });
+
+
+              const uniqueMemos = Object.keys(memoGroups);
+              let mergedMemo = "";
+              const isAbsent = (() => {
+                let hasInd = false;
+                uniqueMemos.forEach(memo => {
+                  memo.split(/(결석)/g).forEach((subPart, j, arr) => {
+                    if (subPart === '결석') {
+                      const prevChar = arr[j - 1]?.slice(-1) || '';
+                      const nextChar = arr[j + 1]?.[0] || '';
+                      if (!/[가-힣a-zA-Z0-9]/.test(prevChar) && !/[가-힣a-zA-Z0-9]/.test(nextChar)) hasInd = true;
+                    }
+                  });
+                });
+                return hasInd;
+              })();
+
+              if (isAbsent) {
+                mergedMemo = uniqueMemos.find(memo => {
+                  let found = false;
+                  memo.split(/(결석)/g).forEach((subPart, j, arr) => {
+                    if (subPart === '결석') {
+                      const prevChar = arr[j - 1]?.slice(-1) || '';
+                      const nextChar = arr[j + 1]?.[0] || '';
+                      if (!/[가-힣a-zA-Z0-9]/.test(prevChar) && !/[가-힣a-zA-Z0-9]/.test(nextChar)) found = true;
+                    }
+                  });
+                  return found;
+                });
+              } else if (uniqueMemos.length === 1) {
+                mergedMemo = uniqueMemos[0];
+              } else {
+                mergedMemo = uniqueMemos.map(memo => {
+                  const tNames = Array.from(new Set(memoGroups[memo])).join(', ');
+                  return `[${tNames}] ${memo}`;
+                }).join('\n');
+              }
+
+              history.push({
+                date: dateStr,
+                dayOfWeek: getDayName(dateStr),
+                shift: shiftTime,
+                memo: mergedMemo,
+                teacher: teacherNames
+              });
+            }
+          });
+        });
+
+        history.sort((a, b) => {
+          if (b.date !== a.date) return b.date.localeCompare(a.date);
+          const getT = (s) => {
+            const match = s.match(/(\d+):(\d+)/);
+            return match ? parseInt(match[1]) * 60 + parseInt(match[2]) : 0;
+          };
+          return getT(a.shift) - getT(b.shift);
+        });
+
+        return (
+          <div className="fixed inset-0 bg-slate-900/45 backdrop-blur-[3px] flex items-center justify-center z-[60] px-2 sm:px-4" onClick={() => setSelectedStudentHistory(null)}>
+            <div className="bg-white rounded-2xl shadow-xl w-full max-w-xl overflow-hidden flex flex-col max-h-[80vh] animate-fadeIn" onClick={e => e.stopPropagation()}>
+              <div className="bg-green-600 text-white py-3 px-4 flex justify-between items-center shrink-0">
+                <h3 className="font-bold text-[18px] sm:text-[20px]">{selectedStudentHistory.name}님의 이전 교육 기록</h3>
+                <button onClick={() => setSelectedStudentHistory(null)} className="text-white hover:text-gray-200 active:scale-90 transition-transform">
+                  <svg className="w-6 h-6 sm:w-7 sm:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+              </div>
+              <div className="p-3 sm:p-4 overflow-y-auto space-y-3">
+                {isFetchingHistory ? (
+                  <div className="text-center text-gray-500 py-8 font-bold text-[16px] sm:text-[18px] flex flex-col items-center justify-center gap-2">
+                    <svg className="animate-spin h-8 w-8 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span>기록을 불러오는 중입니다...</span>
+                  </div>
+                ) : (
+                  <>
+                    {history.map((h, idx) => {
+                      let cleanMemo = h.memo;
+
+                      let isAbsent = false;
+                      cleanMemo.split(/(결석)/g).forEach((subPart, j, arr) => {
+                        if (subPart === '결석') {
+                          const prevChar = arr[j - 1]?.slice(-1) || '';
+                          const nextChar = arr[j + 1]?.[0] || '';
+                          if (!/[가-힣a-zA-Z0-9]/.test(prevChar) && !/[가-힣a-zA-Z0-9]/.test(nextChar)) isAbsent = true;
+                        }
+                      });
+                      const textColorClass = isAbsent ? "text-red-600" : "text-gray-800";
+
+                      return (
+                        <div key={idx} className="bg-gray-50 border border-gray-200 rounded-lg p-3 shadow-sm">
+                          <div className="flex items-center justify-between gap-2 mb-1">
+                            <div className="text-sm font-bold text-gray-500">
+                              {h.date} ({h.dayOfWeek}) <span className="text-gray-400 ml-1">{h.shift ? h.shift.split('~')[0].trim() : ''}</span>
+                              {h.teacher && <span className="text-indigo-600 ml-2 font-extrabold tracking-tight">[{h.teacher}]</span>}
                             </div>
-                            {selectedStudentDates.dates.length === 0 && (
-                              <div className="text-center text-gray-500 py-4 font-bold text-[16px] sm:text-[18px]">출석 기록이 없습니다.</div>
+                            {selectedStudentHistory.shiftIndex !== undefined && cleanMemo && cleanMemo !== "내용 없음" && cleanMemo !== "출석 (메모 없음)" && !isAbsent && (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const sIdx = selectedStudentHistory.shiftIndex;
+                                  const cur = (logs[sIdx]?.memo || "").trim();
+                                  const next = cur ? `${cur}\n${cleanMemo}` : cleanMemo;
+                                  handleLogChange(sIdx, 'memo', next);
+                                  setSelectedStudentHistory(null);
+                                }}
+                                className="px-2 py-0.5 rounded-md bg-emerald-100 hover:bg-emerald-200 text-emerald-800 border border-emerald-300 text-[12px] font-extrabold whitespace-nowrap active:scale-95 transition"
+                              >
+                                메모에 이어쓰기
+                              </button>
                             )}
                           </div>
+                          <div className={`text-base sm:text-lg font-bold ${textColorClass} break-words whitespace-pre-wrap`}>{cleanMemo}</div>
                         </div>
-                      </div>
+                      );
+                    })}
+                    {history.length === 0 && (
+                      <div className="text-center text-gray-500 py-4 font-bold text-[16px] sm:text-[18px]">이전 교육 기록이 없습니다.</div>
                     )}
+                  </>
+                )}
+              </div>
+              <div className="p-3 bg-gray-50 border-t flex justify-end shrink-0">
+                <button onClick={() => setSelectedStudentHistory(null)} className="px-4 py-2 bg-gray-200 text-gray-800 font-bold rounded-lg hover:bg-gray-300 transition-colors active:scale-95 shadow-sm">닫기</button>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
 
-                    {showLogoutConfirm && (
-                      <div className="fixed inset-0 bg-slate-900/45 backdrop-blur-[3px] flex items-center justify-center z-[70] px-4">
-                        <div className="bg-white rounded-2xl shadow-2xl flex flex-col max-w-sm w-full animate-fadeIn overflow-hidden">
-                          <div className="bg-blue-600 py-4 px-6 text-center">
-                            <h3 className="text-xl font-bold text-white tracking-wide">저장 확인</h3>
-                          </div>
-                          <div className="p-6">
-                            <p className="text-gray-800 font-bold text-[18px] sm:text-[20px] mb-6 text-center leading-relaxed break-keep">
-                              변경된 근무일지가 저장되지 않았습니다.<br />저장하시겠습니까?
-                            </p>
-                            <div className="flex gap-3">
-                              <button
-                                onClick={handleLogoutConfirmYes}
-                                className="flex-1 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-[18px] sm:text-[20px] shadow-md active:scale-95 touch-manipulation transition-colors"
-                              >
-                                예
-                              </button>
-                              <button
-                                onClick={handleLogoutConfirmNo}
-                                className="flex-1 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-xl font-bold text-[18px] sm:text-[20px] shadow-sm active:scale-95 touch-manipulation transition-colors"
-                              >
-                                아니오
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-
-                    {photoModalTarget && (
-                      <StudentPhotoModal
-                        target={photoModalTarget}
-                        onClose={() => setPhotoModalTarget(null)}
-                        onPhotosChanged={(name, count) => {
-                          const key = normalizeStudentPhotoKey(name);
-                          setStudentPhotoCounts((prev) => ({ ...prev, [key]: count }));
-                          fetchPhotoSummaryByStudent()
-                            .then(({ counts, dateCounts }) => {
-                              setStudentPhotoCounts(counts);
-                              setStudentPhotoDateCounts(dateCounts);
-                            })
-                            .catch(() => { });
-                        }}
-                      />
-                    )}
-
-                    <QuickNavBar
-                      currentView="main"
-                      onSelectView={async (targetView) => {
-                        if (targetView === 'main') return;
-                        if (hasChangesRef.current) {
-                          const ok = await showConfirm('저장하지 않은 변경 사항이 있습니다. 저장하지 않고 이동할까요?');
-                          if (!ok) return;
-                        }
-                        if (targetView === 'myWeeklySchedule') {
-                          onNavigateToMyWeeklySchedule();
-                        } else if (targetView === 'dailySchedule') {
-                          window.sessionStorage.removeItem('sungdong_daily_schedule_date');
-                          onNavigateToDailySchedule(selectedTeam || '1팀');
-                        } else if (targetView === 'studentSearch') {
-                          onNavigateToStudentSearch();
-                        }
-                      }}
-                    />
-                  </div>
+      {selectedStudentDates && (
+        <div className="fixed inset-0 bg-slate-900/45 backdrop-blur-[3px] flex items-center justify-center z-[60] px-2 sm:px-4" onClick={() => setSelectedStudentDates(null)}>
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-xl overflow-hidden flex flex-col max-h-[80vh] animate-fadeIn" onClick={e => e.stopPropagation()}>
+            <div className="bg-purple-600 text-white py-3 px-4 flex justify-between items-center shrink-0">
+              <h3 className="font-bold text-[18px] sm:text-[20px]">{selectedStudentDates.name}님의 출석 일자 <span className="text-purple-200 text-[15px] sm:text-[16px]">({selectedStudentDates.count}회)</span></h3>
+              <button onClick={() => setSelectedStudentDates(null)} className="text-white hover:text-gray-200 active:scale-90 transition-transform">
+                <svg className="w-6 h-6 sm:w-7 sm:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+              </button>
+            </div>
+            <div className="p-3 sm:p-4 overflow-y-auto">
+              <div className="grid grid-cols-4 gap-2 sm:gap-3">
+                {selectedStudentDates.dates.map((d, idx) => {
+                  const today = new Date();
+                  const isToday = d.date.getFullYear() === today.getFullYear() && d.date.getMonth() === today.getMonth() && d.date.getDate() === today.getDate();
+                  const isAbsentDay = !!d.isAbsent;
+                  const isVacationDay = !!d.isVacation;
+                  const isEndDay = !!d.isEnd;
+                  let cellClass = '';
+                  if (isEndDay || isVacationDay) {
+                    cellClass = 'bg-gray-100 border-gray-300 shadow-sm text-gray-700';
+                  } else if (isAbsentDay) {
+                    cellClass = 'bg-orange-50 border-orange-200 shadow-sm text-orange-900';
+                  } else if (isToday) {
+                    cellClass = 'bg-purple-300 border-purple-500 shadow-md text-purple-950';
+                  } else {
+                    cellClass = 'bg-purple-50 border-purple-200 shadow-sm text-purple-900';
+                  }
+                  return (
+                    <div key={idx} className={`${cellClass} border rounded-lg py-2 sm:py-2.5 px-0.5 sm:px-1 text-center text-[13.5px] min-[360px]:text-[15.5px] sm:text-[18px] font-bold flex justify-center items-center whitespace-nowrap tracking-tighter sm:tracking-normal relative`}>
+                      <span className="absolute top-0.5 left-1 text-[11px] sm:text-[13px] font-normal leading-none opacity-90 flex items-center gap-0.5">
+                        {d.excludeFromCount ? (
+                          <span>{isVacationDay ? '휴가' : '결석'}</span>
+                        ) : (
+                          <>
+                            {d.sessionNum !== undefined ? d.sessionNum : (idx + 1)}
+                            {(isAbsentDay || isEndDay) && (
+                              <span className="text-[9px] sm:text-[10px] font-normal opacity-90 ml-0.5">
+                                {isEndDay ? '종료' : '결석'}
+                              </span>
+                            )}
+                          </>
+                        )}
+                      </span>
+                      {d.date.getMonth() + 1}/{d.date.getDate()} ({['일', '월', '화', '수', '목', '금', '토'][d.date.getDay()]})
+                    </div>
                   );
+                })}
+              </div>
+              {selectedStudentDates.dates.length === 0 && (
+                <div className="text-center text-gray-500 py-4 font-bold text-[16px] sm:text-[18px]">출석 기록이 없습니다.</div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showLogoutConfirm && (
+        <div className="fixed inset-0 bg-slate-900/45 backdrop-blur-[3px] flex items-center justify-center z-[70] px-4">
+          <div className="bg-white rounded-2xl shadow-2xl flex flex-col max-w-sm w-full animate-fadeIn overflow-hidden">
+            <div className="bg-blue-600 py-4 px-6 text-center">
+              <h3 className="text-xl font-bold text-white tracking-wide">저장 확인</h3>
+            </div>
+            <div className="p-6">
+              <p className="text-gray-800 font-bold text-[18px] sm:text-[20px] mb-6 text-center leading-relaxed break-keep">
+                변경된 근무일지가 저장되지 않았습니다.<br />저장하시겠습니까?
+              </p>
+              <div className="flex gap-3">
+                <button
+                  onClick={handleLogoutConfirmYes}
+                  className="flex-1 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-[18px] sm:text-[20px] shadow-md active:scale-95 touch-manipulation transition-colors"
+                >
+                  예
+                </button>
+                <button
+                  onClick={handleLogoutConfirmNo}
+                  className="flex-1 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-xl font-bold text-[18px] sm:text-[20px] shadow-sm active:scale-95 touch-manipulation transition-colors"
+                >
+                  아니오
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {photoModalTarget && (
+        <StudentPhotoModal
+          target={photoModalTarget}
+          onClose={() => setPhotoModalTarget(null)}
+          onPhotosChanged={(name, count) => {
+            const key = normalizeStudentPhotoKey(name);
+            setStudentPhotoCounts((prev) => ({ ...prev, [key]: count }));
+            fetchPhotoSummaryByStudent()
+              .then(({ counts, dateCounts }) => {
+                setStudentPhotoCounts(counts);
+                setStudentPhotoDateCounts(dateCounts);
+              })
+              .catch(() => { });
+          }}
+        />
+      )}
+
+      <QuickNavBar
+        currentView="main"
+        onSelectView={async (targetView) => {
+          if (targetView === 'main') return;
+          if (hasChangesRef.current) {
+            const ok = await showConfirm('저장하지 않은 변경 사항이 있습니다. 저장하지 않고 이동할까요?');
+            if (!ok) return;
+          }
+          if (targetView === 'myWeeklySchedule') {
+            onNavigateToMyWeeklySchedule();
+          } else if (targetView === 'dailySchedule') {
+            window.sessionStorage.removeItem('sungdong_daily_schedule_date');
+            onNavigateToDailySchedule(selectedTeam || '1팀');
+          } else if (targetView === 'studentSearch') {
+            onNavigateToStudentSearch();
+          }
+        }}
+      />
+    </div>
+  );
 }
