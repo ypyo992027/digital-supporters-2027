@@ -151,6 +151,7 @@ export default function MyWeeklyScheduleApp({
   const [noDataMessage, setNoDataMessage] = useState("");
   const [teamLeader, setTeamLeader] = useState(null);
   const [selectedStudentDates, setSelectedStudentDates] = useState(null);
+  const [selectedClassDetail, setSelectedClassDetail] = useState(null);
   const [expandedMemos, setExpandedMemos] = useState({}); // 메모 펼침 상태 { "시간|날짜": true }
   const toggleMemo = (key) => setExpandedMemos(prev => ({ ...prev, [key]: !prev[key] }));
 
@@ -1059,7 +1060,25 @@ export default function MyWeeklyScheduleApp({
                         const isMemoExpanded = !!expandedMemos[memoKey];
 
                         return (
-                          <td key={i} className={`${cellBgClass} p-0 align-top transition-all overflow-hidden h-full hover:brightness-95 ${todayBorderClass}`}>
+                          <td
+                            key={i}
+                            onClick={() => {
+                              if (!isHoliday && cellData.student) {
+                                setSelectedClassDetail({
+                                  dateStr,
+                                  dayLabel: weekDays[i],
+                                  time,
+                                  student: cellData.student,
+                                  location: cellData.location || '복지관',
+                                  tags: parsedStatus.tags,
+                                  memo: parsedStatus.memo,
+                                  sessionCounts: cellData.sessionCounts,
+                                  isAbsent
+                                });
+                              }
+                            }}
+                            className={`${cellBgClass} p-0 align-top transition-all overflow-hidden h-full hover:brightness-95 ${!isHoliday && cellData.student ? 'cursor-pointer' : ''} ${todayBorderClass}`}
+                          >
                             <div className={`flex flex-col gap-1 justify-start items-center h-full min-h-[110px] overflow-hidden w-full max-w-full ${isHoliday ? 'px-2 py-2.5 sm:p-3 bg-red-300 text-white' : 'px-1.5 py-2.5 sm:p-3'}`}>
                               {(showTags || showSessions) && (
                                 <div className="flex flex-wrap gap-1 justify-center items-center w-full mb-1">
@@ -1079,7 +1098,10 @@ export default function MyWeeklyScheduleApp({
                                     <button
                                       key={`s${scIdx}`}
                                       type="button"
-                                      onClick={() => setSelectedStudentDates(sc)}
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        setSelectedStudentDates(sc);
+                                      }}
                                       title="출석 일자 보기"
                                       className={`px-1.5 sm:px-2 py-0.5 rounded-md text-[12px] sm:text-[13px] leading-tight whitespace-nowrap shadow-2xs cursor-pointer hover:brightness-95 active:scale-95 transition-all ${getSessionBadgeStyle(sc.count)}`}
                                     >
@@ -1092,12 +1114,7 @@ export default function MyWeeklyScheduleApp({
                               {cellData.location && cellData.location !== "복지관" && team !== '취업팀' && <div className={`${isHoliday ? 'text-gray-100' : 'text-gray-600'} text-[clamp(0.9rem,2.1vw,1.35rem)] font-bold break-keep whitespace-pre-wrap text-center max-w-full leading-tight mt-1`}>{cellData.location.replace(/대체공휴일/g, '대체\n공휴일')}</div>}
                               {parsedStatus.memo && (
                                 <div
-                                  role="button"
-                                  tabIndex={0}
-                                  onClick={() => toggleMemo(memoKey)}
-                                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleMemo(memoKey); } }}
-                                  title={isMemoExpanded ? '접기' : '눌러서 전체 보기'}
-                                  className={`cursor-pointer font-normal text-[clamp(0.9rem,2.1vw,1.35rem)] leading-snug break-keep whitespace-pre-wrap text-center mt-1 w-full ${isMemoExpanded ? '' : 'line-clamp-3'} ${isHoliday ? 'text-gray-100' : (isAbsent ? 'text-red-600' : 'text-gray-900')}`}
+                                  className={`font-normal text-[clamp(0.9rem,2.1vw,1.35rem)] leading-snug break-keep whitespace-pre-wrap text-center mt-1 w-full ${isMemoExpanded ? '' : 'line-clamp-3'} ${isHoliday ? 'text-gray-100' : (isAbsent ? 'text-red-600' : 'text-gray-900')}`}
                                 >
                                   {parsedStatus.memo.replace(/대체공휴일/g, '대체\n공휴일').split(/(\d+\s*회차)/g).map((part, i) => {
                                     if (/\d+\s*회차/.test(part)) {
@@ -1121,6 +1138,119 @@ export default function MyWeeklyScheduleApp({
           )}
       </div>
     </div>
+
+      {selectedClassDetail && (() => {
+        const cleanNames = (selectedClassDetail.student || '')
+          .split(/[/,]+/)
+          .map(s => s.trim().split('(')[0].trim())
+          .filter(Boolean);
+        const recentHistory = (allTeamRecords || [])
+          .filter(r => {
+            if (!r.student || r.log_date > selectedClassDetail.dateStr) return false;
+            const rNames = r.student.split(/[/,]+/).map(s => s.trim().split('(')[0].trim()).filter(Boolean);
+            return cleanNames.some(n => rNames.includes(n));
+          })
+          .sort((a, b) => b.log_date.localeCompare(a.log_date))
+          .slice(0, 6);
+
+        return (
+          <div
+            className="fixed inset-0 bg-slate-900/50 backdrop-blur-[3px] flex items-center justify-center z-[60] p-3 sm:p-4"
+            onClick={() => setSelectedClassDetail(null)}
+          >
+            <div
+              className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col max-h-[85vh] animate-fadeIn border border-slate-200"
+              onClick={e => e.stopPropagation()}
+            >
+              <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-4 py-3.5 flex items-center justify-between shrink-0">
+                <div className="min-w-0">
+                  <h3 className="font-extrabold text-[18px] sm:text-[20px] truncate">
+                    {selectedClassDetail.student} 수업 정보
+                  </h3>
+                  <p className="text-blue-100 text-[13px] sm:text-[14px] font-semibold">
+                    {selectedClassDetail.dateStr} ({selectedClassDetail.dayLabel}) · {selectedClassDetail.time}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setSelectedClassDetail(null)}
+                  className="p-1 rounded-lg text-white/90 hover:bg-white/20 active:scale-90 transition"
+                  aria-label="닫기"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              <div className="p-4 overflow-y-auto space-y-4 text-left">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-800 border border-slate-200 text-[13.5px] font-extrabold">
+                    📍 {selectedClassDetail.location || '복지관'}
+                  </span>
+                  {selectedClassDetail.tags.map((tag, idx) => (
+                    <span key={idx} className="px-2.5 py-1 rounded-lg bg-blue-100 text-blue-800 border border-blue-200 text-[13.5px] font-extrabold">
+                      {tag}
+                    </span>
+                  ))}
+                  {selectedClassDetail.sessionCounts && selectedClassDetail.sessionCounts.map((sc, idx) => (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => {
+                        setSelectedClassDetail(null);
+                        setSelectedStudentDates(sc);
+                      }}
+                      className={`px-2.5 py-1 rounded-lg text-[13.5px] cursor-pointer active:scale-95 transition ${getSessionBadgeStyle(sc.count)}`}
+                    >
+                      {sc.name ? `${sc.name} ` : ''}{sc.count}회차 (출석일 보기)
+                    </button>
+                  ))}
+                </div>
+
+                <div>
+                  <div className="text-[13px] font-extrabold text-slate-500 mb-1">수업 메모</div>
+                  <div className={`p-3 rounded-xl border text-[15px] sm:text-[16px] font-bold whitespace-pre-wrap break-words leading-relaxed ${selectedClassDetail.isAbsent ? 'bg-rose-50 border-rose-200 text-rose-700' : 'bg-slate-50 border-slate-200 text-slate-900'}`}>
+                    {selectedClassDetail.memo || '등록된 수업 메모가 없습니다.'}
+                  </div>
+                </div>
+
+                {recentHistory.length > 0 && (
+                  <div>
+                    <div className="text-[13px] font-extrabold text-slate-500 mb-1.5">이전 수업 기록</div>
+                    <div className="space-y-1.5">
+                      {recentHistory.map((h, hIdx) => {
+                        const parsed = parseWeeklyStatus(h.status || '');
+                        return (
+                          <div key={hIdx} className="p-2.5 rounded-xl bg-gray-50 border border-gray-200 text-[13.5px]">
+                            <div className="flex items-center justify-between gap-2 font-extrabold text-slate-700 mb-0.5">
+                              <span>{h.log_date} ({h.shift ? h.shift.split('~')[0] : ''})</span>
+                              <span className="text-indigo-700">{parsed.tags.join(', ') || '-'}</span>
+                            </div>
+                            <div className="text-slate-700 font-medium whitespace-pre-wrap break-words">
+                              {parsed.memo || '메모 없음'}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="p-3 bg-slate-50 border-t border-slate-200 flex justify-end shrink-0">
+                <button
+                  type="button"
+                  onClick={() => setSelectedClassDetail(null)}
+                  className="px-5 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 font-extrabold text-[14px] active:scale-95 transition"
+                >
+                  닫기
+                </button>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
 
       {selectedStudentDates && (
         <div className="fixed inset-0 bg-slate-900/45 backdrop-blur-[3px] flex items-center justify-center z-[60] p-3 sm:p-4" onClick={() => setSelectedStudentDates(null)}>
