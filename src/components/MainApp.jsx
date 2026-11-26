@@ -1586,7 +1586,12 @@ export default function MainApp({
   }, [selectedTeam, dbTeachers]);
 
   useEffect(() => {
-    if (!isLoggedIn || !selectedTeam || !currentUser) { setAllScheduleData({}); return; }
+    if (!isLoggedIn || !selectedTeam || !currentUser) {
+      setAllScheduleData({});
+      setIsFetchingSchedule(false);
+      setIsSyncing(false);
+      return;
+    }
 
     let isMounted = true;
 
@@ -1649,15 +1654,17 @@ export default function MainApp({
       } catch (error) {
         console.error(error);
       } finally {
-        if (isMounted) {
-          setIsFetchingSchedule(false);
-          setIsSyncing(false);
-        }
+        setIsFetchingSchedule(false);
+        setIsSyncing(false);
       }
     };
     fetchScheduleAll();
 
-    return () => { isMounted = false; };
+    return () => {
+      isMounted = false;
+      setIsFetchingSchedule(false);
+      setIsSyncing(false);
+    };
   }, [isLoggedIn, selectedTeam, currentUser, refreshTrigger]);
 
   useEffect(() => {
@@ -3947,17 +3954,18 @@ export default function MainApp({
                       </span>
                     )}
                   </div>
-                  <div className="flex items-center gap-1.5 flex-wrap">
+                  <div className="flex items-center gap-1.5 flex-nowrap overflow-x-auto scrollbar-none">
                     {todaySummary.items.map((item, idx) => (
                       <button
                         key={idx}
                         type="button"
                         onClick={handleLogin}
                         disabled={!isLoginReady}
-                        className={`px-2.5 py-1 rounded-lg text-[14px] sm:text-[15px] font-bold border transition active:scale-95 ${item.isPending
+                        className={`flex-1 min-w-0 px-1.5 sm:px-2.5 py-1 rounded-lg text-[12px] min-[375px]:text-[13px] sm:text-[14.5px] font-bold border transition active:scale-95 truncate text-center whitespace-nowrap ${item.isPending
                           ? 'bg-white border-amber-300 text-amber-900'
                           : 'bg-emerald-50 border-emerald-200 text-emerald-800'
                           }`}
+                        title={`${item.shift.split('~')[0]} ${item.student}`}
                       >
                         {item.shift.split('~')[0]} {item.student}
                       </button>
