@@ -5282,8 +5282,12 @@ export default function MainApp({
                                                 {focusedMemoIndex === index && !isSpecialDay && (logs[index]?.student || "").trim() && !((logs[index]?.selectedTags || []).flat().includes('선생님휴가')) && (
                                                   <div className="flex items-center flex-wrap gap-1.5 pt-1.5">
                                                     {['스마트폰 기본', '전화', '문자', '카카오톡', '사진/갤러리', '지도', '택시 부르기', '제미나이', '챗GPT', '유튜브', '키오스크', '보이스피싱 예방'].map((chip) => {
-                                                      const curMemo = (logs[index]?.memo || "").trim();
-                                                      const isSelected = curMemo.split(/[,\n]+/).map(s => s.trim()).includes(chip);
+                                                      const curMemo = logs[index]?.memo || "";
+                                                      const lines = curMemo.split('\n');
+                                                      const isSelected = lines.some(line => {
+                                                        const t = line.trim();
+                                                        return t === chip || t.startsWith(`${chip}:`);
+                                                      });
                                                       return (
                                                         <button
                                                           key={chip}
@@ -5292,14 +5296,13 @@ export default function MainApp({
                                                           onMouseDown={(e) => e.preventDefault()}
                                                           onClick={() => {
                                                             if (isSelected) {
-                                                              const next = curMemo
-                                                                .split(',')
-                                                                .map(s => s.trim())
-                                                                .filter(s => s && s !== chip)
-                                                                .join(', ');
-                                                              handleLogChange(index, 'memo', next);
+                                                              const remaining = lines.filter(line => line.trim() !== chip && line.trim() !== `${chip}:`);
+                                                              if (remaining.length !== lines.length) {
+                                                                handleLogChange(index, 'memo', remaining.join('\n'));
+                                                              }
                                                             } else {
-                                                              const next = curMemo ? `${curMemo}, ${chip}` : chip;
+                                                              const trimmedRight = curMemo.replace(/\s+$/, '');
+                                                              const next = trimmedRight ? `${trimmedRight}\n${chip}: ` : `${chip}: `;
                                                               handleLogChange(index, 'memo', next);
                                                             }
                                                           }}
