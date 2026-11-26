@@ -3939,35 +3939,38 @@ export default function MainApp({
               )}
 
               {selectedTeam && currentUser && todaySummary && todaySummary.total > 0 && (
-                <div className="flex flex-col gap-2 px-3.5 py-2.5 rounded-xl bg-blue-50/70 border border-blue-200/80 text-left">
-                  <div className="flex items-center justify-between gap-2 text-[15px] sm:text-[16px] font-extrabold">
+                <div className="flex flex-col gap-2 px-3.5 py-3 rounded-xl bg-blue-50/70 border border-blue-200/80 text-left">
+                  <div className="flex items-center justify-between gap-2 text-[17px] sm:text-[18px] font-extrabold">
                     <span className="text-slate-800">
                       오늘 내 수업 <span className="text-blue-700">{todaySummary.total}건</span>
                     </span>
                     {todaySummary.pending > 0 ? (
-                      <span className="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-300 text-[13.5px] sm:text-[14px] font-extrabold">
+                      <span className="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-300 text-[14.5px] sm:text-[15.5px] font-extrabold">
                         미입력 {todaySummary.pending}건
                       </span>
                     ) : (
-                      <span className="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 text-[13.5px] sm:text-[14px] font-extrabold">
+                      <span className="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 text-[14.5px] sm:text-[15.5px] font-extrabold">
                         모두 입력 완료
                       </span>
                     )}
                   </div>
-                  <div className="flex items-center gap-1.5 flex-nowrap overflow-x-auto scrollbar-none">
+                  <div className="flex flex-col gap-1.5">
                     {todaySummary.items.map((item, idx) => (
                       <button
                         key={idx}
                         type="button"
                         onClick={handleLogin}
                         disabled={!isLoginReady}
-                        className={`flex-1 min-w-0 px-1.5 sm:px-2.5 py-1 rounded-lg text-[12px] min-[375px]:text-[13px] sm:text-[14.5px] font-bold border transition active:scale-95 truncate text-center whitespace-nowrap ${item.isPending
+                        className={`w-full px-3 py-1.5 rounded-lg text-[15.5px] sm:text-[16.5px] font-bold border transition active:scale-[0.99] text-left flex items-center justify-between gap-2 ${item.isPending
                           ? 'bg-white border-amber-300 text-amber-900'
                           : 'bg-emerald-50 border-emerald-200 text-emerald-800'
                           }`}
                         title={`${item.shift.split('~')[0]} ${item.student}`}
                       >
-                        {item.shift.split('~')[0]} {item.student}
+                        <span className="truncate">{item.shift.split('~')[0]} {item.student}</span>
+                        <span className={`text-[12.5px] sm:text-[13px] font-extrabold shrink-0 ${item.isPending ? 'text-amber-600' : 'text-emerald-600'}`}>
+                          {item.isPending ? '미입력' : '완료'}
+                        </span>
                       </button>
                     ))}
                   </div>
