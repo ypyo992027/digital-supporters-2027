@@ -794,7 +794,8 @@ export default function MyWeeklyScheduleApp({
     let attendedCount = 0;
     let absentCount = 0;
     let vacationCount = 0;
-    let specialCount = 0;
+    let externalCount = 0;
+    let assistantCount = 0;
 
     monthlyRecords.forEach(r => {
       const st = (r.student || '').trim();
@@ -802,8 +803,10 @@ export default function MyWeeklyScheduleApp({
       if (!st || st === '-' || st.includes('자체학습') || st.includes('대상자발굴') || st.includes('공휴일') || loc.includes('공휴일') || loc.includes('휴무일')) return;
       totalClasses += 1;
       const merged = mergeAttendanceAndStatus(r.attendance, r.status).replace(/\u200B/g, '').trim();
-      if (st.includes('경로당') || loc.includes('경로당') || st.includes('보조강사')) {
-        specialCount += 1;
+      if (st.includes('보조강사')) {
+        assistantCount += 1;
+      } else if (loc && loc !== '복지관') {
+        externalCount += 1;
       }
       if (hasIndependentKeyword(merged, ['선생님휴가']) || merged.includes('선생님휴가')) {
         vacationCount += 1;
@@ -824,7 +827,8 @@ export default function MyWeeklyScheduleApp({
       attendedCount,
       absentCount,
       vacationCount,
-      specialCount
+      externalCount,
+      assistantCount
     };
   }, [monthlyRecords]);
 
@@ -981,8 +985,12 @@ export default function MyWeeklyScheduleApp({
                     <div className="text-3xl font-black text-gray-800 mt-1">{monthlyStats.vacationCount}<span className="text-base font-bold ml-0.5">건</span></div>
                   </div>
                   <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-center">
-                    <div className="text-[13px] font-bold text-amber-800">경로당·보조강사</div>
-                    <div className="text-3xl font-black text-amber-950 mt-1">{monthlyStats.specialCount}<span className="text-base font-bold ml-0.5">건</span></div>
+                    <div className="text-[13px] font-bold text-amber-800">외부 기관 활동</div>
+                    <div className="text-3xl font-black text-amber-950 mt-1">{monthlyStats.externalCount}<span className="text-base font-bold ml-0.5">건</span></div>
+                  </div>
+                  <div className="col-span-2 sm:col-span-1 p-4 rounded-2xl bg-purple-50 border border-purple-200 text-center">
+                    <div className="text-[13px] font-bold text-purple-800">보조강사</div>
+                    <div className="text-3xl font-black text-purple-950 mt-1">{monthlyStats.assistantCount}<span className="text-base font-bold ml-0.5">건</span></div>
                   </div>
                 </div>
               )}
