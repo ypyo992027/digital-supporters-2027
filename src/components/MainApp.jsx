@@ -4608,21 +4608,23 @@ export default function MainApp({
                 ) : (
                   <>
                     {Object.values(logs || {}).some(log => {
+                      const stu = (log?.student || '').trim();
                       const loc = (log?.location || '').trim();
-                      return Boolean(loc && loc !== '복지관' && loc !== '공휴일' && loc !== '휴무일');
+                      return Boolean(stu && loc && loc !== '복지관' && loc !== '공휴일' && loc !== '휴무일');
                     }) && (
                       <button
                         type="button"
-                        onClick={() => showAlert('출결체크 기능은 추후 구현될 예정입니다.')}
-                        title="외부근무 출결체크 (추후 구현 예정)"
-                        className="bg-gray-200 hover:bg-gray-300 text-gray-700 ring-1 ring-inset ring-gray-300 h-[34px] sm:h-[38px] px-2.5 sm:px-3 rounded-xl transition-all cursor-pointer active:scale-95 flex items-center justify-center shadow-sm touch-manipulation"
-                        aria-label="출결체크"
+                        onClick={() => showAlert('출퇴근 기능은 추후 구현될 예정입니다.')}
+                        title="외부기관 출퇴근 (추후 구현 예정)"
+                        className="bg-slate-100 hover:bg-slate-200 text-slate-800 ring-1 ring-inset ring-slate-300 text-[14px] sm:text-[15px] px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-xl font-bold flex items-center gap-1.5 whitespace-nowrap transition-all cursor-pointer active:scale-95 shadow-sm touch-manipulation"
+                        aria-label="출퇴근"
                       >
-                        <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                        <svg className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                           <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
                           <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
                           <path d="m9 14 2 2 4-4" />
                         </svg>
+                        <span>출퇴근</span>
                       </button>
                     )}
                     {logsDate === date && date >= getLocalDateString(new Date()) && !noNewScheduleToRepeat && (!currentSelectedHoliday || currentSelectedHoliday.vacation_available) && !Object.values(logs || {}).some(log => (log?.student || '').includes('직무교육') || (log?.student || '').includes('안전교육') || (log?.student || '').includes('간담회')) && (
