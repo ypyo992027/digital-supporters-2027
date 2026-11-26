@@ -789,6 +789,66 @@ export default function MyWeeklyScheduleApp({
     return () => { isMounted = false; };
   }, [viewMode, monthlyDate, team, teacher]);
 
+  const getStatusColorClass = (statusStr) => {
+    if (!statusStr) return "text-gray-800";
+    const parts = statusStr.split(',').map(s => s.trim().replace(/\s+/g, ''));
+    if (parts.includes("결석") || parts.includes("종료") || parts.includes("취소")) return "text-red-600";
+    if (parts.includes("휴가") || parts.includes("선생님휴가")) return "text-gray-500";
+    return "text-blue-700";
+  };
+
+  const parseWeeklyStatus = (statusStr) => {
+    if (!statusStr) return { tags: [], memo: "" };
+    const parts = statusStr.split(',').map(s => s.trim()).filter(Boolean);
+    let tags = [];
+    let memos = [];
+
+    const tagKeywords = ['출석', '결석', '종료', '취소', '선생님휴가', '휴가'];
+
+    parts.forEach((part, i) => {
+      const cleanPart = part.replace(/\s+/g, '');
+
+      // 다인원 출석 패턴 처리 (/ 포함 시)
+      if (cleanPart.includes('/')) {
+        const subParts = cleanPart.split('/');
+        if (subParts.length === 2) {
+          const [p1, p2] = subParts;
+          const isP1Tag = /^\d+$/.test(p1) || tagKeywords.includes(p1);
+          const isP2Tag = /^\d+$/.test(p2) || tagKeywords.includes(p2);
+
+          if (isP1Tag && isP2Tag) {
+            let t1 = p1 === '1' ? '출석' : (/^\d+$/.test(p1) ? '출석' + p1 : p1);
+            let t2 = p2 === '1' ? '출석' : (/^\d+$/.test(p2) ? '출석' + p2 : p2);
+
+            tags.push(`${t1}/${t2}`);
+            return;
+          }
+        }
+      }
+
+      const isNumber = /^\d+$/.test(cleanPart);
+      const hasKeyword = tagKeywords.some(k => cleanPart === k);
+
+      let isTag = false;
+      if (hasKeyword) {
+        isTag = true;
+      } else if (isNumber) {
+        isTag = (i === 0);
+      }
+
+      if (isTag) {
+        let displayTag = part;
+        if (part === '1') displayTag = '출석';
+        else if (isNumber) displayTag = `출석${part}`;
+        tags.push(displayTag);
+      } else {
+        memos.push(part);
+      }
+    });
+
+    return { tags, memo: memos.join(', ') };
+  };
+
   const monthlyStats = useMemo(() => {
     const workDateMap = {};
     const totalList = [];
@@ -868,66 +928,6 @@ export default function MyWeeklyScheduleApp({
       }
     };
   }, [monthlyRecords]);
-
-  const getStatusColorClass = (statusStr) => {
-    if (!statusStr) return "text-gray-800";
-    const parts = statusStr.split(',').map(s => s.trim().replace(/\s+/g, ''));
-    if (parts.includes("결석") || parts.includes("종료") || parts.includes("취소")) return "text-red-600";
-    if (parts.includes("휴가") || parts.includes("선생님휴가")) return "text-gray-500";
-    return "text-blue-700";
-  };
-
-  const parseWeeklyStatus = (statusStr) => {
-    if (!statusStr) return { tags: [], memo: "" };
-    const parts = statusStr.split(',').map(s => s.trim()).filter(Boolean);
-    let tags = [];
-    let memos = [];
-
-    const tagKeywords = ['출석', '결석', '종료', '취소', '선생님휴가', '휴가'];
-
-    parts.forEach((part, i) => {
-      const cleanPart = part.replace(/\s+/g, '');
-
-      // 다인원 출석 패턴 처리 (/ 포함 시)
-      if (cleanPart.includes('/')) {
-        const subParts = cleanPart.split('/');
-        if (subParts.length === 2) {
-          const [p1, p2] = subParts;
-          const isP1Tag = /^\d+$/.test(p1) || tagKeywords.includes(p1);
-          const isP2Tag = /^\d+$/.test(p2) || tagKeywords.includes(p2);
-
-          if (isP1Tag && isP2Tag) {
-            let t1 = p1 === '1' ? '출석' : (/^\d+$/.test(p1) ? '출석' + p1 : p1);
-            let t2 = p2 === '1' ? '출석' : (/^\d+$/.test(p2) ? '출석' + p2 : p2);
-
-            tags.push(`${t1}/${t2}`);
-            return;
-          }
-        }
-      }
-
-      const isNumber = /^\d+$/.test(cleanPart);
-      const hasKeyword = tagKeywords.some(k => cleanPart === k);
-
-      let isTag = false;
-      if (hasKeyword) {
-        isTag = true;
-      } else if (isNumber) {
-        isTag = (i === 0);
-      }
-
-      if (isTag) {
-        let displayTag = part;
-        if (part === '1') displayTag = '출석';
-        else if (isNumber) displayTag = `출석${part}`;
-        tags.push(displayTag);
-      } else {
-        memos.push(part);
-      }
-    });
-
-    return { tags, memo: memos.join(', ') };
-  };
 
   return (
     <div className="min-h-[100dvh] flex flex-col app-surface font-sans">
