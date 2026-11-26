@@ -1,6 +1,6 @@
 // 나의 주간 일정 보기
 
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { supabaseClient } from '../utils/supabase';
 import {
   getLocalDateString,
@@ -152,6 +152,16 @@ export default function MyWeeklyScheduleApp({
   const [teamLeader, setTeamLeader] = useState(null);
   const [selectedStudentDates, setSelectedStudentDates] = useState(null);
   const [selectedClassDetail, setSelectedClassDetail] = useState(null);
+  const todayColRef = useRef(null);
+
+  useEffect(() => {
+    if (viewMode === 'weekly' && scheduleData && todayColRef.current) {
+      const timer = setTimeout(() => {
+        todayColRef.current?.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
+      }, 120);
+      return () => clearTimeout(timer);
+    }
+  }, [viewMode, scheduleData]);
   const [expandedMemos, setExpandedMemos] = useState({}); // 메모 펼침 상태 { "시간|날짜": true }
   const toggleMemo = (key) => setExpandedMemos(prev => ({ ...prev, [key]: !prev[key] }));
 
@@ -1009,7 +1019,7 @@ export default function MyWeeklyScheduleApp({
                       const isToday = dateStr === todayStr;
 
                       return (
-                        <th key={i} style={{ width: '17.6%' }} className={`py-2 md:py-3 font-black text-[clamp(1rem,2.2vw,1.3rem)] tracking-tight transition-all ${isToday ? 'border-l-4 border-r-4 border-t-4 border-blue-600 text-blue-700 bg-blue-50' : 'border-r-2 border-gray-300 text-blue-900 last:border-0'}`}>
+                        <th ref={isToday ? todayColRef : null} key={i} style={{ width: '17.6%' }} className={`py-2 md:py-3 font-black text-[clamp(1rem,2.2vw,1.3rem)] tracking-tight transition-all ${isToday ? 'border-l-4 border-r-4 border-t-4 border-blue-600 text-blue-700 bg-blue-50' : 'border-r-2 border-gray-300 text-blue-900 last:border-0'}`}>
                           {day.getMonth() + 1}/{day.getDate()} ({weekDays[i]})
                         </th>
                       );
@@ -1048,14 +1058,16 @@ export default function MyWeeklyScheduleApp({
                           (cellData.location && /공휴일|근로자의날|어린이날|휴일|공휴/.test(cellData.location.replace(/\s/g, '')));
                         const isAbsent = !!(cellData.status && cellData.status.includes('결석'));
 
-                        // 배경: 기본 흰색 통일, 결석은 연한 빨강, 휴일은 기존 빨강 유지
-                        let cellBgClass = isAbsent ? "bg-red-50" : "bg-white";
+                        // 배경: 기본 흰색 통일, 오늘은 연한 파랑, 결석은 연한 빨강, 휴일은 기존 빨강 유지
+                        let cellBgClass = isAbsent ? "bg-red-50" : (isToday ? "bg-blue-50/35" : "bg-white");
                         if (specialDayInfo) {
                           cellBgClass = "bg-red-300";
                         }
 
+                        const isNonSessionEvent = ['간담회', '안전교육', '소양교육', '직무교육', '총평가회', '평가회', '문화활동', '박람회', '스터디']
+                          .some(kw => (cellData.student || '').includes(kw));
                         const showTags = parsedStatus.tags.length > 0 && !cellData.student?.includes("간담회");
-                        const showSessions = cellData.sessionCounts && !cellData.student?.includes("간담회") && !cellData.student?.includes("안전교육") && !cellData.student?.includes("소양교육") && !cellData.student?.includes("직무교육");
+                        const showSessions = cellData.sessionCounts && !isNonSessionEvent;
                         const memoKey = `${time}|${dateStr}`;
                         const isMemoExpanded = !!expandedMemos[memoKey];
 
@@ -1111,10 +1123,10 @@ export default function MyWeeklyScheduleApp({
                                 </div>
                               )}
                               {cellData.student && <div className={`font-bold ${isHoliday ? 'text-white w-full' : (cellData.isSpecial ? 'text-red-700 w-full' : 'text-gray-900 w-full')} text-[clamp(1.1rem,2.6vw,1.7rem)] leading-tight break-keep whitespace-pre-wrap text-center flex-shrink-0`}>{cellData.student.replace(/\n/g, ' ').replace(/부처님오신날/g, '부처님\n오신날').replace(/보조강사\s*/g, '보조강사\n').replace(/\//g, '/\n').trim()}</div>}
-                              {cellData.location && cellData.location !== "복지관" && team !== '취업팀' && <div className={`${isHoliday ? 'text-gray-100' : 'text-gray-600'} text-[clamp(0.9rem,2.1vw,1.35rem)] font-bold break-keep whitespace-pre-wrap text-center max-w-full leading-tight mt-1`}>{cellData.location.replace(/대체공휴일/g, '대체\n공휴일')}</div>}
+                              {cellData.location && cellData.location !== "복지관" && cellData.location.trim() !== (cellData.student || "").trim() && team !== '취업팀' && <div className={`${isHoliday ? 'text-gray-100' : 'text-gray-600'} text-[clamp(0.9rem,2.1vw,1.35rem)] font-bold break-keep whitespace-pre-wrap text-center max-w-full leading-tight mt-1`}>{cellData.location.replace(/대체공휴일/g, '대체\n공휴일')}</div>}
                               {parsedStatus.memo && (
                                 <div
-                                  className={`font-normal text-[clamp(0.9rem,2.1vw,1.35rem)] leading-snug break-keep whitespace-pre-wrap text-center mt-1 w-full ${isMemoExpanded ? '' : 'line-clamp-3'} ${isHoliday ? 'text-gray-100' : (isAbsent ? 'text-red-600' : 'text-gray-900')}`}
+                                  className={`font-normal text-[clamp(0.9rem,2.1vw,1.35rem)] leading-snug break-words [overflow-wrap:anywhere] whitespace-pre-wrap ${parsedStatus.memo.includes('\n') ? 'text-left px-1' : 'text-center'} mt-1 w-full ${isMemoExpanded ? '' : 'line-clamp-3'} ${isHoliday ? 'text-gray-100' : (isAbsent ? 'text-red-600' : 'text-gray-900')}`}
                                 >
                                   {parsedStatus.memo.replace(/대체공휴일/g, '대체\n공휴일').split(/(\d+\s*회차)/g).map((part, i) => {
                                     if (/\d+\s*회차/.test(part)) {
