@@ -5329,7 +5329,7 @@ export default function MainApp({
                                           onMouseDown={(e) => e.preventDefault()}
                                           className={`w-full h-14 md:h-16 font-bold rounded-2xl text-[21px] md:text-[26px] tracking-tight transition-all duration-150 active:scale-[0.98] flex items-center justify-center touch-manipulation ${(isDataLoading || !hasChanges) ? 'bg-gray-200 text-gray-400 ring-1 ring-inset ring-gray-300/60 cursor-not-allowed' : 'text-white bg-gradient-to-b from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 ring-1 ring-inset ring-blue-700/20 shadow-lg shadow-blue-600/30'}`}
                                         >
-                                          {isSubmitting ? <><Clock className="w-6 h-6 mr-2 animate-spin" />저장 중...</> : <><SaveIcon className="w-6 h-6 mr-2" />{isDataLoading ? '데이터 불러오는 중...' : hasChanges ? `데이터베이스에 저장 (${changedShiftCount}건 변경)` : '저장할 변경 사항 없음'}</>}
+                                          {isSubmitting ? <><Clock className="w-6 h-6 mr-2 animate-spin" />저장 중...</> : <><SaveIcon className="w-6 h-6 mr-2" />{isDataLoading ? '데이터 불러오는 중...' : hasChanges ? `저장 (${changedShiftCount}건 변경)` : '저장할 변경 사항 없음'}</>}
                                         </button>
                                       </div>
                                     </>
