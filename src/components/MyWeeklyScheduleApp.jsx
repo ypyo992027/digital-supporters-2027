@@ -1144,14 +1144,32 @@ export default function MyWeeklyScheduleApp({
           .split(/[/,]+/)
           .map(s => s.trim().split('(')[0].trim())
           .filter(Boolean);
-        const recentHistory = (allTeamRecords || [])
-          .filter(r => {
-            if (!r.student || r.log_date > selectedClassDetail.dateStr) return false;
-            const rNames = r.student.split(/[/,]+/).map(s => s.trim().split('(')[0].trim()).filter(Boolean);
-            return cleanNames.some(n => rNames.includes(n));
-          })
-          .sort((a, b) => b.log_date.localeCompare(a.log_date))
-          .slice(0, 6);
+        const groupedHistoryMap = {};
+        (allTeamRecords || []).forEach(r => {
+          if (!r.student || r.log_date >= selectedClassDetail.dateStr) return;
+          const rNames = r.student.split(/[/,]+/).map(s => s.trim().split('(')[0].trim()).filter(Boolean);
+          if (!cleanNames.some(n => rNames.includes(n))) return;
+          const parsed = parseWeeklyStatus(r.status || '');
+          const key = `${r.log_date}__${r.shift || ''}`;
+          if (!groupedHistoryMap[key]) {
+            groupedHistoryMap[key] = {
+              log_date: r.log_date,
+              shift: r.shift || '',
+              tags: [],
+              memos: []
+            };
+          }
+          parsed.tags.forEach(t => {
+            if (t && !groupedHistoryMap[key].tags.includes(t)) {
+              groupedHistoryMap[key].tags.push(t);
+            }
+          });
+          if (parsed.memo && !groupedHistoryMap[key].memos.includes(parsed.memo)) {
+            groupedHistoryMap[key].memos.push(parsed.memo);
+          }
+        });
+        const recentHistory = Object.values(groupedHistoryMap)
+          .sort((a, b) => b.log_date.localeCompare(a.log_date));
 
         return (
           <div
@@ -1217,18 +1235,18 @@ export default function MyWeeklyScheduleApp({
 
                 {recentHistory.length > 0 && (
                   <div>
-                    <div className="text-[13px] font-extrabold text-slate-500 mb-1.5">이전 수업 기록</div>
+                    <div className="text-[13px] font-extrabold text-slate-500 mb-1.5">이전 수업 기록 ({recentHistory.length}건)</div>
                     <div className="space-y-1.5">
                       {recentHistory.map((h, hIdx) => {
-                        const parsed = parseWeeklyStatus(h.status || '');
+                        const memoText = h.memos.join('\n');
                         return (
                           <div key={hIdx} className="p-2.5 rounded-xl bg-gray-50 border border-gray-200 text-[13.5px]">
                             <div className="flex items-center justify-between gap-2 font-extrabold text-slate-700 mb-0.5">
                               <span>{h.log_date} ({h.shift ? h.shift.split('~')[0] : ''})</span>
-                              <span className="text-indigo-700">{parsed.tags.join(', ') || '-'}</span>
+                              <span className="text-indigo-700">{h.tags.join(', ') || '-'}</span>
                             </div>
                             <div className="text-slate-700 font-medium whitespace-pre-wrap break-words">
-                              {parsed.memo || '메모 없음'}
+                              {memoText || '메모 없음'}
                             </div>
                           </div>
                         );
