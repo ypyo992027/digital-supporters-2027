@@ -152,6 +152,7 @@ export default function MyWeeklyScheduleApp({
   const [teamLeader, setTeamLeader] = useState(null);
   const [selectedStudentDates, setSelectedStudentDates] = useState(null);
   const [selectedClassDetail, setSelectedClassDetail] = useState(null);
+  const [selectedMonthlyDetail, setSelectedMonthlyDetail] = useState(null);
   const todayColRef = useRef(null);
 
   useEffect(() => {
@@ -789,46 +790,82 @@ export default function MyWeeklyScheduleApp({
   }, [viewMode, monthlyDate, team, teacher]);
 
   const monthlyStats = useMemo(() => {
-    const workDateSet = new Set();
-    let totalClasses = 0;
-    let attendedCount = 0;
-    let absentCount = 0;
-    let vacationCount = 0;
-    let externalCount = 0;
-    let assistantCount = 0;
+    const workDateMap = {};
+    const totalList = [];
+    const attendedList = [];
+    const absentList = [];
+    const vacationList = [];
+    const externalList = [];
+    const assistantList = [];
 
-    monthlyRecords.forEach(r => {
+    const sortedRecords = [...monthlyRecords].sort((a, b) => {
+      if (a.log_date !== b.log_date) return a.log_date.localeCompare(b.log_date);
+      return (a.shift || '').localeCompare(b.shift || '');
+    });
+
+    sortedRecords.forEach(r => {
       const st = (r.student || '').trim();
       const loc = (r.location || '').trim();
       if (!st || st === '-' || st.includes('자체학습') || st.includes('대상자발굴') || st.includes('공휴일') || loc.includes('공휴일') || loc.includes('휴무일')) return;
-      totalClasses += 1;
       const merged = mergeAttendanceAndStatus(r.attendance, r.status).replace(/\u200B/g, '').trim();
+      const parsed = parseWeeklyStatus(merged);
+      const entry = {
+        log_date: r.log_date,
+        shift: r.shift || '',
+        student: st,
+        location: loc || '복지관',
+        tags: parsed.tags,
+        memo: parsed.memo
+      };
+
+      totalList.push(entry);
       if (st.includes('보조강사')) {
-        assistantCount += 1;
+        assistantList.push(entry);
       } else if (loc && loc !== '복지관') {
-        externalCount += 1;
+        externalList.push(entry);
       }
       if (hasIndependentKeyword(merged, ['선생님휴가']) || merged.includes('선생님휴가')) {
-        vacationCount += 1;
+        vacationList.push(entry);
       } else {
-        workDateSet.add(r.log_date);
+        if (!workDateMap[r.log_date]) workDateMap[r.log_date] = [];
+        workDateMap[r.log_date].push(entry);
         const hasAtt = hasIndependentKeyword(merged, ['1', '출석']);
         if (merged.includes('결석') && !hasAtt) {
-          absentCount += 1;
+          absentList.push(entry);
         } else if (hasAtt || /^[1-9]\d*/.test(merged) || merged.length > 2) {
-          attendedCount += 1;
+          attendedList.push(entry);
         }
       }
     });
 
+    const workDaysList = Object.keys(workDateMap)
+      .sort()
+      .map(d => ({
+        log_date: d,
+        shift: `${workDateMap[d].length}건`,
+        student: workDateMap[d].map(x => x.student).join(', '),
+        location: '',
+        tags: [],
+        memo: ''
+      }));
+
     return {
-      workDays: workDateSet.size,
-      totalClasses,
-      attendedCount,
-      absentCount,
-      vacationCount,
-      externalCount,
-      assistantCount
+      workDays: workDaysList.length,
+      totalClasses: totalList.length,
+      attendedCount: attendedList.length,
+      absentCount: absentList.length,
+      vacationCount: vacationList.length,
+      externalCount: externalList.length,
+      assistantCount: assistantList.length,
+      lists: {
+        workDays: workDaysList,
+        total: totalList,
+        attended: attendedList,
+        absent: absentList,
+        vacation: vacationList,
+        external: externalList,
+        assistant: assistantList
+      }
     };
   }, [monthlyRecords]);
 
@@ -964,34 +1001,62 @@ export default function MyWeeklyScheduleApp({
                 <div className="py-12 text-center text-slate-500 font-bold">월간 활동 내역을 불러오는 중...</div>
               ) : (
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                  <div className="p-4 rounded-2xl bg-blue-50 border border-blue-200 text-center">
+                  <button
+                    type="button"
+                    onClick={() => setSelectedMonthlyDetail({ title: '총 근무일수', items: monthlyStats.lists.workDays })}
+                    className="p-4 rounded-2xl bg-blue-50 hover:bg-blue-100/70 border border-blue-200 text-center cursor-pointer active:scale-95 transition"
+                  >
                     <div className="text-[13px] font-bold text-blue-700">총 근무일수</div>
                     <div className="text-3xl font-black text-blue-950 mt-1">{monthlyStats.workDays}<span className="text-base font-bold ml-0.5">일</span></div>
-                  </div>
-                  <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-center">
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedMonthlyDetail({ title: '배정 수업', items: monthlyStats.lists.total })}
+                    className="p-4 rounded-2xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-center cursor-pointer active:scale-95 transition"
+                  >
                     <div className="text-[13px] font-bold text-slate-600">배정 수업</div>
                     <div className="text-3xl font-black text-slate-900 mt-1">{monthlyStats.totalClasses}<span className="text-base font-bold ml-0.5">건</span></div>
-                  </div>
-                  <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-center">
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedMonthlyDetail({ title: '출석 진행', items: monthlyStats.lists.attended })}
+                    className="p-4 rounded-2xl bg-emerald-50 hover:bg-emerald-100/70 border border-emerald-200 text-center cursor-pointer active:scale-95 transition"
+                  >
                     <div className="text-[13px] font-bold text-emerald-700">출석 진행</div>
                     <div className="text-3xl font-black text-emerald-900 mt-1">{monthlyStats.attendedCount}<span className="text-base font-bold ml-0.5">건</span></div>
-                  </div>
-                  <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-center">
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedMonthlyDetail({ title: '학생 결석', items: monthlyStats.lists.absent })}
+                    className="p-4 rounded-2xl bg-rose-50 hover:bg-rose-100/70 border border-rose-200 text-center cursor-pointer active:scale-95 transition"
+                  >
                     <div className="text-[13px] font-bold text-rose-700">학생 결석</div>
                     <div className="text-3xl font-black text-rose-900 mt-1">{monthlyStats.absentCount}<span className="text-base font-bold ml-0.5">건</span></div>
-                  </div>
-                  <div className="p-4 rounded-2xl bg-gray-100 border border-gray-300 text-center">
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedMonthlyDetail({ title: '선생님 휴가', items: monthlyStats.lists.vacation })}
+                    className="p-4 rounded-2xl bg-gray-100 hover:bg-gray-200/70 border border-gray-300 text-center cursor-pointer active:scale-95 transition"
+                  >
                     <div className="text-[13px] font-bold text-gray-600">선생님 휴가</div>
                     <div className="text-3xl font-black text-gray-800 mt-1">{monthlyStats.vacationCount}<span className="text-base font-bold ml-0.5">건</span></div>
-                  </div>
-                  <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-center">
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedMonthlyDetail({ title: '외부 기관 활동', items: monthlyStats.lists.external })}
+                    className="p-4 rounded-2xl bg-amber-50 hover:bg-amber-100/70 border border-amber-200 text-center cursor-pointer active:scale-95 transition"
+                  >
                     <div className="text-[13px] font-bold text-amber-800">외부 기관 활동</div>
                     <div className="text-3xl font-black text-amber-950 mt-1">{monthlyStats.externalCount}<span className="text-base font-bold ml-0.5">건</span></div>
-                  </div>
-                  <div className="col-span-2 sm:col-span-1 p-4 rounded-2xl bg-purple-50 border border-purple-200 text-center">
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedMonthlyDetail({ title: '보조강사', items: monthlyStats.lists.assistant })}
+                    className="col-span-2 sm:col-span-1 p-4 rounded-2xl bg-purple-50 hover:bg-purple-100/70 border border-purple-200 text-center cursor-pointer active:scale-95 transition"
+                  >
                     <div className="text-[13px] font-bold text-purple-800">보조강사</div>
                     <div className="text-3xl font-black text-purple-950 mt-1">{monthlyStats.assistantCount}<span className="text-base font-bold ml-0.5">건</span></div>
-                  </div>
+                  </button>
                 </div>
               )}
             </div>
@@ -1158,6 +1223,91 @@ export default function MyWeeklyScheduleApp({
           )}
       </div>
     </div>
+
+      {selectedMonthlyDetail && (
+        <div
+          className="fixed inset-0 bg-slate-900/50 backdrop-blur-[3px] flex items-center justify-center z-[60] p-3 sm:p-4"
+          onClick={() => setSelectedMonthlyDetail(null)}
+        >
+          <div
+            className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col max-h-[85vh] animate-fadeIn border border-slate-200"
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-4 py-3.5 flex items-center justify-between shrink-0">
+              <div className="min-w-0">
+                <h3 className="font-extrabold text-[18px] sm:text-[19px] truncate">
+                  {monthlyDate.getFullYear()}년 {monthlyDate.getMonth() + 1}월 · {selectedMonthlyDetail.title}
+                </h3>
+                <p className="text-blue-100 text-[13px] font-semibold">
+                  총 {selectedMonthlyDetail.items.length}건
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSelectedMonthlyDetail(null)}
+                className="p-1 rounded-lg text-white/90 hover:bg-white/20 active:scale-90 transition"
+                aria-label="닫기"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <div className="p-4 overflow-y-auto space-y-2 text-left">
+              {selectedMonthlyDetail.items.length === 0 ? (
+                <div className="py-8 text-center text-slate-400 font-bold text-[15px]">
+                  해당 내역이 없습니다.
+                </div>
+              ) : (
+                selectedMonthlyDetail.items.map((item, idx) => {
+                  const hasAtt = item.tags.some(t => t.includes('출석') || /^\d+/.test(t));
+                  const isAbs = !hasAtt && item.tags.some(t => t.includes('결석'));
+                  const isVac = !hasAtt && item.tags.some(t => t.includes('휴가'));
+                  const statusColor = isAbs ? 'text-red-600' : isVac ? 'text-gray-500' : 'text-blue-700';
+                  const memoColor = isAbs ? 'text-red-600' : isVac ? 'text-gray-500' : 'text-slate-700';
+                  const dParts = item.log_date.split('-');
+                  const dayIdx = new Date(parseInt(dParts[0], 10), parseInt(dParts[1], 10) - 1, parseInt(dParts[2], 10)).getDay();
+                  const dayKor = ['일', '월', '화', '수', '목', '금', '토'][dayIdx];
+                  return (
+                    <div key={idx} className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-[14px]">
+                      <div className="flex items-center justify-between gap-2 mb-1">
+                        <span className="font-extrabold text-slate-800">
+                          {item.log_date} ({dayKor}) {item.shift ? `· ${item.shift.split('~')[0]}` : ''}
+                        </span>
+                        {item.tags.length > 0 && (
+                          <span className={`font-extrabold text-[13px] ${statusColor}`}>
+                            {item.tags.join(', ')}
+                          </span>
+                        )}
+                      </div>
+                      <div className="font-extrabold text-slate-900 text-[15px]">
+                        {item.student}
+                        {item.location && item.location !== '복지관' && item.location !== item.student && (
+                          <span className="ml-1.5 text-[13px] font-bold text-slate-500">({item.location})</span>
+                        )}
+                      </div>
+                      {item.memo && (
+                        <div className={`mt-1 text-[13.5px] font-medium whitespace-pre-wrap break-words ${memoColor}`}>
+                          {item.memo}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })
+              )}
+            </div>
+            <div className="p-3 bg-slate-50 border-t border-slate-200 flex justify-end shrink-0">
+              <button
+                type="button"
+                onClick={() => setSelectedMonthlyDetail(null)}
+                className="px-5 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 font-extrabold text-[14px] active:scale-95 transition"
+              >
+                닫기
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {selectedClassDetail && (() => {
         const cleanNames = (selectedClassDetail.student || '')
