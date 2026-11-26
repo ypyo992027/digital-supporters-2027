@@ -3961,14 +3961,14 @@ export default function MainApp({
                         type="button"
                         onClick={handleLogin}
                         disabled={!isLoginReady}
-                        className={`w-full px-3 py-1.5 rounded-lg text-[15.5px] sm:text-[16.5px] font-bold border transition active:scale-[0.99] text-left flex items-center justify-between gap-2 ${item.isPending
+                        className={`w-full px-3.5 py-2 rounded-lg text-[17.5px] sm:text-[18.5px] font-bold border transition active:scale-[0.99] text-left flex items-center justify-between gap-2 ${item.isPending
                           ? 'bg-white border-amber-300 text-amber-900'
                           : 'bg-emerald-50 border-emerald-200 text-emerald-800'
                           }`}
                         title={`${item.shift.split('~')[0]} ${item.student}`}
                       >
                         <span className="truncate">{item.shift.split('~')[0]} {item.student}</span>
-                        <span className={`text-[12.5px] sm:text-[13px] font-extrabold shrink-0 ${item.isPending ? 'text-amber-600' : 'text-emerald-600'}`}>
+                        <span className={`text-[14px] sm:text-[15px] font-extrabold shrink-0 ${item.isPending ? 'text-amber-600' : 'text-emerald-600'}`}>
                           {item.isPending ? '미입력' : '완료'}
                         </span>
                       </button>
