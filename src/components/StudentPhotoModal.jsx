@@ -16,6 +16,7 @@ import { showAlert, showConfirm } from '../utils/dialog';
 export default function StudentPhotoModal({ target, onClose, onPhotosChanged }) {
   const cameraInputRef = useRef(null);
   const albumInputRef = useRef(null);
+  const preFetchedCoordsRef = useRef(null);
 
   const gasUrl = getStudentPhotoGasUrl();
 
@@ -47,6 +48,17 @@ export default function StudentPhotoModal({ target, onClose, onPhotosChanged }) 
   useEffect(() => {
     loadPhotos();
   }, [loadPhotos]);
+
+  // 모달이 열릴 때 미리 GPS 위치를 확보해 둠 (실내 지연 방지)
+  useEffect(() => {
+    let isMounted = true;
+    getCurrentGeoCoords(7000).then((coords) => {
+      if (isMounted && coords) {
+        preFetchedCoordsRef.current = coords;
+      }
+    });
+    return () => { isMounted = false; };
+  }, []);
 
   useEffect(() => {
     setPreviewAddress('');
@@ -80,10 +92,11 @@ export default function StudentPhotoModal({ target, onClose, onPhotosChanged }) 
     setIsUploading(true);
     setErrorMsg('');
     try {
-      const [dataUrl, coords] = await Promise.all([
+      const [dataUrl, freshCoords] = await Promise.all([
         compressImageFileToDataUrl(file),
-        getCurrentGeoCoords()
+        getCurrentGeoCoords(6000)
       ]);
+      const coords = freshCoords || preFetchedCoordsRef.current;
       const fileName = buildStudentPhotoFileName({
         studentName,
         date: target?.date || '',
@@ -311,7 +324,10 @@ export default function StudentPhotoModal({ target, onClose, onPhotosChanged }) 
       {previewPhoto && (() => {
         const meta = parseStudentPhotoFileName(previewPhoto.name);
         const captureTimeText = formatCaptureTime(previewPhoto.createdTime, meta.timestamp);
-        const locationLabel = previewAddress || target?.location || (meta.coords ? `위도 ${meta.coords.lat.toFixed(5)}, 경도 ${meta.coords.lng.toFixed(5)}` : '위치 정보 없음');
+        const coordText = meta.coords ? `${meta.coords.lat.toFixed(5)}, ${meta.coords.lng.toFixed(5)}` : '';
+        const locationLabel = meta.coords
+          ? (previewAddress ? `${previewAddress} (${coordText})` : `위도 ${meta.coords.lat.toFixed(5)}, 경도 ${meta.coords.lng.toFixed(5)}`)
+          : 'GPS 위치 정보 없음';
         return (
           <div
             className="fixed inset-0 bg-black/90 z-[100] flex flex-col items-center justify-center p-3 sm:p-5"

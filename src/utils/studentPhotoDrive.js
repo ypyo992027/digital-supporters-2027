@@ -46,36 +46,32 @@ export const parseStudentPhotoFileName = (fileName) => {
   };
 };
 
-export const getCurrentGeoCoords = (timeoutMs = 3500) => {
+export const getCurrentGeoCoords = (timeoutMs = 7000) => {
   return new Promise((resolve) => {
     if (typeof navigator === 'undefined' || !navigator.geolocation) {
       resolve(null);
       return;
     }
     let settled = false;
-    const timer = setTimeout(() => {
-      if (!settled) {
-        settled = true;
-        resolve(null);
-      }
-    }, timeoutMs);
+    const finish = (val) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve(val);
+    };
+    const timer = setTimeout(() => finish(null), timeoutMs + 1000);
+
+    // 실내에서도 빠르게 위치를 잡기 위해 먼저 네트워크/저전력 위치를 허용하거나, 고정밀 실패 시 일반 위치로 재시도
     navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        if (settled) return;
-        settled = true;
-        clearTimeout(timer);
-        resolve({
-          lat: pos.coords.latitude,
-          lng: pos.coords.longitude
-        });
-      },
+      (pos) => finish({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
       () => {
-        if (settled) return;
-        settled = true;
-        clearTimeout(timer);
-        resolve(null);
+        navigator.geolocation.getCurrentPosition(
+          (pos) => finish({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+          () => finish(null),
+          { enableHighAccuracy: false, timeout: Math.max(3000, Math.floor(timeoutMs / 2)), maximumAge: 180000 }
+        );
       },
-      { enableHighAccuracy: true, timeout: timeoutMs, maximumAge: 60000 }
+      { enableHighAccuracy: true, timeout: Math.floor(timeoutMs / 2), maximumAge: 60000 }
     );
   });
 };
